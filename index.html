@@ -149,6 +149,87 @@
           <!-- Template Selector -->
           <div class="template-selector" id="templateSelector">
             <!-- Templates will be loaded dynamically -->
+            <!-- Template Selector for Instagram -->
+            <div
+              class="instagram-templates"
+              id="instagramTemplates"
+              style="display: block"
+            >
+              <button
+                class="template-btn active"
+                data-template="story"
+                data-platform="instagram"
+                onclick="selectInstagramTemplate('story')"
+              >
+                <div class="template-preview">
+                  <div
+                    class="template-ratio"
+                    style="
+                      aspect-ratio: 9/16;
+                      background: linear-gradient(
+                        135deg,
+                        #667eea 0%,
+                        #764ba2 100%
+                      );
+                    "
+                  ></div>
+                </div>
+                <div class="template-info">
+                  <h4>📱 Story</h4>
+                  <span>1080×1920 • 9:16</span>
+                </div>
+              </button>
+
+              <button
+                class="template-btn"
+                data-template="post"
+                data-platform="instagram"
+                onclick="selectInstagramTemplate('post')"
+              >
+                <div class="template-preview">
+                  <div
+                    class="template-ratio"
+                    style="
+                      aspect-ratio: 1/1;
+                      background: linear-gradient(
+                        135deg,
+                        #ff416c 0%,
+                        #ff4b2b 100%
+                      );
+                    "
+                  ></div>
+                </div>
+                <div class="template-info">
+                  <h4>🟦 Post</h4>
+                  <span>1080×1080 • 1:1</span>
+                </div>
+              </button>
+
+              <button
+                class="template-btn"
+                data-template="reel-cover"
+                data-platform="instagram"
+                onclick="selectInstagramTemplate('reel-cover')"
+              >
+                <div class="template-preview">
+                  <div
+                    class="template-ratio"
+                    style="
+                      aspect-ratio: 9/16;
+                      background: linear-gradient(
+                        135deg,
+                        #4facfe 0%,
+                        #00f2fe 100%
+                      );
+                    "
+                  ></div>
+                </div>
+                <div class="template-info">
+                  <h4>🎬 Reel Cover</h4>
+                  <span>1080×1920 • 9:16</span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 

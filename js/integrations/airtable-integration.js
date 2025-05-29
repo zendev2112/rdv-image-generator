@@ -810,30 +810,108 @@ async function listAvailableTables() {
 }
 
 /**
- * NEW: Render Instagram template with Airtable data
+ * NEW: Select Instagram template and render content
  */
-function renderInstagramTemplateWithData(data) {
+function selectInstagramTemplate(templateType) {
+  console.log('🎨 Selecting Instagram template:', templateType)
+  
+  // Update active template button
+  const templateButtons = document.querySelectorAll('.template-btn')
+  templateButtons.forEach(btn => btn.classList.remove('active'))
+  
+  const selectedButton = document.querySelector(`[data-template="${templateType}"]`)
+  if (selectedButton) {
+    selectedButton.classList.add('active')
+  }
+  
+  // Update global state
+  if (window.RDVImageGenerator) {
+    window.RDVImageGenerator.currentTemplate = templateType
+  }
+  
+  // Update UI info
+  updateTemplateInfoDisplay(templateType)
+  
+  // Get current form data and render template
+  const formData = getCurrentFormData()
+  renderInstagramTemplateWithData(formData, templateType)
+  
+  showToast(`Template cambiado a Instagram ${templateType}`, 'success')
+}
+
+/**
+ * NEW: Get current form data
+ */
+function getCurrentFormData() {
+  return {
+    title: document.getElementById('title')?.value || '',
+    excerpt: document.getElementById('excerpt')?.value || '',
+    tags: document.getElementById('tags')?.value || '',
+    category: document.getElementById('category')?.value || 'general',
+    backgroundImage: document.getElementById('backgroundImage')?.value || '',
+    source: document.getElementById('source')?.value || 'RDV Noticias',
+    author: document.getElementById('author')?.value || 'Redacción RDV'
+  }
+}
+
+/**
+ * NEW: Update template info display
+ */
+function updateTemplateInfoDisplay(templateType) {
+  const platformName = document.getElementById('currentPlatform')
+  const templateName = document.getElementById('currentTemplate')
+  const dimensions = document.getElementById('currentDimensions')
+  
+  const configs = {
+    'story': { name: 'Instagram Story', dims: '1080 × 1920' },
+    'post': { name: 'Instagram Post', dims: '1080 × 1080' },
+    'reel-cover': { name: 'Instagram Reel Cover', dims: '1080 × 1920' }
+  }
+  
+  const config = configs[templateType] || configs.story
+  
+  if (platformName) platformName.textContent = 'Instagram'
+  if (templateName) templateName.textContent = config.name
+  if (dimensions) dimensions.textContent = config.dims
+}
+
+/**
+ * ENHANCED: Render Instagram template with specific template type
+ */
+function renderInstagramTemplateWithData(data, templateType = null) {
   console.log('🎨 Rendering Instagram template with data:', data)
   
-  // Get current platform and template selection
-  const currentPlatform = getCurrentPlatform()
-  const currentTemplate = getCurrentTemplate()
+  const currentTemplate = templateType || getCurrentTemplate()
   
-  console.log('Current platform:', currentPlatform, 'Template:', currentTemplate)
+  console.log('Current template:', currentTemplate)
   
-  if (currentPlatform === 'instagram') {
-    // Use your existing Instagram template functions
-    if (typeof window.InstagramTemplates?.generateContent === 'function') {
-      const instagramContent = window.InstagramTemplates.generateContent(data, currentTemplate)
-      console.log('Generated Instagram content:', instagramContent)
-      
-      // Apply the content to the canvas
-      applyInstagramContentToCanvas(instagramContent, currentTemplate)
-    } else {
-      console.warn('Instagram template functions not available, falling back to basic rendering')
-      // Fallback to basic template rendering
-      renderBasicInstagramTemplate(data, currentTemplate)
-    }
+  // Generate Instagram-optimized content
+  const instagramContent = generateInstagramOptimizedContent(data, currentTemplate)
+  
+  // Apply the content to the canvas
+  applyInstagramContentToCanvas(instagramContent, currentTemplate)
+}
+
+/**
+ * NEW: Generate Instagram-optimized content
+ */
+function generateInstagramOptimizedContent(data, templateType) {
+  // Use the existing Instagram template functions if available
+  if (typeof window.InstagramTemplates?.generateContent === 'function') {
+    return window.InstagramTemplates.generateContent(data, templateType)
+  }
+  
+  // Fallback content generation
+  return {
+    title: data.title || 'Título de la noticia',
+    excerpt: data.excerpt || 'Descripción de la noticia',
+    hashtags: data.tags ? data.tags.split(',').map(tag => `#${tag.trim()}`) : ['#RDVNoticias'],
+    author: data.author || 'Redacción RDV',
+    source: data.source || '@rdvnoticias',
+    date: new Date().toLocaleDateString('es-AR'),
+    backgroundImage: data.backgroundImage || '',
+    category: data.category || 'GENERAL',
+    template: templateType
   }
 }
 
@@ -873,28 +951,6 @@ function applyInstagramContentToCanvas(content, templateType) {
   
   // Update UI info
   updateTemplateInfo(content, templateType)
-}
-
-/**
- * NEW: Set canvas dimensions for Instagram
- */
-function setCanvasForInstagram(canvas, templateType) {
-  const dimensions = {
-    'story': { width: 1080, height: 1920, ratio: '9:16' },
-    'post': { width: 1080, height: 1080, ratio: '1:1' },
-    'reel-cover': { width: 1080, height: 1920, ratio: '9:16' }
-  }
-  
-  const dim = dimensions[templateType] || dimensions.story
-  
-  canvas.style.aspectRatio = dim.ratio
-  canvas.style.maxWidth = templateType === 'story' ? '300px' : '400px'
-  canvas.style.width = '100%'
-  canvas.style.borderRadius = '12px'
-  canvas.style.overflow = 'hidden'
-  canvas.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)'
-  
-  console.log(`📐 Canvas set for Instagram ${templateType}: ${dim.ratio}`)
 }
 
 /**
@@ -1024,6 +1080,272 @@ function generateInstagramStoryHTML(content) {
   `
 }
 
+/**
+ * NEW: Generate Instagram Post HTML
+ */
+function generateInstagramPostHTML(content) {
+  return `
+    <div class="instagram-post-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 40px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      aspect-ratio: 1/1;
+    ">
+      <!-- Logo Section -->
+      <div style="margin-bottom: 30px;">
+        <div style="
+          width: 80px;
+          height: 80px;
+          background: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: #E4405F;
+          font-size: 32px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+          margin: 0 auto 20px auto;
+        ">RDV</div>
+        <div style="
+          background: #E4405F;
+          color: white;
+          padding: 8px 20px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: uppercase;
+          display: inline-block;
+        ">${content.category}</div>
+      </div>
+
+      <!-- Content -->
+      <div style="max-width: 90%;">
+        <!-- Title -->
+        <h1 style="
+          font-size: 32px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0 0 20px 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        ">${content.title}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 18px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 30px 0;
+          opacity: 0.9;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        ">${content.excerpt}</p>
+
+        <!-- Source -->
+        <div style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 20px;
+          font-size: 16px;
+          font-weight: 500;
+          opacity: 0.8;
+        ">
+          <span>${content.source}</span>
+          <span>•</span>
+          <span>${content.date}</span>
+        </div>
+      </div>
+
+      <!-- Bottom CTA -->
+      <div style="
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+      ">
+        👆 Toca para leer más
+      </div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Generate Instagram Reel Cover HTML
+ */
+function generateInstagramReelHTML(content) {
+  return `
+    <div class="instagram-reel-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 30px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      aspect-ratio: 9/16;
+    ">
+      <!-- Play Button Overlay -->
+      <div style="
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: #E4405F;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        z-index: 3;
+      ">▶️</div>
+
+      <!-- Header -->
+      <div style="
+        position: absolute;
+        top: 40px;
+        left: 30px;
+        right: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 2;
+      ">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #E4405F;
+            font-size: 18px;
+          ">RDV</div>
+          <span style="font-weight: 600; font-size: 16px;">${content.source}</span>
+        </div>
+        <div style="
+          background: #E4405F;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+        ">REEL</div>
+      </div>
+
+      <!-- Content at bottom -->
+      <div style="
+        position: absolute;
+        bottom: 40px;
+        left: 30px;
+        right: 30px;
+        z-index: 2;
+      ">
+        <!-- Category Badge -->
+        <div style="
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+          display: inline-block;
+          margin-bottom: 16px;
+        ">${content.category}</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 24px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0 0 12px 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        ">${content.title}</h1>
+
+        <!-- Small excerpt -->
+        <p style="
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 1.3;
+          margin: 0;
+          opacity: 0.9;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+          max-height: 3em;
+          overflow: hidden;
+        ">${content.excerpt}</p>
+      </div>
+
+      <!-- Watch indicator -->
+      <div style="
+        position: absolute;
+        bottom: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 2;
+      ">
+        🎬 Toca para ver el Reel
+      </div>
+    </div>
+  `
+}
+
+/**
+ * ENHANCED: Set canvas dimensions for Instagram with better aspect ratios
+ */
+function setCanvasForInstagram(canvas, templateType) {
+  const dimensions = {
+    'story': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' },
+    'post': { width: 1080, height: 1080, ratio: '1/1', maxWidth: '450px' },
+    'reel-cover': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' }
+  }
+  
+  const dim = dimensions[templateType] || dimensions.story
+  
+  canvas.style.aspectRatio = dim.ratio
+  canvas.style.maxWidth = dim.maxWidth
+  canvas.style.width = '100%'
+  canvas.style.borderRadius = '12px'
+  canvas.style.overflow = 'hidden'
+  canvas.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)'
+  canvas.style.transition = 'all 0.3s ease'
+  
+  console.log(`📐 Canvas set for Instagram ${templateType}: ${dim.ratio}`)
+}
+
 // Make functions globally available
 window.renderInstagramTemplateWithData = renderInstagramTemplateWithData
 window.getCurrentPlatform = getCurrentPlatform  
@@ -1032,3 +1354,9 @@ window.applyInstagramContentToCanvas = applyInstagramContentToCanvas
 window.setCanvasForInstagram = setCanvasForInstagram
 window.generateInstagramTemplateHTML = generateInstagramTemplateHTML
 window.generateInstagramStoryHTML = generateInstagramStoryHTML
+window.selectInstagramTemplate = selectInstagramTemplate
+window.getCurrentFormData = getCurrentFormData
+window.updateTemplateInfoDisplay = updateTemplateInfoDisplay
+window.generateInstagramOptimizedContent = generateInstagramOptimizedContent
+window.generateInstagramPostHTML = generateInstagramPostHTML
+window.generateInstagramReelHTML = generateInstagramReelHTML
