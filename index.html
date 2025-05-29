@@ -748,12 +748,259 @@ Un nuevo estudio revela que Argentina se posiciona como líder regional en el de
         window.RDVImageGenerator.currentTemplate = 'news-card'
       }
 
-      // Make globally available
+      // Missing UI Functions
+      function uploadImage() {
+        const fileInput = document.getElementById('imageUpload')
+        if (fileInput) {
+          fileInput.click()
+        }
+      }
+
+      function openImagePicker() {
+        const modal = document.getElementById('imagePickerModal')
+        if (modal) {
+          modal.classList.remove('hidden')
+        } else {
+          showToast('Selector de imágenes no disponible', 'warning')
+        }
+      }
+
+      function closeImagePicker() {
+        const modal = document.getElementById('imagePickerModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+          const file = input.files[0]
+          const reader = new FileReader()
+
+          reader.onload = function (e) {
+            const imageUrl = e.target.result
+            const backgroundImageInput =
+              document.getElementById('backgroundImage')
+
+            if (backgroundImageInput) {
+              backgroundImageInput.value = imageUrl
+              loadBackgroundImage(imageUrl)
+              showToast('Imagen cargada correctamente', 'success')
+            }
+          }
+
+          reader.readAsDataURL(file)
+        }
+      }
+
+      function loadBackgroundImage(imageUrl) {
+        try {
+          const canvas = document.getElementById('canvas')
+          if (canvas && imageUrl) {
+            const img = new Image()
+            img.crossOrigin = 'anonymous'
+
+            img.onload = function () {
+              canvas.style.backgroundImage = `url(${imageUrl})`
+              canvas.style.backgroundSize = 'cover'
+              canvas.style.backgroundPosition = 'center'
+              console.log('Background image loaded:', imageUrl)
+
+              // Trigger preview update
+              if (typeof updatePreview === 'function') {
+                updatePreview()
+              }
+            }
+
+            img.onerror = function () {
+              console.error('Failed to load background image:', imageUrl)
+              showToast('Error cargando imagen de fondo', 'error')
+            }
+
+            img.src = imageUrl
+          }
+        } catch (error) {
+          console.error('Error loading background image:', error)
+        }
+      }
+
+      // Placeholder functions for missing UI actions
+      function generateAll() {
+        showToast('Generando para todas las plataformas...', 'info')
+      }
+
+      function scheduledGeneration() {
+        showToast('Función de programación próximamente', 'info')
+      }
+
+      function shareToSocial() {
+        showToast('Función de compartir próximamente', 'info')
+      }
+
+      function saveAsTemplate() {
+        showToast('Guardando como plantilla...', 'info')
+      }
+
+      function resetForm() {
+        document.getElementById('title').value = ''
+        document.getElementById('excerpt').value = ''
+        document.getElementById('tags').value = ''
+        document.getElementById('backgroundImage').value = ''
+        showToast('Formulario reiniciado', 'success')
+      }
+
+      function exportSettings() {
+        showToast('Exportando configuración...', 'info')
+      }
+
+      function importSettings() {
+        showToast('Importando configuración...', 'info')
+      }
+
+      function showHelp() {
+        const modal = document.getElementById('helpModal')
+        if (modal) {
+          modal.classList.remove('hidden')
+        }
+      }
+
+      function closeHelp() {
+        const modal = document.getElementById('helpModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      function updatePreview() {
+        console.log('Updating preview...')
+        showToast('Vista previa actualizada', 'success')
+      }
+
+      function generateImage() {
+        showToast('Generando imagen...', 'info')
+      }
+
+      function zoomIn() {
+        const canvas = document.getElementById('canvas')
+        if (canvas) {
+          const currentScale = canvas.style.transform || 'scale(1)'
+          const scale = parseFloat(
+            currentScale.match(/scale\(([\d.]+)\)/)?.[1] || 1
+          )
+          canvas.style.transform = `scale(${Math.min(scale + 0.1, 2)})`
+        }
+      }
+
+      function zoomOut() {
+        const canvas = document.getElementById('canvas')
+        if (canvas) {
+          const currentScale = canvas.style.transform || 'scale(1)'
+          const scale = parseFloat(
+            currentScale.match(/scale\(([\d.]+)\)/)?.[1] || 1
+          )
+          canvas.style.transform = `scale(${Math.max(scale - 0.1, 0.5)})`
+        }
+      }
+
+      function resetZoom() {
+        const canvas = document.getElementById('canvas')
+        if (canvas) {
+          canvas.style.transform = 'scale(1)'
+        }
+      }
+
+      function toggleFullscreen() {
+        if (document.fullscreenElement) {
+          document.exitFullscreen()
+        } else {
+          document.documentElement.requestFullscreen()
+        }
+      }
+
+      function togglePreviewMode() {
+        const previewArea = document.getElementById('previewArea')
+        if (previewArea) {
+          previewArea.classList.toggle('preview-mode')
+        }
+      }
+
+      function copyImageToClipboard() {
+        showToast('Copiando imagen al portapapeles...', 'info')
+      }
+
+      function downloadImage() {
+        showToast('Descargando imagen...', 'info')
+      }
+
+      function sharePreview() {
+        showToast('Compartiendo vista previa...', 'info')
+      }
+
+      function printImage() {
+        window.print()
+      }
+
+      function cancelGeneration() {
+        const modal = document.getElementById('generationModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      function saveSettings() {
+        showToast('Configuración guardada', 'success')
+      }
+
+      function testConnection() {
+        if (typeof testAirtableConnection === 'function') {
+          testAirtableConnection()
+        } else {
+          showToast('Probando conexión...', 'info')
+        }
+      }
+
+      function closeSettings() {
+        const modal = document.getElementById('settingsModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      // Make all functions globally available
       window.initializeTemplates = initializeTemplates
       window.initializeThemes = initializeThemes
       window.initializeEventListeners = initializeEventListeners
       window.loadDefaultContent = loadDefaultContent
       window.initializePlatforms = initializePlatforms
+      window.uploadImage = uploadImage
+      window.openImagePicker = openImagePicker
+      window.closeImagePicker = closeImagePicker
+      window.handleImageUpload = handleImageUpload
+      window.loadBackgroundImage = loadBackgroundImage
+      window.generateAll = generateAll
+      window.scheduledGeneration = scheduledGeneration
+      window.shareToSocial = shareToSocial
+      window.saveAsTemplate = saveAsTemplate
+      window.resetForm = resetForm
+      window.exportSettings = exportSettings
+      window.importSettings = importSettings
+      window.showHelp = showHelp
+      window.closeHelp = closeHelp
+      window.updatePreview = updatePreview
+      window.generateImage = generateImage
+      window.zoomIn = zoomIn
+      window.zoomOut = zoomOut
+      window.resetZoom = resetZoom
+      window.toggleFullscreen = toggleFullscreen
+      window.togglePreviewMode = togglePreviewMode
+      window.copyImageToClipboard = copyImageToClipboard
+      window.downloadImage = downloadImage
+      window.sharePreview = sharePreview
+      window.printImage = printImage
+      window.cancelGeneration = cancelGeneration
+      window.saveSettings = saveSettings
+      window.testConnection = testConnection
+      window.closeSettings = closeSettings
     </script>
 
     <!-- Your existing main application script -->

@@ -8,7 +8,7 @@ const AIRTABLE_CONFIG = {
   API_KEY:
     'patlPzRF8YzZNnogn.8b3d2d68528bfa5b0643a212f832966d1a327f6ca85e8c0f373609452318af4c',
   BASE_ID: 'appWtDlgG21KUI3IN',
-  TABLE_NAME: 'Redes Sociales', // Changed from 'Test' to 'Redes Sociales'
+  TABLE_NAME: 'Redes Sociales', // Corrected table name
   TIMEOUT: 30000,
 }
 
@@ -63,9 +63,9 @@ async function testAirtableConnection() {
 
     // Now test access to the specific table
     const response = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(
-        AIRTABLE_CONFIG.TABLE_NAME
-      )}?maxRecords=1`,
+      `https://api.airtable.com/v0/${
+        AIRTABLE_CONFIG.BASE_ID
+      }/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1`,
       {
         headers: {
           Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
@@ -122,9 +122,9 @@ async function loadFromAirtable(recordId = null) {
 
     // Fetch from Airtable using predefined config
     const response = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(
-        AIRTABLE_CONFIG.TABLE_NAME
-      )}/${id}`,
+      `https://api.airtable.com/v0/${
+        AIRTABLE_CONFIG.BASE_ID
+      }/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}/${id}`,
       {
         headers: {
           Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
@@ -182,22 +182,32 @@ async function uploadToAirtable() {
     // Generate image
     const imageBlob = await generateCurrentImage()
 
-    // Convert to base64 for Airtable
+    // Convert to base64 data URL for Airtable attachments
     const base64Image = await blobToBase64(imageBlob)
 
-    // Update Airtable record
+    // Create attachment format for Airtable
+    const attachmentData = [
+      {
+        url: base64Image,
+        filename: `rdv-social-${recordId}-${Date.now()}.png`,
+      },
+    ]
+
+    // Update Airtable record with proper field names
     const updateData = {
       fields: {
-        social_image_facebook: [{ url: base64Image }],
-        social_image_twitter: [{ url: base64Image }],
-        social_image_instagram: [{ url: base64Image }],
+        social_image_facebook: attachmentData,
+        social_image_twitter: attachmentData,
+        social_image_instagram: attachmentData,
       },
     }
 
+    console.log('Updating Airtable with data:', updateData)
+
     const response = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(
-        AIRTABLE_CONFIG.TABLE_NAME
-      )}/${recordId}`,
+      `https://api.airtable.com/v0/${
+        AIRTABLE_CONFIG.BASE_ID
+      }/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}/${recordId}`,
       {
         method: 'PATCH',
         headers: {
@@ -209,18 +219,22 @@ async function uploadToAirtable() {
     )
 
     if (response.ok) {
+      const result = await response.json()
+      console.log('Upload successful:', result)
       showToast('✅ Imagen guardada en Airtable', 'success')
     } else {
-      throw new Error(`HTTP ${response.status}`)
+      const errorText = await response.text()
+      console.error('Upload failed:', response.status, errorText)
+      throw new Error(`HTTP ${response.status}: ${errorText}`)
     }
   } catch (error) {
     console.error('Error uploading to Airtable:', error)
-    showToast('Error guardando imagen', 'error')
+    showToast(`Error guardando imagen: ${error.message}`, 'error')
   }
 }
 
 /**
- * Fill form from Airtable data
+ * Fill form from Airtable data (Enhanced to load image)
  */
 function fillFormFromAirtable(fields) {
   console.log('Filling form with fields:', fields)
@@ -249,10 +263,58 @@ function fillFormFromAirtable(fields) {
 
       // Trigger input event for character counters
       element.dispatchEvent(new Event('input'))
+
+      // Special handling for background image
+      if (fieldId === 'backgroundImage' && formData[fieldId]) {
+        // Trigger image load event
+        element.dispatchEvent(new Event('change'))
+
+        // Also try to update the canvas background directly
+        setTimeout(() => {
+          loadBackgroundImage(formData[fieldId])
+        }, 500)
+      }
     } else if (!element) {
       console.warn(`Form element not found: ${fieldId}`)
     }
   })
+
+  // Force preview update after data is loaded
+  setTimeout(() => {
+    if (typeof updatePreview === 'function') {
+      updatePreview()
+    }
+  }, 1000)
+}
+
+/**
+ * Load background image into canvas
+ */
+function loadBackgroundImage(imageUrl) {
+  try {
+    const canvas = document.getElementById('canvas')
+    if (canvas && imageUrl) {
+      // Create background image element
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+
+      img.onload = function () {
+        // Apply image as background
+        canvas.style.backgroundImage = `url(${imageUrl})`
+        canvas.style.backgroundSize = 'cover'
+        canvas.style.backgroundPosition = 'center'
+        console.log('Background image loaded:', imageUrl)
+      }
+
+      img.onerror = function () {
+        console.error('Failed to load background image:', imageUrl)
+      }
+
+      img.src = imageUrl
+    }
+  } catch (error) {
+    console.error('Error loading background image:', error)
+  }
 }
 
 /**
@@ -269,24 +331,52 @@ function getRecordIdFromUrl() {
  * Helper functions for image generation and upload
  */
 async function generateCurrentImage() {
-  // This should capture your current canvas/template as a blob
-  // For now, create a simple placeholder image
-  const canvas = document.createElement('canvas')
-  canvas.width = 1200
-  canvas.height = 630
-  const ctx = canvas.getContext('2d')
+  try {
+    // Try to use the existing generateImage function from image-capture module
+    if (typeof window.generateImage === 'function') {
+      return await window.generateImage()
+    }
 
-  // Draw a simple placeholder
-  ctx.fillStyle = '#e53e3e'
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = 'white'
-  ctx.font = '48px Arial'
-  ctx.textAlign = 'center'
-  ctx.fillText('RDV Image Generated', canvas.width / 2, canvas.height / 2)
+    // Fallback: capture the canvas element directly
+    const canvas = document.getElementById('canvas')
+    if (canvas) {
+      // Use html2canvas to capture the template
+      const canvasElement = await html2canvas(canvas, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+      })
 
-  return new Promise((resolve) => {
-    canvas.toBlob(resolve, 'image/png')
-  })
+      return new Promise((resolve) => {
+        canvasElement.toBlob(resolve, 'image/png', 1.0)
+      })
+    }
+
+    // Last resort: create a placeholder
+    const placeholderCanvas = document.createElement('canvas')
+    placeholderCanvas.width = 1200
+    placeholderCanvas.height = 630
+    const ctx = placeholderCanvas.getContext('2d')
+
+    ctx.fillStyle = '#e53e3e'
+    ctx.fillRect(0, 0, placeholderCanvas.width, placeholderCanvas.height)
+    ctx.fillStyle = 'white'
+    ctx.font = '48px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText(
+      'RDV Image Generated',
+      placeholderCanvas.width / 2,
+      placeholderCanvas.height / 2
+    )
+
+    return new Promise((resolve) => {
+      placeholderCanvas.toBlob(resolve, 'image/png')
+    })
+  } catch (error) {
+    console.error('Error generating image:', error)
+    throw error
+  }
 }
 
 async function blobToBase64(blob) {
@@ -305,23 +395,23 @@ function showToast(message, type = 'info') {
   // Create a simple toast notification
   const toast = document.createElement('div')
   toast.style.cssText = `
-          position: fixed;
-          top: 20px;
-          right: 20px;
-          padding: 12px 20px;
-          background: ${
-            type === 'success'
-              ? '#4CAF50'
-              : type === 'error'
-              ? '#f44336'
-              : '#2196F3'
-          };
-          color: white;
-          border-radius: 4px;
-          z-index: 10000;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-      `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: ${
+              type === 'success'
+                ? '#4CAF50'
+                : type === 'error'
+                ? '#f44336'
+                : '#2196F3'
+            };
+            color: white;
+            border-radius: 4px;
+            z-index: 10000;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        `
   toast.textContent = message
   document.body.appendChild(toast)
 
@@ -378,6 +468,7 @@ window.showToast = showToast
 window.listAvailableTables = listAvailableTables
 window.generateCurrentImage = generateCurrentImage
 window.blobToBase64 = blobToBase64
+window.loadBackgroundImage = loadBackgroundImage
 
 console.log('🚀 Airtable Integration loaded with predefined config')
 
