@@ -876,6 +876,108 @@ function updateTemplateInfoDisplay(templateType) {
 }
 
 /**
+ * NEW: Update template info (wrapper function)
+ */
+function updateTemplateInfo(content, templateType) {
+  console.log('📋 Updating template info UI')
+  
+  try {
+    // Call the existing display function
+    updateTemplateInfoDisplay(templateType)
+    
+    // Update character counters if they exist
+    updateCharacterCounters(content)
+    
+    // Update preview indicators
+    updatePreviewIndicators(content, templateType)
+    
+    // Update meta info display
+    updateMetaInfoDisplay(content, templateType)
+    
+  } catch (error) {
+    console.warn('Could not update template info:', error)
+    // Don't throw error, just log warning
+  }
+}
+
+/**
+ * Update character counters for current content
+ */
+function updateCharacterCounters(content) {
+  try {
+    const counters = [
+      { elementId: 'titleCounter', value: content.title || '', max: 100 },
+      { elementId: 'excerptCounter', value: content.excerpt || '', max: 280 },
+      { elementId: 'tagsCounter', value: content.hashtags?.join(' ') || '', max: 200 }
+    ]
+    
+    counters.forEach(({ elementId, value, max }) => {
+      const counter = document.getElementById(elementId)
+      if (counter) {
+        const length = value.length
+        const percentage = (length / max) * 100
+        
+        counter.textContent = `${length}/${max}`
+        counter.style.color = percentage > 90 ? '#e53e3e' : percentage > 70 ? '#ff9800' : '#4CAF50'
+      }
+    })
+  } catch (error) {
+    console.warn('Could not update character counters:', error)
+  }
+}
+
+/**
+ * Update preview indicators
+ */
+function updatePreviewIndicators(content, templateType) {
+  try {
+    // Update preview status
+    const previewStatus = document.getElementById('previewStatus')
+    if (previewStatus) {
+      previewStatus.innerHTML = `
+        <span class="status-indicator success">✅</span>
+        <span>Preview updated</span>
+      `
+    }
+    
+    // Update template badge
+    const templateBadge = document.getElementById('templateBadge')
+    if (templateBadge) {
+      templateBadge.textContent = templateType.toUpperCase()
+      templateBadge.className = `template-badge ${templateType}`
+    }
+    
+  } catch (error) {
+    console.warn('Could not update preview indicators:', error)
+  }
+}
+
+/**
+ * Update meta info display
+ */
+function updateMetaInfoDisplay(content, templateType) {
+  try {
+    // Update content stats
+    const contentStats = document.getElementById('contentStats')
+    if (contentStats) {
+      const stats = {
+        'Title length': content.title?.length || 0,
+        'Excerpt length': content.excerpt?.length || 0,
+        'Hashtags': content.hashtags?.length || 0,
+        'Has image': content.backgroundImage ? 'Yes' : 'No'
+      }
+      
+      contentStats.innerHTML = Object.entries(stats)
+        .map(([key, value]) => `<div class="stat-item"><span>${key}:</span> <strong>${value}</strong></div>`)
+        .join('')
+    }
+    
+  } catch (error) {
+    console.warn('Could not update meta info display:', error)
+  }
+}
+
+/**
  * ENHANCED: Render Instagram template with specific template type
  */
 function renderInstagramTemplateWithData(data, templateType = null) {
@@ -913,437 +1015,6 @@ function generateInstagramOptimizedContent(data, templateType) {
     category: data.category || 'GENERAL',
     template: templateType
   }
-}
-
-/**
- * NEW: Get current platform selection
- */
-function getCurrentPlatform() {
-  const activePlatform = document.querySelector('.platform-btn.active')
-  return activePlatform ? activePlatform.dataset.platform : 'instagram'
-}
-
-/**
- * NEW: Get current template selection  
- */
-function getCurrentTemplate() {
-  const activeTemplate = document.querySelector('.template-option.active')
-  return activeTemplate ? activeTemplate.dataset.template : 'story'
-}
-
-/**
- * NEW: Apply Instagram content to canvas
- */
-function applyInstagramContentToCanvas(content, templateType) {
-  console.log('📱 Applying Instagram content to canvas')
-  
-  const canvas = document.getElementById('canvas')
-  if (!canvas) return
-  
-  // Set canvas for Instagram dimensions
-  setCanvasForInstagram(canvas, templateType)
-  
-  // Generate the template HTML
-  const templateHTML = generateInstagramTemplateHTML(content, templateType)
-  
-  // Apply to canvas
-  canvas.innerHTML = templateHTML
-  
-  // Update UI info
-  updateTemplateInfo(content, templateType)
-}
-
-/**
- * NEW: Generate Instagram template HTML
- */
-function generateInstagramTemplateHTML(content, templateType) {
-  switch (templateType) {
-    case 'story':
-      return generateInstagramStoryHTML(content)
-    case 'post':
-      return generateInstagramPostHTML(content)
-    case 'reel-cover':
-      return generateInstagramReelHTML(content)
-    default:
-      return generateInstagramStoryHTML(content)
-  }
-}
-
-/**
- * NEW: Generate Instagram Story HTML
- */
-function generateInstagramStoryHTML(content) {
-  return `
-    <div class="instagram-story-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 30px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-    ">
-      <!-- Header -->
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #E4405F;
-            font-size: 18px;
-          ">RDV</div>
-          <span style="font-weight: 600; font-size: 16px;">${content.source}</span>
-        </div>
-        <div style="
-          background: #E4405F;
-          color: white;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
-        ">NOTICIA</div>
-      </div>
-
-      <!-- Content -->
-      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 20px;">
-        <!-- Category -->
-        <div style="
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 14px;
-          font-weight: 500;
-          text-transform: uppercase;
-          align-self: flex-start;
-        ">${content.category}</div>
-
-        <!-- Title -->
-        <h1 style="
-          font-size: 28px;
-          font-weight: 800;
-          line-height: 1.2;
-          margin: 0;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        ">${content.title}</h1>
-
-        <!-- Excerpt -->
-        <p style="
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0;
-          opacity: 0.9;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        ">${content.excerpt}</p>
-
-        <!-- Tags -->
-        ${content.hashtags && content.hashtags.length > 0 ? `
-          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            ${content.hashtags.slice(0, 5).map(tag => `
-              <span style="
-                background: rgba(255,255,255,0.15);
-                padding: 4px 12px;
-                border-radius: 12px;
-                font-size: 12px;
-                font-weight: 500;
-              ">${tag}</span>
-            `).join('')}
-          </div>
-        ` : ''}
-
-        <!-- Footer -->
-        <div style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-top: 16px;
-          border-top: 1px solid rgba(255,255,255,0.2);
-          font-size: 12px;
-          opacity: 0.8;
-        ">
-          <span>${content.author}</span>
-          <span>${content.date}</span>
-        </div>
-      </div>
-    </div>
-  `
-}
-
-/**
- * NEW: Generate Instagram Post HTML
- */
-function generateInstagramPostHTML(content) {
-  return `
-    <div class="instagram-post-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 60px 40px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      text-align: center;
-      aspect-ratio: 1/1;
-    ">
-      <!-- Logo Section -->
-      <div style="margin-bottom: 30px;">
-        <div style="
-          width: 80px;
-          height: 80px;
-          background: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: #E4405F;
-          font-size: 32px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-          margin: 0 auto 20px auto;
-        ">RDV</div>
-        <div style="
-          background: #E4405F;
-          color: white;
-          padding: 8px 20px;
-          border-radius: 25px;
-          font-size: 14px;
-          font-weight: 700;
-          text-transform: uppercase;
-          display: inline-block;
-        ">${content.category}</div>
-      </div>
-
-      <!-- Content -->
-      <div style="max-width: 90%;">
-        <!-- Title -->
-        <h1 style="
-          font-size: 32px;
-          font-weight: 800;
-          line-height: 1.2;
-          margin: 0 0 20px 0;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        ">${content.title}</h1>
-
-        <!-- Excerpt -->
-        <p style="
-          font-size: 18px;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0 0 30px 0;
-          opacity: 0.9;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        ">${content.excerpt}</p>
-
-        <!-- Source -->
-        <div style="
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 20px;
-          font-size: 16px;
-          font-weight: 500;
-          opacity: 0.8;
-        ">
-          <span>${content.source}</span>
-          <span>•</span>
-          <span>${content.date}</span>
-        </div>
-      </div>
-
-      <!-- Bottom CTA -->
-      <div style="
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(10px);
-        padding: 12px 24px;
-        border-radius: 25px;
-        font-size: 14px;
-        font-weight: 600;
-      ">
-        👆 Toca para leer más
-      </div>
-    </div>
-  `
-}
-
-/**
- * NEW: Generate Instagram Reel Cover HTML
- */
-function generateInstagramReelHTML(content) {
-  return `
-    <div class="instagram-reel-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(45deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 30px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      text-align: center;
-      aspect-ratio: 9/16;
-    ">
-      <!-- Play Button Overlay -->
-      <div style="
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 80px;
-        height: 80px;
-        background: rgba(255,255,255,0.9);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        color: #E4405F;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        z-index: 3;
-      ">▶️</div>
-
-      <!-- Header -->
-      <div style="
-        position: absolute;
-        top: 40px;
-        left: 30px;
-        right: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        z-index: 2;
-      ">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #E4405F;
-            font-size: 18px;
-          ">RDV</div>
-          <span style="font-weight: 600; font-size: 16px;">${content.source}</span>
-        </div>
-        <div style="
-          background: #E4405F;
-          color: white;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
-        ">REEL</div>
-      </div>
-
-      <!-- Content at bottom -->
-      <div style="
-        position: absolute;
-        bottom: 40px;
-        left: 30px;
-        right: 30px;
-        z-index: 2;
-      ">
-        <!-- Category Badge -->
-        <div style="
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 14px;
-          font-weight: 500;
-          text-transform: uppercase;
-          display: inline-block;
-          margin-bottom: 16px;
-        ">${content.category}</div>
-
-        <!-- Title -->
-        <h1 style="
-          font-size: 24px;
-          font-weight: 800;
-          line-height: 1.2;
-          margin: 0 0 12px 0;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        ">${content.title}</h1>
-
-        <!-- Small excerpt -->
-        <p style="
-          font-size: 14px;
-          font-weight: 400;
-          line-height: 1.3;
-          margin: 0;
-          opacity: 0.9;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-          max-height: 3em;
-          overflow: hidden;
-        ">${content.excerpt}</p>
-      </div>
-
-      <!-- Watch indicator -->
-      <div style="
-        position: absolute;
-        bottom: 120px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.6);
-        backdrop-filter: blur(10px);
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 600;
-        z-index: 2;
-      ">
-        🎬 Toca para ver el Reel
-      </div>
-    </div>
-  `
-}
-
-/**
- * ENHANCED: Set canvas dimensions for Instagram with better aspect ratios
- */
-function setCanvasForInstagram(canvas, templateType) {
-  const dimensions = {
-    'story': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' },
-    'post': { width: 1080, height: 1080, ratio: '1/1', maxWidth: '450px' },
-    'reel-cover': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' }
-  }
-  
-  const dim = dimensions[templateType] || dimensions.story
-  
-  canvas.style.aspectRatio = dim.ratio
-  canvas.style.maxWidth = dim.maxWidth
-  canvas.style.width = '100%'
-  canvas.style.borderRadius = '12px'
-  canvas.style.overflow = 'hidden'
-  canvas.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)'
-  canvas.style.transition = 'all 0.3s ease'
-  
-  console.log(`📐 Canvas set for Instagram ${templateType}: ${dim.ratio}`)
 }
 
 /**
@@ -1439,19 +1110,133 @@ function generateFacebookOptimizedContent(data, templateType) {
 }
 
 /**
- * NEW: Apply Facebook content to canvas
+ * NEW: Select Twitter template and render content
  */
-function applyFacebookContentToCanvas(content, templateType) {
-  console.log('👥 Applying Facebook content to canvas')
+function selectTwitterTemplate(templateType) {
+  console.log('🎨 Selecting Twitter template:', templateType)
+  
+  // Update active template button
+  const templateButtons = document.querySelectorAll('.template-btn')
+  templateButtons.forEach(btn => btn.classList.remove('active'))
+  
+  const selectedButton = document.querySelector(`[data-template="${templateType}"][data-platform="twitter"]`)
+  if (selectedButton) {
+    selectedButton.classList.add('active')
+  }
+  
+  // Update global state
+  if (window.RDVImageGenerator) {
+    window.RDVImageGenerator.currentTemplate = templateType
+    window.RDVImageGenerator.currentPlatform = 'twitter'
+  }
+  
+  // Update UI info
+  updateTwitterTemplateInfoDisplay(templateType)
+  
+  // Get current form data and render template
+  const formData = getCurrentFormData()
+  renderTwitterTemplateWithData(formData, templateType)
+  
+  showToast(`Template cambiado a Twitter ${templateType}`, 'success')
+}
+
+/**
+ * NEW: Update Twitter template info display
+ */
+function updateTwitterTemplateInfoDisplay(templateType) {
+  const platformName = document.getElementById('currentPlatform')
+  const templateName = document.getElementById('currentTemplate')
+  const dimensions = document.getElementById('currentDimensions')
+  
+  const configs = {
+    'post': { name: 'Twitter Post', dims: '1200 × 675' },
+    'header': { name: 'Twitter Header', dims: '1500 × 500' },
+    'card': { name: 'Twitter Card', dims: '1200 × 628' }
+  }
+  
+  const config = configs[templateType] || configs.post
+  
+  if (platformName) platformName.textContent = 'Twitter'
+  if (templateName) templateName.textContent = config.name
+  if (dimensions) dimensions.textContent = config.dims
+}
+
+/**
+ * NEW: Render Twitter template with specific template type
+ */
+function renderTwitterTemplateWithData(data, templateType = null) {
+  console.log('🎨 Rendering Twitter template with data:', data)
+  
+  const currentTemplate = templateType || getCurrentTemplate()
+  
+  console.log('Current Twitter template:', currentTemplate)
+  
+  // Generate Twitter-optimized content
+  const twitterContent = generateTwitterOptimizedContent(data, currentTemplate)
+  
+  // Apply the content to the canvas
+  applyTwitterContentToCanvas(twitterContent, currentTemplate)
+}
+
+/**
+ * NEW: Generate Twitter-optimized content
+ */
+function generateTwitterOptimizedContent(data, templateType) {
+  // Use the existing Twitter template functions if available
+  if (typeof window.TwitterTemplates?.generateContent === 'function') {
+    return window.TwitterTemplates.generateContent(data, templateType)
+  }
+  
+  // Fallback content generation with Twitter optimizations
+  return {
+    title: data.title || 'Título de la noticia',
+    excerpt: data.excerpt || 'Descripción de la noticia',
+    hashtags: data.tags ? data.tags.split(',').map(tag => `#${tag.trim()}`).slice(0, 5) : ['#RDVNoticias'],
+    author: data.author || 'Redacción RDV',
+    source: data.source || '@RadioDelVolga',
+    date: new Date().toLocaleDateString('es-AR'),
+    backgroundImage: data.backgroundImage || '',
+    category: data.category || 'GENERAL',
+    template: templateType,
+    tweetText: generateSimpleTweetText(data)
+  }
+}
+
+/**
+ * NEW: Generate simple tweet text for preview
+ */
+function generateSimpleTweetText(data) {
+  let tweetText = data.title || 'Noticia desde RDV'
+  
+  // Add hashtags
+  const hashtags = data.tags ? 
+    data.tags.split(',').map(tag => `#${tag.trim()}`).slice(0, 3).join(' ') : 
+    '#RDVNoticias'
+  
+  // Keep within Twitter's 280 character limit
+  const maxLength = 280 - hashtags.length - 25 // Reserve space for link and hashtags
+  
+  if (tweetText.length > maxLength) {
+    tweetText = tweetText.substring(0, maxLength - 3) + '...'
+  }
+  
+  return `${tweetText}\n\n📰 Leer más: [LINK]\n\n${hashtags}`
+}
+
+/**
+ * NEW: Apply Twitter content to canvas
+ */
+function applyTwitterContentToCanvas(content, templateType) {
+  console.log('🐦 Applying Twitter content to canvas')
   
   const canvas = document.getElementById('canvas')
   if (!canvas) return
   
-  // Set canvas for Facebook dimensions
-  setCanvasForFacebook(canvas, templateType)
+  // Set canvas for Twitter dimensions
+  setCanvasForTwitter(canvas, templateType)
   
   // Generate the template HTML
-  const templateHTML = generateFacebookTemplateHTML(content, templateType)
+  const templateHTML = generateTwitterTemplateHTML(content, templateType)
   
   // Apply to canvas
   canvas.innerHTML = templateHTML
@@ -1461,13 +1246,13 @@ function applyFacebookContentToCanvas(content, templateType) {
 }
 
 /**
- * NEW: Set canvas dimensions for Facebook
+ * NEW: Set canvas dimensions for Twitter
  */
-function setCanvasForFacebook(canvas, templateType) {
+function setCanvasForTwitter(canvas, templateType) {
   const dimensions = {
-    'post': { width: 1200, height: 630, ratio: '1.91/1', maxWidth: '500px' },
-    'story': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' },
-    'cover': { width: 1640, height: 859, ratio: '1.91/1', maxWidth: '600px' }
+    'post': { width: 1200, height: 675, ratio: '16/9', maxWidth: '500px' },
+    'header': { width: 1500, height: 500, ratio: '3/1', maxWidth: '600px' },
+    'card': { width: 1200, height: 628, ratio: '1.91/1', maxWidth: '500px' }
   }
   
   const dim = dimensions[templateType] || dimensions.post
@@ -1480,425 +1265,453 @@ function setCanvasForFacebook(canvas, templateType) {
   canvas.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)'
   canvas.style.transition = 'all 0.3s ease'
   
-  console.log(`📐 Canvas set for Facebook ${templateType}: ${dim.ratio}`)
+  console.log(`📐 Canvas set for Twitter ${templateType}: ${dim.ratio}`)
 }
 
 /**
- * NEW: Generate Facebook template HTML
+ * NEW: Generate Twitter template HTML
  */
-function generateFacebookTemplateHTML(content, templateType) {
+function generateTwitterTemplateHTML(content, templateType) {
   switch (templateType) {
     case 'post':
-      return generateFacebookPostHTML(content)
-    case 'story':
-      return generateFacebookStoryHTML(content)
-    case 'cover':
-      return generateFacebookCoverHTML(content)
+      return generateTwitterPostHTML(content)
+    case 'header':
+      return generateTwitterHeaderHTML(content)
+    case 'card':
+      return generateTwitterCardHTML(content)
     default:
-      return generateFacebookPostHTML(content)
+      return generateTwitterPostHTML(content)
   }
 }
 
 /**
- * NEW: Generate Facebook Post HTML
+ * NEW: Generate Twitter Post HTML
  */
-function generateFacebookPostHTML(content) {
+function generateTwitterPostHTML(content) {
   return `
-    <div class="facebook-post-template" style="
+    <div class="twitter-post-template" style="
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(24,119,242,0.1) 0%, rgba(24,119,242,0.3) 100%);
+      background: linear-gradient(135deg, rgba(29,161,242,0.1) 0%, rgba(29,161,242,0.3) 100%);
       display: flex;
       align-items: center;
       padding: 40px;
-      color: #1C1E21;
+      color: #14171A;
       font-family: 'Inter', sans-serif;
-      aspect-ratio: 1.91/1;
+      aspect-ratio: 16/9;
+      border: 1px solid #E1E8ED;
+      border-radius: 16px;
+      overflow: hidden;
     ">
       <!-- Left Content -->
       <div style="flex: 1; padding-right: 40px;">
-        <!-- Logo Section -->
-        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+        <!-- Header with Profile -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
           <div style="
-            width: 60px;
-            height: 60px;
-            background: #1877F2;
+            width: 48px;
+            height: 48px;
+            background: #1DA1F2;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             color: white;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(24,119,242,0.3);
+            font-size: 20px;
           ">RDV</div>
           <div>
-            <div style="font-weight: 700; font-size: 16px; color: #1877F2;">${content.source}</div>
-            <div style="font-size: 12px; color: #65676B;">${content.date}</div>
+            <div style="font-weight: 700; font-size: 15px; color: #14171A;">Radio del Volga</div>
+            <div style="font-size: 13px; color: #657786;">${content.source} • ${content.date}</div>
+          </div>
+          <div style="
+            margin-left: auto;
+            color: #1DA1F2;
+            font-size: 24px;
+          ">🐦</div>
+        </div>
+
+        <!-- Tweet Content -->
+        <div style="margin-bottom: 16px;">
+          <!-- Title as main tweet -->
+          <div style="
+            font-size: 20px;
+            font-weight: 400;
+            line-height: 1.3;
+            margin-bottom: 12px;
+            color: #14171A;
+          ">${content.title}</div>
+          
+          <!-- Excerpt -->
+          <div style="
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.4;
+            color: #14171A;
+            margin-bottom: 12px;
+          ">${content.excerpt.length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</div>
+          
+          <!-- Hashtags -->
+          <div style="
+            font-size: 15px;
+            color: #1DA1F2;
+            line-height: 1.4;
+          ">${content.hashtags.slice(0, 4).join(' ')}</div>
+        </div>
+
+        <!-- Link Preview Card -->
+        <div style="
+          border: 1px solid #E1E8ED;
+          border-radius: 14px;
+          overflow: hidden;
+          background: white;
+          margin-bottom: 16px;
+        ">
+          <div style="
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+          ">📰</div>
+          <div style="padding: 12px;">
+            <div style="font-size: 13px; color: #657786; margin-bottom: 4px;">radiodelvolga.com</div>
+            <div style="font-size: 14px; font-weight: 400; color: #14171A; line-height: 1.3;">
+              ${content.title.length > 60 ? content.title.substring(0, 60) + '...' : content.title}
+            </div>
           </div>
         </div>
 
-        <!-- Category Badge -->
-        <div style="
-          background: #1877F2;
-          color: white;
-          padding: 6px 16px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
-          display: inline-block;
-          margin-bottom: 16px;
-        ">${content.category}</div>
-
-        <!-- Title -->
-        <h1 style="
-          font-size: 24px;
-          font-weight: 700;
-          line-height: 1.3;
-          margin: 0 0 16px 0;
-          color: #1C1E21;
-        ">${content.title}</h1>
-
-        <!-- Excerpt -->
-        <p style="
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 1.5;
-          margin: 0 0 20px 0;
-          color: #65676B;
-        ">${content.excerpt}</p>
-
-        <!-- Engagement -->
+        <!-- Engagement Stats -->
         <div style="
           display: flex;
           gap: 20px;
           align-items: center;
-          font-size: 14px;
-          color: #65676B;
-          font-weight: 500;
+          font-size: 13px;
+          color: #657786;
         ">
           <span style="display: flex; align-items: center; gap: 6px;">
-            👍 Me gusta
+            💬 24
           </span>
           <span style="display: flex; align-items: center; gap: 6px;">
-            💬 Comentar
+            🔄 12
           </span>
           <span style="display: flex; align-items: center; gap: 6px;">
-            🔄 Compartir
+            ❤️ 89
+          </span>
+          <span style="display: flex; align-items: center; gap: 6px;">
+            📊 1.2K
           </span>
         </div>
       </div>
 
-      <!-- Right Image Placeholder -->
+      <!-- Right QR Code / Branding -->
       <div style="
-        width: 200px;
-        height: 200px;
-        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #E1F5FE 0%, #B3E5FC 100%);
         border-radius: 12px;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 48px;
+        font-size: 12px;
+        color: #0277BD;
+        text-align: center;
+        position: relative;
         flex-shrink: 0;
       ">
-        📰
+        <div style="font-size: 40px; margin-bottom: 8px;">📱</div>
+        <div style="font-weight: 600;">Síguenos en</div>
+        <div style="font-weight: 700;">Twitter</div>
       </div>
     </div>
   `
 }
 
 /**
- * NEW: Generate Facebook Story HTML
+ * NEW: Generate Twitter Header HTML
  */
-function generateFacebookStoryHTML(content) {
+function generateTwitterHeaderHTML(content) {
   return `
-    <div class="facebook-story-template" style="
+    <div class="twitter-header-template" style="
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(180deg, rgba(24,119,242,0.2) 0%, rgba(24,119,242,0.8) 100%);
+      background: linear-gradient(135deg, #1DA1F2 0%, #0084B4 100%);
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 30px;
+      align-items: center;
+      justify-content: center;
       color: white;
       font-family: 'Inter', sans-serif;
-      aspect-ratio: 9/16;
+      text-align: center;
+      aspect-ratio: 3/1;
+      overflow: hidden;
     ">
-      <!-- Header -->
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 12px;">
+      <!-- Background Pattern -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.1;
+        background-image: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 20px,
+          rgba(255,255,255,0.1) 20px,
+          rgba(255,255,255,0.1) 40px
+        );
+      "></div>
+
+      <!-- Main Content -->
+      <div style="position: relative; z-index: 2; max-width: 80%;">
+        <!-- Logo Section -->
+        <div style="margin-bottom: 20px;">
           <div style="
-            width: 40px;
-            height: 40px;
+            width: 80px;
+            height: 80px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            color: #1877F2;
-            font-size: 18px;
+            color: #1DA1F2;
+            font-size: 32px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            margin: 0 auto 20px auto;
           ">RDV</div>
-          <span style="font-weight: 600; font-size: 16px;">${content.source}</span>
         </div>
-        <div style="
-          background: #1877F2;
-          color: white;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
-        ">NOTICIA</div>
-      </div>
-
-      <!-- Content -->
-      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 20px;">
-        <!-- Category -->
-        <div style="
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          padding: 8px 16px;
-          border-radius: 20px;
-          font-size: 14px;
-          font-weight: 500;
-          text-transform: uppercase;
-          align-self: flex-start;
-        ">${content.category}</div>
-
-        <!-- Title -->
-        <h1 style="
-          font-size: 28px;
-          font-weight: 800;
-          line-height: 1.2;
-          margin: 0;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        ">${content.title}</h1>
-
-        <!-- Excerpt -->
-        <p style="
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0;
-          opacity: 0.9;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        ">${content.excerpt}</p>
-
-        <!-- CTA -->
-        <div style="
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          padding: 12px 24px;
-          border-radius: 25px;
-          font-size: 14px;
-          font-weight: 600;
-          text-align: center;
-          margin-top: 16px;
-        ">
-          👆 Desliza hacia arriba para leer más
-        </div>
-
-        <!-- Footer -->
-        <div style="
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding-top: 16px;
-          border-top: 1px solid rgba(255,255,255,0.2);
-          font-size: 12px;
-          opacity: 0.8;
-        ">
-          <span>${content.author}</span>
-          <span>${content.date}</span>
-        </div>
-      </div>
-    </div>
-  `
-}
-
-/**
- * NEW: Generate Facebook Cover HTML
- */
-function generateFacebookCoverHTML(content) {
-  return `
-    <div class="facebook-cover-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #1877F2 0%, #42A5F5 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      color: white;
-      font-family: 'Inter', sans-serif;
-      text-align: center;
-      aspect-ratio: 1.91/1;
-    ">
-      <!-- Brand Section -->
-      <div style="max-width: 80%;">
-        <!-- Logo -->
-        <div style="
-          width: 120px;
-          height: 120px;
-          background: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: #1877F2;
-          font-size: 48px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-          margin: 0 auto 30px auto;
-        ">RDV</div>
 
         <!-- Main Title -->
         <h1 style="
           font-size: 36px;
           font-weight: 800;
           line-height: 1.2;
-          margin: 0 0 20px 0;
+          margin: 0 0 16px 0;
           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         ">Radio del Volga</h1>
 
         <!-- Subtitle -->
         <p style="
-          font-size: 20px;
+          font-size: 18px;
           font-weight: 400;
           line-height: 1.4;
-          margin: 0 0 30px 0;
+          margin: 0 0 20px 0;
           opacity: 0.9;
           text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        ">Tu fuente confiable de noticias e información</p>
+        ">🐦 Síguenos para las últimas noticias y actualidad</p>
 
         <!-- Features -->
         <div style="
           display: flex;
           justify-content: center;
-          gap: 40px;
-          font-size: 16px;
-          font-weight: 500;
+          gap: 30px;
+          font-size: 14px;
+          font-weight: 600;
           opacity: 0.9;
         ">
-          <span>📻 Radio</span>
+          <span>📻 Radio en vivo</span>
           <span>📰 Noticias</span>
-          <span>🌐 Actualidad</span>
           <span>🎙️ Programas</span>
+          <span>🌐 Actualidad</span>
         </div>
 
-        <!-- Contact Info -->
+        <!-- Social Links -->
         <div style="
           position: absolute;
-          bottom: 30px;
+          bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          font-size: 14px;
+          font-size: 12px;
           opacity: 0.8;
           display: flex;
           gap: 20px;
         ">
-          <span>📍 Argentina</span>
-          <span>🌐 radiodelvolga.com</span>
           <span>📧 info@radiodelvolga.com</span>
+          <span>🌐 radiodelvolga.com</span>
+          <span>📱 @RadioDelVolga</span>
         </div>
       </div>
+
+      <!-- Twitter Bird Pattern -->
+      <div style="
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 60px;
+        opacity: 0.15;
+        color: white;
+      ">🐦</div>
+      
+      <div style="
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        font-size: 40px;
+        opacity: 0.15;
+        color: white;
+      ">🐦</div>
     </div>
   `
 }
 
 /**
- * NEW: Handle platform switching
+ * NEW: Generate Twitter Card HTML
  */
-function switchPlatform(platform) {
-  console.log('🔄 Switching to platform:', platform)
-  
-  // Update active platform button
-  const platformButtons = document.querySelectorAll('.platform-btn')
-  platformButtons.forEach(btn => btn.classList.remove('active'))
-  
-  const selectedPlatform = document.querySelector(`[data-platform="${platform}"]`)
-  if (selectedPlatform) {
-    selectedPlatform.classList.add('active')
-  }
-  
-  // Show/hide template sections
-  const templateSections = {
-    'instagram': document.getElementById('instagramTemplates'),
-    'facebook': document.getElementById('facebookTemplates')
-  }
-  
-  // Hide all template sections
-  Object.values(templateSections).forEach(section => {
-    if (section) section.style.display = 'none'
-  })
-  
-  // Show selected platform templates
-  if (templateSections[platform]) {
-    templateSections[platform].style.display = 'block'
-    
-    // Select first template of the platform
-    const firstTemplate = templateSections[platform].querySelector('.template-btn')
-    if (firstTemplate) {
-      const templateType = firstTemplate.dataset.template
-      
-      if (platform === 'instagram') {
-        selectInstagramTemplate(templateType)
-      } else if (platform === 'facebook') {
-        selectFacebookTemplate(templateType)
-      }
-    }
-  }
-  
-  // Update global state
-  if (window.RDVImageGenerator) {
-    window.RDVImageGenerator.currentPlatform = platform
-  }
-  
-  showToast(`Plataforma cambiada a ${platform}`, 'success')
+function generateTwitterCardHTML(content) {
+  return `
+    <div class="twitter-card-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      border: 1px solid #E1E8ED;
+      border-radius: 14px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      aspect-ratio: 1.91/1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    ">
+      <!-- Left Content -->
+      <div style="flex: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center;">
+        <!-- Category Badge -->
+        <div style="
+          background: #1DA1F2;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 12px;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          display: inline-block;
+          margin-bottom: 16px;
+          align-self: flex-start;
+        ">${content.category}</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 20px;
+          font-weight: 700;
+          line-height: 1.3;
+          margin: 0 0 12px 0;
+          color: #14171A;
+        ">${content.title}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 16px 0;
+          color: #657786;
+        ">${content.excerpt.length > 120 ? content.excerpt.substring(0, 120) + '...' : content.excerpt}</p>
+
+        <!-- Card Footer -->
+        <div style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-top: auto;
+        ">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="
+              width: 24px;
+              height: 24px;
+              background: #1DA1F2;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+              color: white;
+              font-size: 12px;
+            ">RDV</div>
+            <div>
+              <div style="font-size: 12px; font-weight: 600; color: #14171A;">Radio del Volga</div>
+              <div style="font-size: 11px; color: #657786;">radiodelvolga.com</div>
+            </div>
+          </div>
+          
+          <div style="
+            background: #F7F9FA;
+            color: #657786;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 500;
+          ">${content.date}</div>
+        </div>
+      </div>
+
+      <!-- Right Image Area -->
+      <div style="
+        width: 200px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+        position: relative;
+        flex-shrink: 0;
+      ">
+        <!-- Image Placeholder -->
+        <div style="font-size: 48px; margin-bottom: 12px;">📰</div>
+        <div style="font-size: 12px; font-weight: 600; opacity: 0.9;">Imagen de</div>
+        <div style="font-size: 12px; font-weight: 600; opacity: 0.9;">la noticia</div>
+        
+        <!-- Twitter Card indicator -->
+        <div style="
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          background: rgba(255,255,255,0.2);
+          border-radius: 6px;
+          padding: 4px 8px;
+          font-size: 10px;
+          font-weight: 600;
+        ">
+          🐦 CARD
+        </div>
+      </div>
+
+      <!-- Link Preview Indicator -->
+      <div style="
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #1DA1F2 0%, #0084B4 100%);
+      "></div>
+    </div>
+  `
 }
 
-// Add click handlers to platform buttons
-document.addEventListener('DOMContentLoaded', function() {
-  const platformButtons = document.querySelectorAll('.platform-btn')
-  platformButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const platform = this.dataset.platform
-      if (platform === 'instagram' || platform === 'facebook') {
-        switchPlatform(platform)
-      } else {
-        showToast(`Plataforma ${platform} próximamente`, 'info')
-      }
-    })
-  })
-})
+// Update the switchPlatform function to include Twitter
+// Add this to the existing switchPlatform function:
+const templateSections = {
+  'instagram': document.getElementById('instagramTemplates'),
+  'facebook': document.getElementById('facebookTemplates'),
+  'twitter': document.getElementById('twitterTemplates')
+}
 
-// Make functions globally available
-window.renderInstagramTemplateWithData = renderInstagramTemplateWithData
-window.getCurrentPlatform = getCurrentPlatform  
-window.getCurrentTemplate = getCurrentTemplate
-window.applyInstagramContentToCanvas = applyInstagramContentToCanvas
-window.setCanvasForInstagram = setCanvasForInstagram
-window.generateInstagramTemplateHTML = generateInstagramTemplateHTML
-window.generateInstagramStoryHTML = generateInstagramStoryHTML
-window.selectInstagramTemplate = selectInstagramTemplate
-window.getCurrentFormData = getCurrentFormData
-window.updateTemplateInfoDisplay = updateTemplateInfoDisplay
-window.generateInstagramOptimizedContent = generateInstagramOptimizedContent
-window.generateInstagramPostHTML = generateInstagramPostHTML
-window.generateInstagramReelHTML = generateInstagramReelHTML
-window.selectFacebookTemplate = selectFacebookTemplate
-window.updateFacebookTemplateInfoDisplay = updateFacebookTemplateInfoDisplay
-window.renderFacebookTemplateWithData = renderFacebookTemplateWithData
-window.generateFacebookOptimizedContent = generateFacebookOptimizedContent
-window.applyFacebookContentToCanvas = applyFacebookContentToCanvas
-window.setCanvasForFacebook = setCanvasForFacebook
-window.generateFacebookTemplateHTML = generateFacebookTemplateHTML
-window.generateFacebookPostHTML = generateFacebookPostHTML
-window.generateFacebookStoryHTML = generateFacebookStoryHTML
-window.generateFacebookCoverHTML = generateFacebookCoverHTML
-window.switchPlatform = switchPlatform
+// Add to window exports
+window.selectTwitterTemplate = selectTwitterTemplate
+window.updateTwitterTemplateInfoDisplay = updateTwitterTemplateInfoDisplay
+window.renderTwitterTemplateWithData = renderTwitterTemplateWithData
+window.generateTwitterOptimizedContent = generateTwitterOptimizedContent
+window.generateSimpleTweetText = generateSimpleTweetText
+window.applyTwitterContentToCanvas = applyTwitterContentToCanvas
+window.setCanvasForTwitter = setCanvasForTwitter
+window.generateTwitterTemplateHTML = generateTwitterTemplateHTML
+window.generateTwitterPostHTML = generateTwitterPostHTML
+window.generateTwitterHeaderHTML = generateTwitterHeaderHTML
+window.generateTwitterCardHTML = generateTwitterCardHTML
