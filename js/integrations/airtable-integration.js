@@ -12,8 +12,13 @@ const AIRTABLE_CONFIG = {
   TIMEOUT: 30000,
 }
 
-// CORS Proxy for external images
-const CORS_PROXY = 'https://api.allorigins.win/raw?url='
+// Multiple CORS Proxies for fallback
+const CORS_PROXIES = [
+  'https://api.allorigins.win/raw?url=',
+  'https://proxy.cors.sh/',
+  'https://corsproxy.io/?',
+  'https://crossorigin.me/',
+]
 
 // Field mapping for your Airtable structure
 const FIELD_MAP = {
@@ -312,19 +317,20 @@ function needsCorsProxy(url) {
 }
 
 /**
- * Get proxied URL for CORS issues
+ * Get proxied URL for CORS issues (with multiple fallbacks)
  */
-function getProxiedUrl(originalUrl) {
+function getProxiedUrl(originalUrl, proxyIndex = 0) {
   if (!needsCorsProxy(originalUrl)) {
     return originalUrl
   }
 
-  console.log('Using CORS proxy for:', originalUrl)
-  return `${CORS_PROXY}${encodeURIComponent(originalUrl)}`
+  const proxy = CORS_PROXIES[proxyIndex] || CORS_PROXIES[0]
+  console.log(`Using CORS proxy ${proxyIndex + 1} for:`, originalUrl)
+  return `${proxy}${encodeURIComponent(originalUrl)}`
 }
 
 /**
- * Load background image into canvas with CORS handling
+ * Load background image into canvas with enhanced CORS handling and force display
  */
 function loadBackgroundImage(imageUrl) {
   try {
@@ -340,29 +346,80 @@ function loadBackgroundImage(imageUrl) {
     // Try multiple methods to load the image
     loadImageWithFallback(imageUrl)
       .then((finalUrl) => {
-        // Apply image as background
+        console.log('Applying background image to canvas:', finalUrl)
+        
+        // Ensure canvas has proper dimensions and styles
+        if (!canvas.style.width || canvas.style.width === '0px') {
+          canvas.style.width = '100%'
+          canvas.style.minWidth = '400px'
+        }
+        if (!canvas.style.height || canvas.style.height === '0px') {
+          canvas.style.height = '100%'
+          canvas.style.minHeight = '600px'
+        }
+        
+        // Remove any existing placeholder content
+        const placeholderContent = canvas.querySelector('.placeholder-content')
+        if (placeholderContent) {
+          placeholderContent.style.display = 'none'
+        }
+        
+        // Remove any existing placeholder text
+        const existing = canvas.querySelector('.placeholder-text')
+        if (existing) existing.remove()
+        
+        // Apply image as background with all necessary properties
         canvas.style.backgroundImage = `url("${finalUrl}")`
         canvas.style.backgroundSize = 'cover'
         canvas.style.backgroundPosition = 'center'
         canvas.style.backgroundRepeat = 'no-repeat'
+        canvas.style.backgroundColor = 'transparent'
+        canvas.style.display = 'block'
+        canvas.style.position = 'relative'
+        
+        // Force browser reflow and repaint
+        canvas.offsetHeight
+        canvas.style.transform = 'translateZ(0)'
+        setTimeout(() => {
+          canvas.style.transform = ''
+        }, 10)
+        
+        // Add a visible indicator that image is loaded
+        canvas.classList.add('image-loaded')
+        canvas.setAttribute('data-bg-loaded', 'true')
+        
+        console.log('Canvas background styles applied:', {
+          backgroundImage: canvas.style.backgroundImage,
+          backgroundSize: canvas.style.backgroundSize,
+          backgroundPosition: canvas.style.backgroundPosition,
+          width: canvas.style.width,
+          height: canvas.style.height,
+          display: canvas.style.display
+        })
 
         console.log('Background image loaded successfully:', finalUrl)
         showToast('✅ Imagen de fondo cargada', 'success')
 
-        // Trigger preview update
+        // Trigger preview update with delay
         if (typeof updatePreview === 'function') {
-          setTimeout(updatePreview, 100)
+          setTimeout(updatePreview, 200)
         }
+        
+        // Debug canvas visibility
+        debugCanvasVisibility()
       })
       .catch((error) => {
         console.error('Failed to load background image:', error)
         showToast('⚠️ Error cargando imagen, usando placeholder', 'warning')
 
-        // Use a placeholder gradient
-        canvas.style.backgroundImage =
-          'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        // Use a more attractive placeholder with the article title
+        const title = document.getElementById('title')?.value || 'RDV Noticias'
+        canvas.style.backgroundImage = `linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
         canvas.style.backgroundSize = 'cover'
         canvas.style.backgroundPosition = 'center'
+
+        // Add text overlay for placeholder
+        addPlaceholderText(canvas, title)
       })
   } catch (error) {
     console.error('Error in loadBackgroundImage:', error)
@@ -371,28 +428,93 @@ function loadBackgroundImage(imageUrl) {
 }
 
 /**
- * Load image with multiple fallback methods
+ * Debug canvas visibility and styles
+ */
+function debugCanvasVisibility() {
+  const canvas = document.getElementById('canvas')
+  if (canvas) {
+    const computedStyles = window.getComputedStyle(canvas)
+    console.log('Canvas visibility debug:', {
+      display: computedStyles.display,
+      visibility: computedStyles.visibility,
+      opacity: computedStyles.opacity,
+      width: computedStyles.width,
+      height: computedStyles.height,
+      backgroundImage: computedStyles.backgroundImage,
+      position: computedStyles.position,
+      zIndex: computedStyles.zIndex,
+      overflow: computedStyles.overflow
+    })
+    
+    // Check if canvas is actually visible in viewport
+    const rect = canvas.getBoundingClientRect()
+    console.log('Canvas position:', {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+      visible: rect.width > 0 && rect.height > 0
+    })
+  }
+}
+
+/**
+ * Add text overlay for placeholder background
+ */
+function addPlaceholderText(canvas, title) {
+  const overlay = document.createElement('div')
+  overlay.style.cssText = `
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+      z-index: 1;
+      pointer-events: none;
+    `
+  overlay.textContent = title
+
+  // Remove existing placeholder text
+  const existing = canvas.querySelector('.placeholder-text')
+  if (existing) existing.remove()
+
+  overlay.className = 'placeholder-text'
+  canvas.style.position = 'relative'
+  canvas.appendChild(overlay)
+}
+
+/**
+ * Enhanced image loading with multiple fallback methods
  */
 async function loadImageWithFallback(originalUrl) {
   const methods = [
     // Method 1: Try original URL first
     () => testImageLoad(originalUrl),
-    // Method 2: Try with CORS proxy
-    () => testImageLoad(getProxiedUrl(originalUrl)),
-    // Method 3: Try converting to blob and creating object URL
-    () => fetchImageAsBlob(originalUrl),
-    // Method 4: Try alternative CORS proxy
-    () => testImageLoad(`https://cors-anywhere.herokuapp.com/${originalUrl}`),
+    // Method 2-5: Try different CORS proxies
+    ...CORS_PROXIES.map(
+      (proxy, index) => () => testImageLoad(getProxiedUrl(originalUrl, index))
+    ),
+    // Method 6: Try converting to blob with first proxy
+    () => fetchImageAsBlob(originalUrl, 0),
+    // Method 7: Try converting to blob with second proxy
+    () => fetchImageAsBlob(originalUrl, 1),
+    // Method 8: Create a server-side proxy (if available)
+    () =>
+      testImageLoad(`/api/proxy-image?url=${encodeURIComponent(originalUrl)}`),
   ]
 
   for (let i = 0; i < methods.length; i++) {
     try {
-      console.log(`Trying image load method ${i + 1}...`)
+      console.log(`Trying image load method ${i + 1}/${methods.length}...`)
       const result = await methods[i]()
-      console.log(`Method ${i + 1} successful`)
+      console.log(`✅ Method ${i + 1} successful`)
       return result
     } catch (error) {
-      console.log(`Method ${i + 1} failed:`, error.message)
+      console.log(`❌ Method ${i + 1} failed:`, error.message)
       if (i === methods.length - 1) {
         throw new Error('All image loading methods failed')
       }
@@ -419,18 +541,19 @@ function testImageLoad(url) {
     // Set timeout
     setTimeout(() => {
       reject(new Error(`Timeout loading image: ${url}`))
-    }, 10000)
+    }, 8000) // Reduced timeout
 
     img.src = url
   })
 }
 
 /**
- * Fetch image as blob and create object URL
+ * Fetch image as blob and create object URL (with proxy selection)
  */
-async function fetchImageAsBlob(url) {
+async function fetchImageAsBlob(url, proxyIndex = 0) {
   try {
-    const response = await fetch(getProxiedUrl(url))
+    const proxiedUrl = getProxiedUrl(url, proxyIndex)
+    const response = await fetch(proxiedUrl)
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`)
     }
@@ -478,7 +601,7 @@ async function generateCurrentImage() {
         scale: 2,
         useCORS: true,
         allowTaint: true,
-        proxy: CORS_PROXY,
+        logging: false,
       })
 
       return new Promise((resolve) => {
@@ -608,6 +731,8 @@ window.loadBackgroundImage = loadBackgroundImage
 window.getProxiedUrl = getProxiedUrl
 window.needsCorsProxy = needsCorsProxy
 window.loadImageWithFallback = loadImageWithFallback
+window.addPlaceholderText = addPlaceholderText
+window.debugCanvasVisibility = debugCanvasVisibility
 
 console.log('🚀 Airtable Integration loaded with predefined config')
 
