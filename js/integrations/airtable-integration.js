@@ -290,7 +290,13 @@ function fillFormFromAirtable(fields) {
 
         // Apply image directly to the canvas element with enhanced loading
         setTimeout(() => {
-          applyImageToCanvasEnhanced(formData[fieldId])
+          // Check if it's an Instagram image first
+          if (isInstagramImage(formData[fieldId])) {
+            console.log('📷 Instagram image detected in Airtable data')
+            applyInstagramImageDirect(formData[fieldId])
+          } else {
+            applyImageToCanvasEnhanced(formData[fieldId])
+          }
         }, 500)
       }
     } else if (!element) {
@@ -311,16 +317,23 @@ function fillFormFromAirtable(fields) {
  */
 function applyImageToCanvasEnhanced(imageUrl) {
   console.log('🎯 Enhanced image loading for:', imageUrl)
-  
+
+  // Check if this is an Instagram image
+  if (isInstagramImage(imageUrl)) {
+    console.log('📷 Instagram image detected - using direct application only')
+    applyInstagramImageDirect(imageUrl)
+    return
+  }
+
   // Find the canvas element - try multiple selectors
   const canvasSelectors = [
     '#canvas',
-    '.template-canvas', 
+    '.template-canvas',
     '.canvas',
     '.preview-container > div',
-    '[id*="canvas"]'
+    '[id*="canvas"]',
   ]
-  
+
   let canvas = null
   for (const selector of canvasSelectors) {
     canvas = document.querySelector(selector)
@@ -329,7 +342,7 @@ function applyImageToCanvasEnhanced(imageUrl) {
       break
     }
   }
-  
+
   if (!canvas) {
     console.error('❌ No canvas element found')
     return
@@ -341,16 +354,16 @@ function applyImageToCanvasEnhanced(imageUrl) {
   loadImageComprehensive(imageUrl)
     .then((finalUrl) => {
       console.log('✅ Image loaded with enhanced method:', finalUrl)
-      
+
       // Apply image with multiple fallback methods
       applyImageToCanvasMultiple(canvas, finalUrl)
-      
+
       showToast('✅ Imagen cargada exitosamente', 'success')
     })
     .catch((error) => {
       console.error('❌ All enhanced methods failed:', error)
       showToast('⚠️ No se pudo cargar la imagen, usando placeholder', 'warning')
-      
+
       // Enhanced placeholder with image info
       createEnhancedPlaceholder(canvas, imageUrl)
     })
@@ -361,29 +374,43 @@ function applyImageToCanvasEnhanced(imageUrl) {
  */
 async function loadImageComprehensive(originalUrl) {
   console.log('🔄 Starting comprehensive image loading for:', originalUrl)
-  
+
+  // Skip CORS proxy attempts for Instagram images
+  if (isInstagramImage(originalUrl)) {
+    console.log('📷 Instagram image detected - trying direct load only')
+    try {
+      return await testImageUrl(originalUrl)
+    } catch (error) {
+      console.log('📷 Instagram direct load failed (expected due to CORS)')
+      throw new Error('Instagram images cannot be loaded via CORS proxies')
+    }
+  }
+
   const allMethods = [
     // Method 1: Original URL
     () => testImageUrl(originalUrl),
-    
+
     // Method 2-9: CORS Proxies
-    ...CORS_PROXIES.map((proxy, index) => 
-      () => testImageUrl(proxy + encodeURIComponent(originalUrl))
+    ...CORS_PROXIES.map(
+      (proxy, index) => () =>
+        testImageUrl(proxy + encodeURIComponent(originalUrl))
     ),
-    
+
     // Method 10-12: Image-specific proxies
-    ...IMAGE_PROXIES.map((proxy, index) => 
-      () => testImageUrl(proxy + encodeURIComponent(originalUrl))
+    ...IMAGE_PROXIES.map(
+      (proxy, index) => () =>
+        testImageUrl(proxy + encodeURIComponent(originalUrl))
     ),
-    
+
     // Method 13: Fetch as blob with original
     () => fetchAsDataUrl(originalUrl),
-    
+
     // Method 14-21: Fetch as blob with CORS proxies
-    ...CORS_PROXIES.map((proxy, index) => 
-      () => fetchAsDataUrl(proxy + encodeURIComponent(originalUrl))
+    ...CORS_PROXIES.map(
+      (proxy, index) => () =>
+        fetchAsDataUrl(proxy + encodeURIComponent(originalUrl))
     ),
-    
+
     // Method 22: Try without https (if https fails)
     () => {
       if (originalUrl.startsWith('https://')) {
@@ -392,16 +419,21 @@ async function loadImageComprehensive(originalUrl) {
       }
       throw new Error('Not HTTPS URL')
     },
-    
+
     // Method 23: Try adding cache buster
     () => {
       const separator = originalUrl.includes('?') ? '&' : '?'
       const cacheBustedUrl = originalUrl + separator + 'cb=' + Date.now()
       return testImageUrl(cacheBustedUrl)
     },
-    
+
     // Method 24: Try Google proxy (for public images)
-    () => testImageUrl(`https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=${encodeURIComponent(originalUrl)}`),
+    () =>
+      testImageUrl(
+        `https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=${encodeURIComponent(
+          originalUrl
+        )}`
+      ),
   ]
 
   for (let i = 0; i < allMethods.length; i++) {
@@ -412,15 +444,109 @@ async function loadImageComprehensive(originalUrl) {
       return result
     } catch (error) {
       console.log(`❌ Method ${i + 1} failed:`, error.message)
-      
+
       // Add small delay between attempts to avoid rate limiting
       if (i < allMethods.length - 1) {
-        await new Promise(resolve => setTimeout(resolve, 100))
+        await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
   }
-  
+
   throw new Error(`All ${allMethods.length} methods failed for: ${originalUrl}`)
+}
+
+function isInstagramImage(url) {
+  if (!url) return false
+  
+  const instagramDomains = [
+    'instagram.com',
+    'cdninstagram.com', 
+    'scontent-',
+    'fbcdn.net',
+    'instagram.fna',
+    'instagram.flhr'
+  ]
+  
+  return instagramDomains.some(domain => url.includes(domain))
+}
+
+/**
+ * NEW: Apply Instagram image directly without CORS attempts
+ */
+function applyInstagramImageDirect(imageUrl) {
+  console.log('📷 Applying Instagram image directly (no CORS proxies)')
+  
+  const canvas = document.getElementById('canvas')
+  if (!canvas) {
+    console.error('❌ No canvas element found')
+    return
+  }
+  
+  // Apply image directly - let browser handle CORS naturally
+  canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important')
+  canvas.style.setProperty('background-size', 'cover', 'important')
+  canvas.style.setProperty('background-position', 'center', 'important')
+  canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
+  
+  // Show informative message about Instagram images
+  showToast('📷 Imagen de Instagram aplicada directamente', 'info')
+  
+  // Create Instagram-specific info overlay
+  createInstagramImageInfo(canvas, imageUrl)
+  
+  console.log('✅ Instagram image applied directly')
+}
+
+/**
+ * NEW: Create Instagram-specific image info overlay
+ */
+function createInstagramImageInfo(canvas, imageUrl) {
+  // Remove existing overlay
+  const existing = canvas.querySelector('.instagram-image-info')
+  if (existing) existing.remove()
+  
+  // Create info overlay
+  const infoOverlay = document.createElement('div')
+  infoOverlay.className = 'instagram-image-info'
+  infoOverlay.style.cssText = `
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(131, 58, 180, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    z-index: 5;
+    max-width: 180px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+  `
+  infoOverlay.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+      <span>📷</span>
+      <span style="font-weight: 600;">Instagram Image</span>
+    </div>
+    <div style="font-size: 9px; opacity: 0.8;">
+      Aplicada directamente sin proxies CORS
+    </div>
+  `
+  
+  canvas.style.position = 'relative'
+  canvas.appendChild(infoOverlay)
+  
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    if (infoOverlay.parentNode) {
+      infoOverlay.style.opacity = '0'
+      infoOverlay.style.transition = 'opacity 0.3s ease'
+      setTimeout(() => {
+        if (infoOverlay.parentNode) {
+          infoOverlay.parentNode.removeChild(infoOverlay)
+        }
+      }, 300)
+    }
+  }, 3000)
 }
 
 /**
@@ -1049,13 +1175,16 @@ function generateInstagramTemplateHTML(content, templateType) {
 /**
  * MISSING FUNCTION: Generate Instagram Post HTML
  */
+/**
+ * UPDATED: Generate Instagram Post HTML with better transparency for Instagram images
+ */
 function generateInstagramPostHTML(content) {
   return `
     <div class="instagram-post-template" style="
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(131, 58, 180, 0.1) 0%, rgba(253, 29, 29, 0.1) 50%, rgba(252, 176, 64, 0.1) 100%);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.65) 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1065,9 +1194,21 @@ function generateInstagramPostHTML(content) {
       aspect-ratio: 1/1;
       border-radius: 8px;
       overflow: hidden;
+      backdrop-filter: blur(2px);
     ">
-      <!-- Header -->
-      <div style="display: flex; align-items: center; gap: 12px; z-index: 2; position: relative;">
+      <!-- Header with better background for readability -->
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        z-index: 3; 
+        position: relative;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(10px);
+        padding: 12px 16px;
+        border-radius: 16px;
+        margin: -15px -15px 0 -15px;
+      ">
         <div style="
           width: 40px;
           height: 40px;
@@ -1079,71 +1220,107 @@ function generateInstagramPostHTML(content) {
           font-weight: bold;
           color: white;
           font-size: 16px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         ">RDV</div>
         <div>
-          <div style="font-weight: 600; font-size: 14px;">radiodelvolga</div>
+          <div style="font-weight: 600; font-size: 14px; color: #262626;">radiodelvolga</div>
           <div style="font-size: 12px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
         </div>
         <div style="margin-left: auto; color: #833ab4; font-size: 20px;">📷</div>
       </div>
 
-      <!-- Main Content -->
-      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; z-index: 2; position: relative;">
-        <!-- Category Badge -->
+      <!-- Main Content with enhanced background -->
+      <div style="
+        flex: 1; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        text-align: center; 
+        z-index: 3; 
+        position: relative;
+      ">
+        <!-- Content Background -->
         <div style="
-          background: linear-gradient(45deg, #833ab4, #fd1d1d);
-          color: white;
-          padding: 8px 16px;
+          background: rgba(255,255,255,0.85);
+          backdrop-filter: blur(15px);
           border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
-          display: inline-block;
-          margin: 0 auto 20px auto;
-        ">${content.category || 'NOTICIAS'}</div>
+          padding: 25px 20px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+          border: 1px solid rgba(255,255,255,0.2);
+        ">
+          <!-- Category Badge -->
+          <div style="
+            background: linear-gradient(45deg, #833ab4, #fd1d1d);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 4px 16px rgba(131, 58, 180, 0.3);
+          ">${content.category || 'NOTICIAS'}</div>
 
-        <!-- Title -->
-        <h1 style="
-          font-size: 24px;
-          font-weight: 700;
-          line-height: 1.2;
-          margin: 0 0 16px 0;
-          color: #262626;
-        ">${content.title || 'Título de la noticia'}</h1>
+          <!-- Title -->
+          <h1 style="
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 16px 0;
+            color: #262626;
+            text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
+          ">${content.title || 'Título de la noticia'}</h1>
 
-        <!-- Excerpt -->
-        <p style="
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0 0 20px 0;
-          color: #8e8e8e;
-        ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
+          <!-- Excerpt -->
+          <p style="
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0 0 20px 0;
+            color: #555;
+          ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
 
-        <!-- Hashtags -->
-        <div style="
-          font-size: 14px;
-          color: #385185;
-          line-height: 1.4;
-        ">${(content.hashtags || ['#RDVNoticias']).slice(0, 5).join(' ')}</div>
+          <!-- Hashtags -->
+          <div style="
+            font-size: 14px;
+            color: #385185;
+            line-height: 1.4;
+            font-weight: 600;
+          ">${(content.hashtags || ['#RDVNoticias']).slice(0, 5).join(' ')}</div>
+        </div>
       </div>
 
-      <!-- Footer -->
-      <div style="display: flex; justify-content: space-between; align-items: center; z-index: 2; position: relative;">
-        <div style="font-size: 12px; color: #8e8e8e;">${content.source || 'RDV Noticias'}</div>
+      <!-- Footer with better background -->
+      <div style="
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        z-index: 3; 
+        position: relative;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(10px);
+        padding: 12px 16px;
+        border-radius: 16px;
+        margin: 0 -15px -15px -15px;
+      ">
         <div style="
-          background: rgba(255,255,255,0.8);
+          font-size: 12px;
+          color: #8e8e8e;
+        ">${content.source || 'RDV Noticias'}</div>
+        <div style="
+          background: rgba(131, 58, 180, 0.1);
+          border: 1px solid rgba(131, 58, 180, 0.3);
           padding: 6px 12px;
           border-radius: 12px;
           font-size: 11px;
           font-weight: 600;
-          color: #262626;
+          color: #833ab4;
         ">Instagram Post</div>
       </div>
     </div>
   `
 }
-
 /**
  * MISSING FUNCTION: Generate Instagram Story HTML
  */
@@ -2083,3 +2260,7 @@ window.generateInstagramTemplateHTML = generateInstagramTemplateHTML
 window.generateInstagramPostHTML = generateInstagramPostHTML
 window.generateInstagramStoryHTML = generateInstagramStoryHTML
 window.generateInstagramReelCoverHTML = generateInstagramReelCoverHTML
+// Add Instagram CORS handling functions to global scope
+window.isInstagramImage = isInstagramImage
+window.applyInstagramImageDirect = applyInstagramImageDirect
+window.createInstagramImageInfo = createInstagramImageInfo
