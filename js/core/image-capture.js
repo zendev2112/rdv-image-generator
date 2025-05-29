@@ -756,6 +756,108 @@ export function getCurrentImageDimensions() {
     return getPlatformConfig(platform, template);
 }
 
+// Add these functions to the end of your existing image-capture.js
+// filepath: /home/zen/Documents/rdv-image-generator/js/core/image-capture.js
+
+/**
+ * Generate image for specific social media platform
+ * @param {Object} content - Content data for the image
+ * @param {string} platform - Target platform (instagram, facebook, twitter)
+ * @param {Object} options - Generation options
+ * @returns {Promise<Blob>} Generated image blob
+ */
+export async function generateImageForPlatform(content, platform, options = {}) {
+    try {
+        console.log(`🎨 Generating image for ${platform}...`);
+        
+        // Save current state
+        const originalPlatform = window.RDVImageGenerator?.currentPlatform;
+        const originalTemplate = window.RDVImageGenerator?.currentTemplate;
+        
+        // Set platform and template
+        if (window.RDVImageGenerator) {
+            window.RDVImageGenerator.currentPlatform = platform;
+            window.RDVImageGenerator.currentTemplate = getDefaultTemplateForPlatform(platform);
+        }
+        
+        // Update template with content
+        await updateTemplateWithContent(content);
+        
+        // Generate image using existing function
+        const imageBlob = await generateImage({
+            ...options,
+            autoDownload: false // Don't auto-download for social publishing
+        });
+        
+        // Restore original state
+        if (window.RDVImageGenerator) {
+            window.RDVImageGenerator.currentPlatform = originalPlatform;
+            window.RDVImageGenerator.currentTemplate = originalTemplate;
+        }
+        
+        return imageBlob;
+        
+    } catch (error) {
+        console.error(`❌ Failed to generate image for ${platform}:`, error);
+        throw error;
+    }
+}
+
+/**
+ * Update template with content data
+ * @param {Object} content - Content to apply to template
+ */
+async function updateTemplateWithContent(content) {
+    // Update form fields with content
+    const fieldMappings = {
+        title: content.title,
+        excerpt: content.excerpt,
+        tags: content.tags,
+        category: content.category,
+        source: content.source,
+        author: content.author,
+        backgroundImage: content.backgroundImage
+    };
+    
+    Object.entries(fieldMappings).forEach(([fieldId, value]) => {
+        const element = document.getElementById(fieldId);
+        if (element && value) {
+            element.value = value;
+            // Trigger input event to update preview
+            element.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    });
+    
+    // Wait for template to update
+    if (typeof window.updatePreview === 'function') {
+        await window.updatePreview();
+    }
+    
+    // Additional wait for rendering
+    await new Promise(resolve => setTimeout(resolve, 500));
+}
+
+/**
+ * Get default template for platform
+ * @param {string} platform - Platform name
+ * @returns {string} Default template name
+ */
+function getDefaultTemplateForPlatform(platform) {
+    const defaults = {
+        instagram: 'story',
+        facebook: 'post',
+        twitter: 'post'
+    };
+    return defaults[platform] || 'story';
+}
+
+// Make new functions globally available
+window.generateImageForPlatform = generateImageForPlatform;
+window.updateTemplateWithContent = updateTemplateWithContent;
+window.getDefaultTemplateForPlatform = getDefaultTemplateForPlatform;
+
+console.log('✅ Social publishing extensions loaded for image-capture.js');
+
 // Make functions available globally for HTML onclick handlers
 window.generateImage = generateImage;
 window.downloadImage = downloadImage;
