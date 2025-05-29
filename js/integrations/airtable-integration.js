@@ -8,7 +8,7 @@ const AIRTABLE_CONFIG = {
   API_KEY:
     'patlPzRF8YzZNnogn.8b3d2d68528bfa5b0643a212f832966d1a327f6ca85e8c0f373609452318af4c',
   BASE_ID: 'appWtDlgG21KUI3IN',
-  TABLE_NAME: 'Test', // This matches your .env
+  TABLE_NAME: 'Redes Sociales', // Changed from 'Test' to 'Redes Sociales'
   TIMEOUT: 30000,
 }
 
@@ -63,7 +63,9 @@ async function testAirtableConnection() {
 
     // Now test access to the specific table
     const response = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${AIRTABLE_CONFIG.TABLE_NAME}?maxRecords=1`,
+      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(
+        AIRTABLE_CONFIG.TABLE_NAME
+      )}?maxRecords=1`,
       {
         headers: {
           Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
@@ -120,7 +122,9 @@ async function loadFromAirtable(recordId = null) {
 
     // Fetch from Airtable using predefined config
     const response = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${AIRTABLE_CONFIG.TABLE_NAME}/${id}`,
+      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(
+        AIRTABLE_CONFIG.TABLE_NAME
+      )}/${id}`,
       {
         headers: {
           Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
@@ -191,7 +195,9 @@ async function uploadToAirtable() {
     }
 
     const response = await fetch(
-      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${AIRTABLE_CONFIG.TABLE_NAME}/${recordId}`,
+      `https://api.airtable.com/v0/${AIRTABLE_CONFIG.BASE_ID}/${encodeURIComponent(
+        AIRTABLE_CONFIG.TABLE_NAME
+      )}/${recordId}`,
       {
         method: 'PATCH',
         headers: {
