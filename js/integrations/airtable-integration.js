@@ -1346,6 +1346,537 @@ function setCanvasForInstagram(canvas, templateType) {
   console.log(`📐 Canvas set for Instagram ${templateType}: ${dim.ratio}`)
 }
 
+/**
+ * NEW: Select Facebook template and render content
+ */
+function selectFacebookTemplate(templateType) {
+  console.log('🎨 Selecting Facebook template:', templateType)
+  
+  // Update active template button
+  const templateButtons = document.querySelectorAll('.template-btn')
+  templateButtons.forEach(btn => btn.classList.remove('active'))
+  
+  const selectedButton = document.querySelector(`[data-template="${templateType}"][data-platform="facebook"]`)
+  if (selectedButton) {
+    selectedButton.classList.add('active')
+  }
+  
+  // Update global state
+  if (window.RDVImageGenerator) {
+    window.RDVImageGenerator.currentTemplate = templateType
+    window.RDVImageGenerator.currentPlatform = 'facebook'
+  }
+  
+  // Update UI info
+  updateFacebookTemplateInfoDisplay(templateType)
+  
+  // Get current form data and render template
+  const formData = getCurrentFormData()
+  renderFacebookTemplateWithData(formData, templateType)
+  
+  showToast(`Template cambiado a Facebook ${templateType}`, 'success')
+}
+
+/**
+ * NEW: Update Facebook template info display
+ */
+function updateFacebookTemplateInfoDisplay(templateType) {
+  const platformName = document.getElementById('currentPlatform')
+  const templateName = document.getElementById('currentTemplate')
+  const dimensions = document.getElementById('currentDimensions')
+  
+  const configs = {
+    'post': { name: 'Facebook Post', dims: '1200 × 630' },
+    'story': { name: 'Facebook Story', dims: '1080 × 1920' },
+    'cover': { name: 'Facebook Cover', dims: '1640 × 859' }
+  }
+  
+  const config = configs[templateType] || configs.post
+  
+  if (platformName) platformName.textContent = 'Facebook'
+  if (templateName) templateName.textContent = config.name
+  if (dimensions) dimensions.textContent = config.dims
+}
+
+/**
+ * NEW: Render Facebook template with specific template type
+ */
+function renderFacebookTemplateWithData(data, templateType = null) {
+  console.log('🎨 Rendering Facebook template with data:', data)
+  
+  const currentTemplate = templateType || getCurrentTemplate()
+  
+  console.log('Current Facebook template:', currentTemplate)
+  
+  // Generate Facebook-optimized content
+  const facebookContent = generateFacebookOptimizedContent(data, currentTemplate)
+  
+  // Apply the content to the canvas
+  applyFacebookContentToCanvas(facebookContent, currentTemplate)
+}
+
+/**
+ * NEW: Generate Facebook-optimized content
+ */
+function generateFacebookOptimizedContent(data, templateType) {
+  // Use the existing Facebook template functions if available
+  if (typeof window.FacebookTemplates?.generateContent === 'function') {
+    return window.FacebookTemplates.generateContent(data, templateType)
+  }
+  
+  // Fallback content generation
+  return {
+    title: data.title || 'Título de la noticia',
+    excerpt: data.excerpt || 'Descripción de la noticia',
+    hashtags: data.tags ? data.tags.split(',').map(tag => `#${tag.trim()}`).slice(0, 3) : ['#RDVNoticias'],
+    author: data.author || 'Redacción RDV',
+    source: data.source || 'Radio del Volga',
+    date: new Date().toLocaleDateString('es-AR'),
+    backgroundImage: data.backgroundImage || '',
+    category: data.category || 'GENERAL',
+    template: templateType
+  }
+}
+
+/**
+ * NEW: Apply Facebook content to canvas
+ */
+function applyFacebookContentToCanvas(content, templateType) {
+  console.log('👥 Applying Facebook content to canvas')
+  
+  const canvas = document.getElementById('canvas')
+  if (!canvas) return
+  
+  // Set canvas for Facebook dimensions
+  setCanvasForFacebook(canvas, templateType)
+  
+  // Generate the template HTML
+  const templateHTML = generateFacebookTemplateHTML(content, templateType)
+  
+  // Apply to canvas
+  canvas.innerHTML = templateHTML
+  
+  // Update UI info
+  updateTemplateInfo(content, templateType)
+}
+
+/**
+ * NEW: Set canvas dimensions for Facebook
+ */
+function setCanvasForFacebook(canvas, templateType) {
+  const dimensions = {
+    'post': { width: 1200, height: 630, ratio: '1.91/1', maxWidth: '500px' },
+    'story': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' },
+    'cover': { width: 1640, height: 859, ratio: '1.91/1', maxWidth: '600px' }
+  }
+  
+  const dim = dimensions[templateType] || dimensions.post
+  
+  canvas.style.aspectRatio = dim.ratio
+  canvas.style.maxWidth = dim.maxWidth
+  canvas.style.width = '100%'
+  canvas.style.borderRadius = '12px'
+  canvas.style.overflow = 'hidden'
+  canvas.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)'
+  canvas.style.transition = 'all 0.3s ease'
+  
+  console.log(`📐 Canvas set for Facebook ${templateType}: ${dim.ratio}`)
+}
+
+/**
+ * NEW: Generate Facebook template HTML
+ */
+function generateFacebookTemplateHTML(content, templateType) {
+  switch (templateType) {
+    case 'post':
+      return generateFacebookPostHTML(content)
+    case 'story':
+      return generateFacebookStoryHTML(content)
+    case 'cover':
+      return generateFacebookCoverHTML(content)
+    default:
+      return generateFacebookPostHTML(content)
+  }
+}
+
+/**
+ * NEW: Generate Facebook Post HTML
+ */
+function generateFacebookPostHTML(content) {
+  return `
+    <div class="facebook-post-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(24,119,242,0.1) 0%, rgba(24,119,242,0.3) 100%);
+      display: flex;
+      align-items: center;
+      padding: 40px;
+      color: #1C1E21;
+      font-family: 'Inter', sans-serif;
+      aspect-ratio: 1.91/1;
+    ">
+      <!-- Left Content -->
+      <div style="flex: 1; padding-right: 40px;">
+        <!-- Logo Section -->
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+          <div style="
+            width: 60px;
+            height: 60px;
+            background: #1877F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(24,119,242,0.3);
+          ">RDV</div>
+          <div>
+            <div style="font-weight: 700; font-size: 16px; color: #1877F2;">${content.source}</div>
+            <div style="font-size: 12px; color: #65676B;">${content.date}</div>
+          </div>
+        </div>
+
+        <!-- Category Badge -->
+        <div style="
+          background: #1877F2;
+          color: white;
+          padding: 6px 16px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          display: inline-block;
+          margin-bottom: 16px;
+        ">${content.category}</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 1.3;
+          margin: 0 0 16px 0;
+          color: #1C1E21;
+        ">${content.title}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.5;
+          margin: 0 0 20px 0;
+          color: #65676B;
+        ">${content.excerpt}</p>
+
+        <!-- Engagement -->
+        <div style="
+          display: flex;
+          gap: 20px;
+          align-items: center;
+          font-size: 14px;
+          color: #65676B;
+          font-weight: 500;
+        ">
+          <span style="display: flex; align-items: center; gap: 6px;">
+            👍 Me gusta
+          </span>
+          <span style="display: flex; align-items: center; gap: 6px;">
+            💬 Comentar
+          </span>
+          <span style="display: flex; align-items: center; gap: 6px;">
+            🔄 Compartir
+          </span>
+        </div>
+      </div>
+
+      <!-- Right Image Placeholder -->
+      <div style="
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        flex-shrink: 0;
+      ">
+        📰
+      </div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Generate Facebook Story HTML
+ */
+function generateFacebookStoryHTML(content) {
+  return `
+    <div class="facebook-story-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(24,119,242,0.2) 0%, rgba(24,119,242,0.8) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 30px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      aspect-ratio: 9/16;
+    ">
+      <!-- Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1877F2;
+            font-size: 18px;
+          ">RDV</div>
+          <span style="font-weight: 600; font-size: 16px;">${content.source}</span>
+        </div>
+        <div style="
+          background: #1877F2;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+        ">NOTICIA</div>
+      </div>
+
+      <!-- Content -->
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 20px;">
+        <!-- Category -->
+        <div style="
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+          align-self: flex-start;
+        ">${content.category}</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 28px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        ">${content.title}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0;
+          opacity: 0.9;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        ">${content.excerpt}</p>
+
+        <!-- CTA -->
+        <div style="
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          text-align: center;
+          margin-top: 16px;
+        ">
+          👆 Desliza hacia arriba para leer más
+        </div>
+
+        <!-- Footer -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 16px;
+          border-top: 1px solid rgba(255,255,255,0.2);
+          font-size: 12px;
+          opacity: 0.8;
+        ">
+          <span>${content.author}</span>
+          <span>${content.date}</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Generate Facebook Cover HTML
+ */
+function generateFacebookCoverHTML(content) {
+  return `
+    <div class="facebook-cover-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1877F2 0%, #42A5F5 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      aspect-ratio: 1.91/1;
+    ">
+      <!-- Brand Section -->
+      <div style="max-width: 80%;">
+        <!-- Logo -->
+        <div style="
+          width: 120px;
+          height: 120px;
+          background: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: #1877F2;
+          font-size: 48px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+          margin: 0 auto 30px auto;
+        ">RDV</div>
+
+        <!-- Main Title -->
+        <h1 style="
+          font-size: 36px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0 0 20px 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        ">Radio del Volga</h1>
+
+        <!-- Subtitle -->
+        <p style="
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 30px 0;
+          opacity: 0.9;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        ">Tu fuente confiable de noticias e información</p>
+
+        <!-- Features -->
+        <div style="
+          display: flex;
+          justify-content: center;
+          gap: 40px;
+          font-size: 16px;
+          font-weight: 500;
+          opacity: 0.9;
+        ">
+          <span>📻 Radio</span>
+          <span>📰 Noticias</span>
+          <span>🌐 Actualidad</span>
+          <span>🎙️ Programas</span>
+        </div>
+
+        <!-- Contact Info -->
+        <div style="
+          position: absolute;
+          bottom: 30px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 14px;
+          opacity: 0.8;
+          display: flex;
+          gap: 20px;
+        ">
+          <span>📍 Argentina</span>
+          <span>🌐 radiodelvolga.com</span>
+          <span>📧 info@radiodelvolga.com</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Handle platform switching
+ */
+function switchPlatform(platform) {
+  console.log('🔄 Switching to platform:', platform)
+  
+  // Update active platform button
+  const platformButtons = document.querySelectorAll('.platform-btn')
+  platformButtons.forEach(btn => btn.classList.remove('active'))
+  
+  const selectedPlatform = document.querySelector(`[data-platform="${platform}"]`)
+  if (selectedPlatform) {
+    selectedPlatform.classList.add('active')
+  }
+  
+  // Show/hide template sections
+  const templateSections = {
+    'instagram': document.getElementById('instagramTemplates'),
+    'facebook': document.getElementById('facebookTemplates')
+  }
+  
+  // Hide all template sections
+  Object.values(templateSections).forEach(section => {
+    if (section) section.style.display = 'none'
+  })
+  
+  // Show selected platform templates
+  if (templateSections[platform]) {
+    templateSections[platform].style.display = 'block'
+    
+    // Select first template of the platform
+    const firstTemplate = templateSections[platform].querySelector('.template-btn')
+    if (firstTemplate) {
+      const templateType = firstTemplate.dataset.template
+      
+      if (platform === 'instagram') {
+        selectInstagramTemplate(templateType)
+      } else if (platform === 'facebook') {
+        selectFacebookTemplate(templateType)
+      }
+    }
+  }
+  
+  // Update global state
+  if (window.RDVImageGenerator) {
+    window.RDVImageGenerator.currentPlatform = platform
+  }
+  
+  showToast(`Plataforma cambiada a ${platform}`, 'success')
+}
+
+// Add click handlers to platform buttons
+document.addEventListener('DOMContentLoaded', function() {
+  const platformButtons = document.querySelectorAll('.platform-btn')
+  platformButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const platform = this.dataset.platform
+      if (platform === 'instagram' || platform === 'facebook') {
+        switchPlatform(platform)
+      } else {
+        showToast(`Plataforma ${platform} próximamente`, 'info')
+      }
+    })
+  })
+})
+
 // Make functions globally available
 window.renderInstagramTemplateWithData = renderInstagramTemplateWithData
 window.getCurrentPlatform = getCurrentPlatform  
@@ -1360,3 +1891,14 @@ window.updateTemplateInfoDisplay = updateTemplateInfoDisplay
 window.generateInstagramOptimizedContent = generateInstagramOptimizedContent
 window.generateInstagramPostHTML = generateInstagramPostHTML
 window.generateInstagramReelHTML = generateInstagramReelHTML
+window.selectFacebookTemplate = selectFacebookTemplate
+window.updateFacebookTemplateInfoDisplay = updateFacebookTemplateInfoDisplay
+window.renderFacebookTemplateWithData = renderFacebookTemplateWithData
+window.generateFacebookOptimizedContent = generateFacebookOptimizedContent
+window.applyFacebookContentToCanvas = applyFacebookContentToCanvas
+window.setCanvasForFacebook = setCanvasForFacebook
+window.generateFacebookTemplateHTML = generateFacebookTemplateHTML
+window.generateFacebookPostHTML = generateFacebookPostHTML
+window.generateFacebookStoryHTML = generateFacebookStoryHTML
+window.generateFacebookCoverHTML = generateFacebookCoverHTML
+window.switchPlatform = switchPlatform
