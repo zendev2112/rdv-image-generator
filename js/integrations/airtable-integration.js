@@ -978,6 +978,367 @@ function updateMetaInfoDisplay(content, templateType) {
 }
 
 /**
+ * MISSING FUNCTION: Apply Instagram content to canvas
+ */
+function applyInstagramContentToCanvas(content, templateType) {
+  console.log('📷 Applying Instagram content to canvas:', templateType)
+  
+  const canvas = document.getElementById('canvas')
+  if (!canvas) {
+    console.error('❌ No canvas element found')
+    return
+  }
+  
+  // Set canvas dimensions for Instagram
+  setCanvasForInstagram(canvas, templateType)
+  
+  // Generate and apply template HTML
+  const templateHTML = generateInstagramTemplateHTML(content, templateType)
+  canvas.innerHTML = templateHTML
+  
+  // Apply background image if available
+  if (content.backgroundImage) {
+    console.log('🖼️ Applying background image:', content.backgroundImage)
+    setTimeout(() => {
+      applyImageToCanvasEnhanced(content.backgroundImage)
+    }, 100)
+  }
+  
+  console.log('✅ Instagram content applied to canvas')
+}
+
+/**
+ * MISSING FUNCTION: Set canvas dimensions for Instagram
+ */
+function setCanvasForInstagram(canvas, templateType) {
+  const dimensions = {
+    'story': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' },
+    'post': { width: 1080, height: 1080, ratio: '1/1', maxWidth: '400px' },
+    'reel-cover': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' }
+  }
+  
+  const dim = dimensions[templateType] || dimensions.post
+  
+  canvas.style.aspectRatio = dim.ratio
+  canvas.style.maxWidth = dim.maxWidth
+  canvas.style.width = '100%'
+  canvas.style.borderRadius = '8px'
+  canvas.style.overflow = 'hidden'
+  canvas.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'
+  canvas.style.transition = 'all 0.3s ease'
+  
+  console.log(`📐 Canvas set for Instagram ${templateType}: ${dim.ratio}`)
+}
+
+/**
+ * MISSING FUNCTION: Generate Instagram template HTML
+ */
+function generateInstagramTemplateHTML(content, templateType) {
+  switch (templateType) {
+    case 'story':
+      return generateInstagramStoryHTML(content)
+    case 'post':
+      return generateInstagramPostHTML(content)
+    case 'reel-cover':
+      return generateInstagramReelCoverHTML(content)
+    default:
+      return generateInstagramPostHTML(content)
+  }
+}
+
+/**
+ * MISSING FUNCTION: Generate Instagram Post HTML
+ */
+function generateInstagramPostHTML(content) {
+  return `
+    <div class="instagram-post-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(131, 58, 180, 0.1) 0%, rgba(253, 29, 29, 0.1) 50%, rgba(252, 176, 64, 0.1) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      color: #262626;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 1/1;
+      border-radius: 8px;
+      overflow: hidden;
+    ">
+      <!-- Header -->
+      <div style="display: flex; align-items: center; gap: 12px; z-index: 2; position: relative;">
+        <div style="
+          width: 40px;
+          height: 40px;
+          background: linear-gradient(45deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 16px;
+        ">RDV</div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px;">radiodelvolga</div>
+          <div style="font-size: 12px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
+        </div>
+        <div style="margin-left: auto; color: #833ab4; font-size: 20px;">📷</div>
+      </div>
+
+      <!-- Main Content -->
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; text-align: center; z-index: 2; position: relative;">
+        <!-- Category Badge -->
+        <div style="
+          background: linear-gradient(45deg, #833ab4, #fd1d1d);
+          color: white;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          display: inline-block;
+          margin: 0 auto 20px auto;
+        ">${content.category || 'NOTICIAS'}</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 24px;
+          font-weight: 700;
+          line-height: 1.2;
+          margin: 0 0 16px 0;
+          color: #262626;
+        ">${content.title || 'Título de la noticia'}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 20px 0;
+          color: #8e8e8e;
+        ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
+
+        <!-- Hashtags -->
+        <div style="
+          font-size: 14px;
+          color: #385185;
+          line-height: 1.4;
+        ">${(content.hashtags || ['#RDVNoticias']).slice(0, 5).join(' ')}</div>
+      </div>
+
+      <!-- Footer -->
+      <div style="display: flex; justify-content: space-between; align-items: center; z-index: 2; position: relative;">
+        <div style="font-size: 12px; color: #8e8e8e;">${content.source || 'RDV Noticias'}</div>
+        <div style="
+          background: rgba(255,255,255,0.8);
+          padding: 6px 12px;
+          border-radius: 12px;
+          font-size: 11px;
+          font-weight: 600;
+          color: #262626;
+        ">Instagram Post</div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * MISSING FUNCTION: Generate Instagram Story HTML
+ */
+function generateInstagramStoryHTML(content) {
+  return `
+    <div class="instagram-story-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 30px;
+      color: white;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 9/16;
+      border-radius: 8px;
+      overflow: hidden;
+    ">
+      <!-- Story Header -->
+      <div style="display: flex; align-items: center; gap: 12px; z-index: 2; position: relative;">
+        <div style="
+          width: 32px;
+          height: 32px;
+          background: rgba(255,255,255,0.2);
+          border: 2px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 14px;
+        ">RDV</div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px;">radiodelvolga</div>
+          <div style="font-size: 12px; opacity: 0.8;">Hace 2h</div>
+        </div>
+      </div>
+
+      <!-- Story Content -->
+      <div style="text-align: center; z-index: 2; position: relative;">
+        <!-- Title -->
+        <h1 style="
+          font-size: 28px;
+          font-weight: 800;
+          line-height: 1.1;
+          margin: 0 0 20px 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        ">${content.title || 'Título de la noticia'}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 18px;
+          font-weight: 400;
+          line-height: 1.3;
+          margin: 0 0 30px 0;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        ">${(content.excerpt || 'Descripción').length > 80 ? content.excerpt.substring(0, 80) + '...' : content.excerpt}</p>
+
+        <!-- CTA -->
+        <div style="
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255,255,255,0.3);
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          display: inline-block;
+        ">👆 Desliza hacia arriba</div>
+      </div>
+
+      <!-- Story Footer -->
+      <div style="text-align: center; z-index: 2; position: relative;">
+        <div style="font-size: 12px; opacity: 0.8; margin-bottom: 8px;">${content.source || 'RDV Noticias'}</div>
+        <div style="
+          display: flex;
+          justify-content: center;
+          gap: 15px;
+          font-size: 12px;
+          opacity: 0.7;
+        ">
+          <span>${(content.hashtags || ['#RDV']).slice(0, 3).join(' ')}</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * MISSING FUNCTION: Generate Instagram Reel Cover HTML
+ */
+function generateInstagramReelCoverHTML(content) {
+  return `
+    <div class="instagram-reel-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 30px;
+      color: white;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 9/16;
+      border-radius: 8px;
+      overflow: hidden;
+    ">
+      <!-- Reel Header -->
+      <div style="display: flex; align-items: center; gap: 12px; z-index: 2; position: relative;">
+        <div style="
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(45deg, #833ab4, #fd1d1d);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 14px;
+        ">RDV</div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px;">radiodelvolga</div>
+          <div style="font-size: 12px; opacity: 0.8;">Reel • Audio original</div>
+        </div>
+        <div style="margin-left: auto; font-size: 20px;">🎥</div>
+      </div>
+
+      <!-- Reel Content -->
+      <div style="text-align: center; z-index: 2; position: relative;">
+        <!-- Play Button -->
+        <div style="
+          width: 60px;
+          height: 60px;
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          border: 2px solid rgba(255,255,255,0.3);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+          margin: 0 auto 30px auto;
+        ">▶️</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 24px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0 0 16px 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        ">${content.title || 'Título del reel'}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 20px 0;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        ">${(content.excerpt || 'Descripción').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
+      </div>
+
+      <!-- Reel Footer -->
+      <div style="z-index: 2; position: relative;">
+        <!-- Hashtags -->
+        <div style="
+          font-size: 14px;
+          line-height: 1.4;
+          margin-bottom: 16px;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        ">${(content.hashtags || ['#RDV']).slice(0, 3).join(' ')}</div>
+        
+        <!-- Audio Info -->
+        <div style="
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 12px;
+          opacity: 0.8;
+        ">
+          <span>🎵</span>
+          <span>Audio original • ${content.source || 'RDV'}</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
  * ENHANCED: Render Instagram template with specific template type
  */
 function renderInstagramTemplateWithData(data, templateType = null) {
@@ -1715,3 +2076,10 @@ window.generateTwitterTemplateHTML = generateTwitterTemplateHTML
 window.generateTwitterPostHTML = generateTwitterPostHTML
 window.generateTwitterHeaderHTML = generateTwitterHeaderHTML
 window.generateTwitterCardHTML = generateTwitterCardHTML
+// Add Instagram functions to global scope
+window.applyInstagramContentToCanvas = applyInstagramContentToCanvas
+window.setCanvasForInstagram = setCanvasForInstagram
+window.generateInstagramTemplateHTML = generateInstagramTemplateHTML
+window.generateInstagramPostHTML = generateInstagramPostHTML
+window.generateInstagramStoryHTML = generateInstagramStoryHTML
+window.generateInstagramReelCoverHTML = generateInstagramReelCoverHTML
