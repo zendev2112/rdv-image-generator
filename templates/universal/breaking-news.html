@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universal Breaking News Template - RDV</title>
+    <style>
+      /* Template-specific styles for Universal Breaking News */
+      .universal-breaking-news-template {
+        width: 1200px;
+        height: 630px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #e53e3e),
+          var(--color-secondary, #14171a)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Background layer */
+      .breaking-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for urgency and readability */
+      .breaking-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(229, 62, 62, 0.4) 0%,
+          rgba(0, 0, 0, 0.7) 50%,
+          rgba(229, 62, 62, 0.3) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .breaking-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.08;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Animated breaking news banner */
+      .breaking-banner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b, #e53e3e);
+        background-size: 200% 100%;
+        color: white;
+        padding: 12px 0;
+        font-size: 16px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out, gradientShift 3s infinite,
+          glow 2s infinite alternate;
+        box-shadow: 0 4px 20px rgba(229, 62, 62, 0.6);
+        border-bottom: 3px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .breaking-banner-text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+      }
+
+      .breaking-alert-icon {
+        font-size: 20px;
+        animation: pulse 1s infinite;
+      }
+
+      .breaking-live-dot {
+        width: 12px;
+        height: 12px;
+        background: white;
+        border-radius: 50%;
+        animation: pulse 1.5s infinite;
+      }
+
+      /* Main content container */
+      .breaking-main-content {
+        position: relative;
+        z-index: 10;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        padding: 80px 60px 60px;
+      }
+
+      /* Left content section */
+      .breaking-content-left {
+        flex: 1;
+        padding-right: 40px;
+      }
+
+      /* Right branding section */
+      .breaking-content-right {
+        flex: 0 0 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      /* Urgency indicator */
+      .breaking-urgency {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.9);
+        color: #e53e3e;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 20px;
+        animation: slideInLeft 0.8s ease-out 0.2s both, pulse 2s infinite;
+        border: 2px solid #e53e3e;
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+      }
+
+      /* Main headline */
+      .breaking-headline {
+        font-size: clamp(28px, 4vw, 42px);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 20px;
+        color: #ffffff;
+        text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.8);
+        animation: slideInLeft 0.8s ease-out 0.4s both;
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+      }
+
+      /* News summary */
+      .breaking-summary {
+        font-size: clamp(16px, 2.5vw, 20px);
+        line-height: 1.4;
+        margin-bottom: 25px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        font-weight: 500;
+        animation: slideInLeft 0.8s ease-out 0.6s both;
+      }
+
+      /* Time and location info */
+      .breaking-meta {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 25px;
+        animation: fadeIn 0.8s ease-out 0.8s both;
+        flex-wrap: wrap;
+      }
+
+      .breaking-meta-item {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 10px 20px;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .breaking-meta-item:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+
+      .breaking-meta-icon {
+        font-size: 16px;
+      }
+
+      /* Source and verification */
+      .breaking-source {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 30px;
+        padding: 12px 25px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        animation: bounceIn 1s ease-out 1s both;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .breaking-source-icon {
+        font-size: 18px;
+      }
+
+      /* Right section branding */
+      .breaking-logo-container {
+        margin-bottom: 25px;
+        animation: fadeInRight 1s ease-out 0.3s both;
+      }
+
+      .breaking-logo {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+        margin: 0 auto;
+      }
+
+      .breaking-logo:hover {
+        transform: scale(1.05) rotate(5deg);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      }
+
+      .breaking-logo img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+      }
+
+      .breaking-brand-name {
+        font-size: 22px;
+        font-weight: 800;
+        color: #ffffff;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        margin-bottom: 8px;
+        animation: fadeInRight 1s ease-out 0.5s both;
+      }
+
+      .breaking-brand-tagline {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        margin-bottom: 20px;
+        animation: fadeInRight 1s ease-out 0.7s both;
+      }
+
+      .breaking-follow-cta {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 25px;
+        padding: 12px 25px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: fadeInRight 1s ease-out 0.9s both;
+        cursor: pointer;
+      }
+
+      .breaking-follow-cta:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      /* Live indicator */
+      .breaking-live-indicator {
+        position: absolute;
+        top: 70px;
+        right: 60px;
+        background: linear-gradient(90deg, #ff0000, #ff4444);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 15;
+        animation: slideInRight 0.8s ease-out 0.1s both,
+          glow 2s infinite alternate;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .breaking-live-indicator-dot {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        animation: pulse 1s infinite;
+      }
+
+      /* Bottom ticker */
+      .breaking-ticker {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 15px 0;
+        z-index: 15;
+        overflow: hidden;
+        border-top: 2px solid rgba(229, 62, 62, 0.6);
+      }
+
+      .breaking-ticker-content {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        animation: tickerScroll 30s linear infinite;
+      }
+
+      .breaking-ticker-label {
+        background: #e53e3e;
+        color: white;
+        padding: 8px 20px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-right: 20px;
+        border-radius: 0 15px 15px 0;
+      }
+
+      .breaking-ticker-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: #ffffff;
+        padding-right: 50px;
+      }
+
+      /* Emergency alert strip */
+      .breaking-emergency-strip {
+        position: absolute;
+        top: 50px;
+        left: -50px;
+        right: -50px;
+        background: linear-gradient(45deg, #ffd700, #ff8c00);
+        color: #000000;
+        padding: 6px 0;
+        font-size: 12px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+        z-index: 15;
+        transform: rotate(-3deg);
+        animation: slideInDown 0.8s ease-out 1.2s both, alertPulse 3s infinite;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.6);
+        display: none; /* Hidden by default */
+      }
+
+      /* Social media bar */
+      .breaking-social-bar {
+        position: absolute;
+        bottom: 70px;
+        left: 60px;
+        display: flex;
+        gap: 15px;
+        z-index: 15;
+        animation: slideInUp 0.8s ease-out 1.4s both;
+      }
+
+      .breaking-social-link {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .breaking-social-link:hover {
+        background: rgba(229, 62, 62, 0.3);
+        transform: scale(1.1);
+        border-color: rgba(229, 62, 62, 0.6);
+      }
+
+      /* Decorative elements */
+      .breaking-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.15;
+      }
+
+      .breaking-decorative.top-left {
+        top: 100px;
+        left: 100px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          rgba(229, 62, 62, 0.6),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .breaking-decorative.top-right {
+        top: 150px;
+        right: 100px;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite reverse;
+      }
+
+      .breaking-decorative.bottom-left {
+        bottom: 150px;
+        left: 150px;
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(
+          circle,
+          rgba(229, 62, 62, 0.5),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite;
+      }
+
+      /* Animations */
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.7;
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 20px rgba(229, 62, 62, 0.6);
+        }
+        to {
+          box-shadow: 0 4px 30px rgba(229, 62, 62, 0.9);
+        }
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      @keyframes tickerScroll {
+        0% {
+          transform: translateX(100%);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+
+      @keyframes alertPulse {
+        0%,
+        100% {
+          transform: rotate(-3deg) scale(1);
+        }
+        50% {
+          transform: rotate(-3deg) scale(1.02);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+        .universal-breaking-news-template {
+          width: 1024px;
+          height: 537px;
+        }
+
+        .breaking-main-content {
+          padding: 70px 50px 50px;
+        }
+
+        .breaking-content-right {
+          flex: 0 0 250px;
+        }
+
+        .breaking-logo {
+          width: 100px;
+          height: 100px;
+        }
+
+        .breaking-logo img {
+          width: 65px;
+          height: 65px;
+        }
+
+        .breaking-headline {
+          font-size: clamp(24px, 4vw, 36px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .universal-breaking-news-template {
+          width: 600px;
+          height: 315px;
+        }
+
+        .breaking-main-content {
+          flex-direction: column;
+          padding: 60px 40px 40px;
+          text-align: center;
+        }
+
+        .breaking-content-left {
+          padding-right: 0;
+          margin-bottom: 20px;
+        }
+
+        .breaking-content-right {
+          flex: none;
+        }
+
+        .breaking-headline {
+          font-size: clamp(20px, 5vw, 28px);
+          margin-bottom: 15px;
+        }
+
+        .breaking-summary {
+          font-size: clamp(14px, 3vw, 18px);
+          margin-bottom: 20px;
+        }
+
+        .breaking-meta {
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+
+        .breaking-logo {
+          width: 80px;
+          height: 80px;
+          margin-bottom: 15px;
+        }
+
+        .breaking-logo img {
+          width: 50px;
+          height: 50px;
+        }
+
+        .breaking-brand-name {
+          font-size: 18px;
+          margin-bottom: 5px;
+        }
+
+        .breaking-brand-tagline {
+          font-size: 12px;
+          margin-bottom: 15px;
+        }
+
+        .breaking-ticker {
+          padding: 10px 0;
+        }
+
+        .breaking-social-bar {
+          bottom: 50px;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .universal-breaking-news-template {
+          width: 400px;
+          height: 210px;
+        }
+
+        .breaking-main-content {
+          padding: 50px 30px 30px;
+        }
+
+        .breaking-headline {
+          font-size: clamp(16px, 6vw, 22px);
+          margin-bottom: 12px;
+        }
+
+        .breaking-summary {
+          font-size: clamp(12px, 4vw, 16px);
+          margin-bottom: 15px;
+        }
+
+        .breaking-urgency {
+          font-size: 12px;
+          padding: 6px 15px;
+          margin-bottom: 15px;
+        }
+
+        .breaking-meta-item {
+          font-size: 12px;
+          padding: 8px 16px;
+        }
+
+        .breaking-source {
+          font-size: 14px;
+          padding: 10px 20px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .breaking-urgency {
+        background: rgba(255, 255, 255, 0.95);
+        color: #e53e3e;
+      }
+
+      [data-theme='dark'] .breaking-overlay {
+        background: linear-gradient(
+          135deg,
+          rgba(229, 62, 62, 0.5) 0%,
+          rgba(0, 0, 0, 0.9) 50%,
+          rgba(229, 62, 62, 0.4) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .universal-breaking-news-template {
+        background: var(
+          --rdv-gradient-emergency,
+          linear-gradient(135deg, #e53e3e, #14171a)
+        );
+      }
+
+      [data-theme='brand'] .breaking-banner {
+        background: linear-gradient(
+          90deg,
+          var(--rdv-primary, #e53e3e),
+          var(--rdv-primary-light, #ff6b6b),
+          var(--rdv-primary, #e53e3e)
+        );
+      }
+
+      [data-theme='brand'] .breaking-urgency {
+        background: rgba(255, 255, 255, 0.95);
+        color: var(--rdv-primary, #e53e3e);
+        border-color: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .breaking-social-link:hover {
+        background: var(--rdv-primary, rgba(229, 62, 62, 0.3));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.6));
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .breaking-overlay {
+          background: linear-gradient(
+            135deg,
+            rgba(229, 62, 62, 0.6) 0%,
+            rgba(0, 0, 0, 0.9) 50%,
+            rgba(229, 62, 62, 0.5) 100%
+          );
+        }
+
+        .breaking-headline,
+        .breaking-brand-name {
+          text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .universal-breaking-news-template {
+          width: 297mm;
+          height: 156mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .breaking-overlay,
+        .breaking-pattern,
+        .breaking-decorative {
+          display: none;
+        }
+
+        .breaking-headline,
+        .breaking-brand-name {
+          text-shadow: none;
+          color: black !important;
+        }
+
+        .breaking-banner {
+          background: #e53e3e !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="universal-breaking-news-template" id="breakingTemplate">
+      <!-- Background image -->
+      <div class="breaking-background" id="breakingBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="breaking-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="breaking-pattern" id="breakingPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="breaking-decorative top-left"></div>
+      <div class="breaking-decorative top-right"></div>
+      <div class="breaking-decorative bottom-left"></div>
+
+      <!-- Breaking news banner -->
+      <div class="breaking-banner">
+        <div class="breaking-banner-text">
+          <span class="breaking-alert-icon">🚨</span>
+          <span id="breakingBannerText">ÚLTIMA HORA - RADIO DEL VOLGA</span>
+          <span class="breaking-live-dot"></span>
+        </div>
+      </div>
+
+      <!-- Emergency alert strip -->
+      <div class="breaking-emergency-strip" id="breakingEmergencyStrip">
+        ⚠️ ALERTA ESPECIAL ⚠️
+      </div>
+
+      <!-- Live indicator -->
+      <div class="breaking-live-indicator" id="breakingLiveIndicator">
+        <span class="breaking-live-indicator-dot"></span>
+        <span>EN VIVO</span>
+      </div>
+
+      <!-- Main content -->
+      <div class="breaking-main-content">
+        <!-- Left content section -->
+        <div class="breaking-content-left">
+          <!-- Urgency indicator -->
+          <div class="breaking-urgency" id="breakingUrgency">URGENTE</div>
+
+          <!-- Main headline -->
+          <h1 class="breaking-headline" id="breakingHeadline">
+            Información de último momento desde Radio del Volga
+          </h1>
+
+          <!-- News summary -->
+          <p class="breaking-summary" id="breakingSummary">
+            Manténgase informado con las últimas noticias de impacto. Radio del
+            Volga le trae la información más relevante al momento.
+          </p>
+
+          <!-- Meta information -->
+          <div class="breaking-meta">
+            <div class="breaking-meta-item">
+              <span class="breaking-meta-icon">⏰</span>
+              <span id="breakingTime">Ahora</span>
+            </div>
+            <div class="breaking-meta-item">
+              <span class="breaking-meta-icon">📍</span>
+              <span id="breakingLocation">Villa Mercedes, SL</span>
+            </div>
+            <div class="breaking-meta-item">
+              <span class="breaking-meta-icon">👤</span>
+              <span id="breakingReporter">Redacción RDV</span>
+            </div>
+          </div>
+
+          <!-- Source verification -->
+          <div class="breaking-source">
+            <span class="breaking-source-icon">✅</span>
+            <span id="breakingSource">Fuente verificada - RDV</span>
+          </div>
+        </div>
+
+        <!-- Right branding section -->
+        <div class="breaking-content-right">
+          <div class="breaking-logo-container">
+            <div class="breaking-logo">
+              <img
+                src="../../assets/images/logos/rdv-white.svg"
+                alt="RDV"
+                id="breakingLogo"
+              />
+            </div>
+          </div>
+
+          <div class="breaking-brand-name" id="breakingBrandName">
+            Radio del Volga
+          </div>
+
+          <div class="breaking-brand-tagline" id="breakingBrandTagline">
+            Información confiable
+          </div>
+
+          <a href="#" class="breaking-follow-cta" id="breakingFollowCta">
+            <span>📻</span>
+            <span>Síguenos</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Social media bar -->
+      <div class="breaking-social-bar">
+        <a href="#" class="breaking-social-link" title="Facebook">📘</a>
+        <a href="#" class="breaking-social-link" title="Twitter">🐦</a>
+        <a href="#" class="breaking-social-link" title="Instagram">📷</a>
+        <a href="#" class="breaking-social-link" title="WhatsApp">📱</a>
+      </div>
+
+      <!-- Bottom ticker -->
+      <div class="breaking-ticker">
+        <div class="breaking-ticker-content">
+          <div class="breaking-ticker-label">ÚLTIMAS NOTICIAS</div>
+          <div class="breaking-ticker-text" id="breakingTickerText">
+            Radio del Volga - Tu fuente confiable de información • Síguenos en
+            todas nuestras redes sociales • Mantente informado las 24 horas •
+            radiodelvolga.com
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateBreakingNewsContent = function (data) {
+        try {
+          // Update brand information
+          if (data.brandName) {
+            document.getElementById('breakingBrandName').textContent =
+              data.brandName
+          }
+
+          if (data.brandTagline) {
+            document.getElementById('breakingBrandTagline').textContent =
+              data.brandTagline
+          }
+
+          if (data.headline) {
+            document.getElementById('breakingHeadline').textContent =
+              data.headline
+          }
+
+          if (data.summary) {
+            document.getElementById('breakingSummary').textContent =
+              data.summary
+          }
+
+          if (data.urgencyLevel) {
+            document.getElementById('breakingUrgency').textContent =
+              data.urgencyLevel.toUpperCase()
+          }
+
+          // Update banner text
+          if (data.bannerText) {
+            document.getElementById('breakingBannerText').textContent =
+              data.bannerText.toUpperCase()
+          }
+
+          // Update meta information
+          if (data.meta) {
+            if (data.meta.time) {
+              document.getElementById('breakingTime').textContent =
+                formatBreakingTime(data.meta.time)
+            }
+            if (data.meta.location) {
+              document.getElementById('breakingLocation').textContent =
+                data.meta.location
+            }
+            if (data.meta.reporter) {
+              document.getElementById('breakingReporter').textContent =
+                data.meta.reporter
+            }
+          }
+
+          // Update source
+          if (data.source) {
+            document.getElementById(
+              'breakingSource'
+            ).textContent = `✅ ${data.source}`
+          }
+
+          // Update ticker text
+          if (data.tickerText) {
+            document.getElementById('breakingTickerText').textContent =
+              data.tickerText
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('breakingBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Show/hide emergency strip
+          if (data.isEmergency) {
+            const emergencyElement = document.getElementById(
+              'breakingEmergencyStrip'
+            )
+            emergencyElement.style.display = 'block'
+            if (data.emergencyText) {
+              emergencyElement.textContent = `⚠️ ${data.emergencyText} ⚠️`
+            }
+          }
+
+          // Update follow CTA
+          if (data.ctaText) {
+            const ctaElement = document.getElementById('breakingFollowCta')
+            ctaElement.querySelector('span:last-child').textContent =
+              data.ctaText
+          }
+
+          // Update social links
+          if (data.socialLinks) {
+            updateBreakingSocialLinks(data.socialLinks)
+          }
+
+          console.log('✅ Breaking News content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating breaking news content:', error)
+        }
+      }
+
+      // Format time for breaking news display
+      function formatBreakingTime(time) {
+        if (time === 'now' || time === 'ahora') {
+          return 'Ahora'
+        }
+
+        const inputTime = new Date(time)
+        const now = new Date()
+        const diffMinutes = Math.floor((now - inputTime) / (1000 * 60))
+
+        if (diffMinutes < 1) {
+          return 'Ahora'
+        } else if (diffMinutes < 60) {
+          return `Hace ${diffMinutes} min`
+        } else {
+          return inputTime.toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit',
+          })
+        }
+      }
+
+      // Update social media links
+      function updateBreakingSocialLinks(links) {
+        const socialContainer = document.querySelector('.breaking-social-bar')
+        const socialLinks = socialContainer.querySelectorAll(
+          '.breaking-social-link'
+        )
+
+        if (links.facebook) {
+          socialLinks[0].href = links.facebook
+        }
+        if (links.twitter) {
+          socialLinks[1].href = links.twitter
+        }
+        if (links.instagram) {
+          socialLinks[2].href = links.instagram
+        }
+        if (links.whatsapp) {
+          socialLinks[3].href = links.whatsapp
+        }
+      }
+
+      // Apply theme colors
+      window.applyBreakingNewsTheme = function (theme) {
+        const template = document.getElementById('breakingTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyBreakingNewsColors = function (colors) {
+        const template = document.getElementById('breakingTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyBreakingNewsPattern = function (patternUrl, opacity = 0.08) {
+        const patternElement = document.getElementById('breakingPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '200px 200px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add interaction listeners
+      function setupBreakingNewsInteractionListeners() {
+        // Follow CTA interaction
+        const followCta = document.getElementById('breakingFollowCta')
+        followCta.addEventListener('click', function (e) {
+          e.preventDefault()
+          this.style.transform = 'translateY(-4px) scale(1.05)'
+          setTimeout(() => {
+            this.style.transform = 'translateY(0) scale(1)'
+          }, 200)
+          console.log('🔗 Breaking news follow CTA clicked')
+        })
+
+        // Logo interaction
+        const logo = document.querySelector('.breaking-logo')
+        logo.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1) rotate(10deg)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1) rotate(0deg)'
+          }, 300)
+          console.log('🎯 Breaking news logo clicked')
+        })
+
+        // Social links interactions
+        const socialLinks = document.querySelectorAll('.breaking-social-link')
+        socialLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault()
+            this.style.transform = 'scale(1.2)'
+
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+
+            const platform = this.title || 'Social Media'
+            console.log(`🔗 ${platform} link clicked`)
+          })
+        })
+
+        // Meta items interactions
+        const metaItems = document.querySelectorAll('.breaking-meta-item')
+        metaItems.forEach((item) => {
+          item.addEventListener('click', function () {
+            this.style.transform = 'scale(1.1)'
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+          })
+        })
+
+        // Banner interaction
+        const banner = document.querySelector('.breaking-banner')
+        banner.addEventListener('click', function () {
+          this.style.transform = 'scale(1.02)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+          }, 200)
+          console.log('🚨 Breaking news banner clicked')
+        })
+
+        // Urgency indicator interaction
+        const urgency = document.getElementById('breakingUrgency')
+        urgency.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+          }, 200)
+          console.log('⚠️ Urgency indicator clicked')
+        })
+
+        // Live indicator interaction
+        const liveIndicator = document.getElementById('breakingLiveIndicator')
+        liveIndicator.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+          }, 200)
+          console.log('🔴 Live indicator clicked')
+        })
+      }
+
+      // Update ticker text periodically
+      function updateTickerText() {
+        const tickerText = document.getElementById('breakingTickerText')
+        const currentTime = new Date().toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+
+        // Update with current time if needed
+        if (tickerText.textContent.includes('Síguenos')) {
+          tickerText.textContent = tickerText.textContent.replace(
+            /\d{2}:\d{2}/g,
+            currentTime
+          )
+        }
+      }
+
+      // Initialize interaction listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupBreakingNewsInteractionListeners()
+
+        // Update ticker every minute
+        setInterval(updateTickerText, 60000)
+      })
+
+      // Export functions for external use
+      window.UniversalBreakingNewsTemplate = {
+        updateContent: window.updateBreakingNewsContent,
+        applyTheme: window.applyBreakingNewsTheme,
+        applyColors: window.applyBreakingNewsColors,
+        applyPattern: window.applyBreakingNewsPattern,
+      }
+
+      console.log('🚨 Universal Breaking News template loaded successfully')
+    </script>
+  </body>
+</html>

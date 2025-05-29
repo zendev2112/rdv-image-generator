@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Universal News Card Template - RDV</title>
+    <style>
+      /* Template-specific styles for Universal News Card */
+      .universal-news-card-template {
+        width: 1080px;
+        height: 1080px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #1da1f2),
+          var(--color-secondary, #14171a)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Background layer */
+      .news-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .news-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.6) 50%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .news-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.05;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Header section */
+      .news-header {
+        position: relative;
+        z-index: 10;
+        padding: 40px 50px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        animation: slideInDown 0.8s ease-out;
+      }
+
+      .news-logo {
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .news-logo:hover {
+        transform: scale(1.05) rotate(5deg);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .news-logo img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+      }
+
+      .news-brand-info {
+        text-align: right;
+      }
+
+      .news-brand-name {
+        font-size: 24px;
+        font-weight: 800;
+        color: #ffffff;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        margin-bottom: 5px;
+      }
+
+      .news-brand-tagline {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Main content section */
+      .news-main-content {
+        position: relative;
+        z-index: 10;
+        flex: 1;
+        padding: 0 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* Breaking news indicator */
+      .news-breaking {
+        display: inline-block;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 12px 30px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 6px 20px rgba(229, 62, 62, 0.5);
+        animation: slideInLeft 0.8s ease-out 0.2s both,
+          glow 2s infinite alternate;
+        align-self: center;
+        display: none; /* Hidden by default */
+      }
+
+      .news-breaking-dot {
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 10px;
+        animation: pulse 1s infinite;
+      }
+
+      /* Category badge */
+      .news-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(29, 161, 242, 0.9));
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        animation: slideInLeft 0.8s ease-out 0.4s both;
+        align-self: center;
+      }
+
+      /* Main headline */
+      .news-headline {
+        font-size: clamp(32px, 4vw, 48px);
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 25px;
+        color: #ffffff;
+        text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.7);
+        animation: slideInUp 0.8s ease-out 0.6s both;
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        text-align: center;
+      }
+
+      /* News summary */
+      .news-summary {
+        font-size: clamp(18px, 2.5vw, 22px);
+        line-height: 1.5;
+        margin-bottom: 35px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        font-weight: 500;
+        animation: slideInUp 0.8s ease-out 0.8s both;
+        text-align: center;
+        max-width: 800px;
+        align-self: center;
+      }
+
+      /* Time and location info */
+      .news-meta {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-bottom: 30px;
+        animation: fadeIn 0.8s ease-out 1s both;
+        flex-wrap: wrap;
+      }
+
+      .news-meta-item {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 10px 20px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .news-meta-item:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+      }
+
+      .news-meta-icon {
+        font-size: 16px;
+      }
+
+      /* Call to action */
+      .news-cta {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 35px;
+        padding: 15px 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: bounceIn 1s ease-out 1.2s both;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        align-self: center;
+      }
+
+      .news-cta:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .news-cta-icon {
+        font-size: 20px;
+        animation: bounce 2s infinite;
+      }
+
+      /* Footer section */
+      .news-footer {
+        position: relative;
+        z-index: 10;
+        padding: 30px 50px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideInUp 0.8s ease-out 1.4s both;
+      }
+
+      .news-social-media {
+        display: flex;
+        gap: 15px;
+      }
+
+      .news-social-link {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 18px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .news-social-link:hover {
+        background: var(--color-accent, rgba(29, 161, 242, 0.3));
+        transform: scale(1.1);
+        border-color: var(--color-accent, rgba(29, 161, 242, 0.5));
+      }
+
+      .news-website {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .news-website-icon {
+        font-size: 16px;
+      }
+
+      /* Hashtags section */
+      .news-hashtags {
+        position: absolute;
+        bottom: 120px;
+        left: 50px;
+        right: 50px;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        z-index: 15;
+        animation: slideInUp 0.8s ease-out 1.6s both;
+      }
+
+      .news-hashtag {
+        background: rgba(29, 161, 242, 0.2);
+        backdrop-filter: blur(5px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1da1f2;
+        border: 1px solid rgba(29, 161, 242, 0.4);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .news-hashtag:hover {
+        background: rgba(29, 161, 242, 0.3);
+        transform: scale(1.05);
+      }
+
+      /* Live indicator */
+      .news-live-indicator {
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out 0.1s both,
+          glow 2s infinite alternate;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.5);
+        display: none; /* Hidden by default */
+      }
+
+      /* Decorative elements */
+      .news-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.1;
+      }
+
+      .news-decorative.top-left {
+        top: 150px;
+        left: 100px;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 161, 242, 0.4),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .news-decorative.top-right {
+        top: 200px;
+        right: 120px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      .news-decorative.bottom-left {
+        bottom: 200px;
+        left: 150px;
+        width: 70px;
+        height: 70px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 161, 242, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite;
+      }
+
+      .news-decorative.bottom-right {
+        bottom: 250px;
+        right: 100px;
+        width: 50px;
+        height: 50px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 7s ease-in-out infinite reverse;
+      }
+
+      /* News source attribution */
+      .news-source {
+        position: absolute;
+        top: 120px;
+        right: 50px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        z-index: 15;
+        animation: fadeInRight 0.8s ease-out 0.9s both;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Animations */
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.1);
+          opacity: 0.7;
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-4px);
+        }
+        60% {
+          transform: translateY(-2px);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 6px 20px rgba(229, 62, 62, 0.5);
+        }
+        to {
+          box-shadow: 0 6px 30px rgba(229, 62, 62, 0.8);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+        .universal-news-card-template {
+          width: 800px;
+          height: 800px;
+        }
+
+        .news-header,
+        .news-main-content,
+        .news-footer {
+          padding-left: 40px;
+          padding-right: 40px;
+        }
+
+        .news-logo {
+          width: 70px;
+          height: 70px;
+        }
+
+        .news-logo img {
+          width: 45px;
+          height: 45px;
+        }
+
+        .news-brand-name {
+          font-size: 20px;
+        }
+
+        .news-headline {
+          font-size: clamp(26px, 4vw, 36px);
+        }
+
+        .news-summary {
+          font-size: clamp(16px, 2.5vw, 20px);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .universal-news-card-template {
+          width: 600px;
+          height: 600px;
+        }
+
+        .news-header,
+        .news-main-content,
+        .news-footer {
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+
+        .news-header {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 15px;
+        }
+
+        .news-brand-info {
+          text-align: center;
+        }
+
+        .news-logo {
+          width: 60px;
+          height: 60px;
+        }
+
+        .news-logo img {
+          width: 40px;
+          height: 40px;
+        }
+
+        .news-brand-name {
+          font-size: 18px;
+        }
+
+        .news-brand-tagline {
+          font-size: 12px;
+        }
+
+        .news-headline {
+          font-size: clamp(20px, 5vw, 28px);
+          margin-bottom: 20px;
+        }
+
+        .news-summary {
+          font-size: clamp(14px, 3vw, 18px);
+          margin-bottom: 25px;
+        }
+
+        .news-category,
+        .news-breaking {
+          font-size: 14px;
+          padding: 10px 20px;
+          margin-bottom: 20px;
+        }
+
+        .news-meta {
+          flex-direction: column;
+          gap: 15px;
+          align-items: center;
+        }
+
+        .news-cta {
+          font-size: 16px;
+          padding: 12px 30px;
+        }
+
+        .news-footer {
+          flex-direction: column;
+          gap: 20px;
+          text-align: center;
+        }
+
+        .news-hashtags {
+          bottom: 140px;
+          left: 30px;
+          right: 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .universal-news-card-template {
+          width: 400px;
+          height: 400px;
+        }
+
+        .news-header,
+        .news-main-content,
+        .news-footer {
+          padding: 20px;
+        }
+
+        .news-headline {
+          font-size: clamp(16px, 6vw, 22px);
+          margin-bottom: 15px;
+        }
+
+        .news-summary {
+          font-size: clamp(12px, 4vw, 16px);
+          margin-bottom: 20px;
+        }
+
+        .news-category,
+        .news-breaking {
+          font-size: 12px;
+          padding: 8px 16px;
+          margin-bottom: 15px;
+        }
+
+        .news-cta {
+          font-size: 14px;
+          padding: 10px 20px;
+        }
+
+        .news-hashtags {
+          bottom: 100px;
+          left: 20px;
+          right: 20px;
+        }
+
+        .news-hashtag {
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .news-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.9));
+      }
+
+      [data-theme='dark'] .news-overlay {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.5) 0%,
+          rgba(0, 0, 0, 0.8) 50%,
+          rgba(0, 0, 0, 0.6) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .news-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .universal-news-card-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #1da1f2, #14171a)
+        );
+      }
+
+      [data-theme='brand'] .news-hashtag {
+        color: var(--rdv-primary, #e53e3e);
+        background: var(--rdv-primary-light, rgba(229, 62, 62, 0.15));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.3));
+      }
+
+      [data-theme='brand'] .news-cta {
+        background: var(--rdv-primary, rgba(229, 62, 62, 0.2));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.4));
+      }
+
+      [data-theme='brand'] .news-cta:hover {
+        background: var(--rdv-primary-dark, rgba(197, 48, 48, 0.3));
+      }
+
+      [data-theme='brand'] .news-social-link:hover {
+        background: var(--rdv-primary, rgba(229, 62, 62, 0.3));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.5));
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .news-overlay {
+          background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.6) 0%,
+            rgba(0, 0, 0, 0.9) 50%,
+            rgba(0, 0, 0, 0.7) 100%
+          );
+        }
+
+        .news-headline,
+        .news-brand-name {
+          text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .universal-news-card-template {
+          width: 210mm;
+          height: 210mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .news-overlay,
+        .news-pattern,
+        .news-decorative {
+          display: none;
+        }
+
+        .news-headline,
+        .news-brand-name {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="universal-news-card-template" id="newsCardTemplate">
+      <!-- Background image -->
+      <div class="news-background" id="newsBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="news-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="news-pattern" id="newsPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="news-decorative top-left"></div>
+      <div class="news-decorative top-right"></div>
+      <div class="news-decorative bottom-left"></div>
+      <div class="news-decorative bottom-right"></div>
+
+      <!-- Live indicator -->
+      <div class="news-live-indicator" id="newsLiveIndicator">🔴 EN VIVO</div>
+
+      <!-- News source attribution -->
+      <div class="news-source" id="newsSource">Exclusivo RDV</div>
+
+      <!-- Header section -->
+      <div class="news-header">
+        <div class="news-logo">
+          <img
+            src="../../assets/images/logos/rdv-white.svg"
+            alt="RDV"
+            id="newsLogo"
+          />
+        </div>
+        <div class="news-brand-info">
+          <div class="news-brand-name" id="newsBrandName">Radio del Volga</div>
+          <div class="news-brand-tagline" id="newsBrandTagline">
+            Tu radio de confianza
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content section -->
+      <div class="news-main-content">
+        <!-- Breaking news indicator -->
+        <div class="news-breaking" id="newsBreaking">
+          <span class="news-breaking-dot"></span>
+          ÚLTIMA HORA
+        </div>
+
+        <!-- Category badge -->
+        <div class="news-category" id="newsCategory">NOTICIAS</div>
+
+        <!-- Main headline -->
+        <h1 class="news-headline" id="newsHeadline">
+          Radio del Volga: Informando con responsabilidad y compromiso social
+        </h1>
+
+        <!-- News summary -->
+        <p class="news-summary" id="newsSummary">
+          Conectamos a la comunidad del Volga con información veraz,
+          entretenimiento de calidad y el mejor acompañamiento musical las 24
+          horas del día.
+        </p>
+
+        <!-- Meta information -->
+        <div class="news-meta">
+          <div class="news-meta-item">
+            <span class="news-meta-icon">📅</span>
+            <span id="newsDate">Hoy</span>
+          </div>
+          <div class="news-meta-item">
+            <span class="news-meta-icon">📍</span>
+            <span id="newsLocation">Villa Mercedes, SL</span>
+          </div>
+          <div class="news-meta-item">
+            <span class="news-meta-icon">👤</span>
+            <span id="newsReporter">Redacción RDV</span>
+          </div>
+        </div>
+
+        <!-- Call to action -->
+        <a href="#" class="news-cta" id="newsCta">
+          <span>Más información</span>
+          <span class="news-cta-icon">📻</span>
+        </a>
+      </div>
+
+      <!-- Hashtags -->
+      <div class="news-hashtags" id="newsHashtags">
+        <span class="news-hashtag">#RDV</span>
+        <span class="news-hashtag">#Noticias</span>
+        <span class="news-hashtag">#VillaMercedes</span>
+        <span class="news-hashtag">#SanLuis</span>
+        <span class="news-hashtag">#Radio</span>
+      </div>
+
+      <!-- Footer section -->
+      <div class="news-footer">
+        <div class="news-social-media">
+          <a href="#" class="news-social-link" title="Facebook">📘</a>
+          <a href="#" class="news-social-link" title="Twitter">🐦</a>
+          <a href="#" class="news-social-link" title="Instagram">📷</a>
+          <a href="#" class="news-social-link" title="YouTube">📺</a>
+          <a href="#" class="news-social-link" title="WhatsApp">📱</a>
+        </div>
+
+        <div class="news-website">
+          <span class="news-website-icon">🌐</span>
+          <span id="newsWebsite">radiodelvolga.com</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateNewsCardContent = function (data) {
+        try {
+          // Update brand information
+          if (data.brandName) {
+            document.getElementById('newsBrandName').textContent =
+              data.brandName
+          }
+
+          if (data.brandTagline) {
+            document.getElementById('newsBrandTagline').textContent =
+              data.brandTagline
+          }
+
+          if (data.headline) {
+            document.getElementById('newsHeadline').textContent = data.headline
+          }
+
+          if (data.summary) {
+            document.getElementById('newsSummary').textContent = data.summary
+          }
+
+          if (data.category) {
+            document.getElementById('newsCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          if (data.website) {
+            document.getElementById('newsWebsite').textContent = data.website
+          }
+
+          // Update meta information
+          if (data.meta) {
+            if (data.meta.date) {
+              document.getElementById('newsDate').textContent = formatNewsDate(
+                data.meta.date
+              )
+            }
+            if (data.meta.location) {
+              document.getElementById('newsLocation').textContent =
+                data.meta.location
+            }
+            if (data.meta.reporter) {
+              document.getElementById('newsReporter').textContent =
+                data.meta.reporter
+            }
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('newsBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update hashtags
+          if (data.hashtags && Array.isArray(data.hashtags)) {
+            updateNewsHashtags(data.hashtags)
+          }
+
+          // Update CTA
+          if (data.ctaText) {
+            const ctaElement = document.getElementById('newsCta')
+            ctaElement.querySelector('span:first-child').textContent =
+              data.ctaText
+          }
+
+          if (data.ctaUrl) {
+            document.getElementById('newsCta').href = data.ctaUrl
+          }
+
+          // Show/hide breaking news
+          if (data.isBreaking) {
+            const breakingElement = document.getElementById('newsBreaking')
+            breakingElement.style.display = 'block'
+            if (data.breakingText) {
+              breakingElement.innerHTML = `<span class="news-breaking-dot"></span>${data.breakingText}`
+            }
+          }
+
+          // Show/hide live indicator
+          if (data.isLive) {
+            const liveElement = document.getElementById('newsLiveIndicator')
+            liveElement.style.display = 'block'
+            if (data.liveText) {
+              liveElement.textContent = `🔴 ${data.liveText}`
+            }
+          }
+
+          // Update news source
+          if (data.newsSource) {
+            document.getElementById('newsSource').textContent = data.newsSource
+          }
+
+          // Update social links
+          if (data.socialLinks) {
+            updateNewsSocialLinks(data.socialLinks)
+          }
+
+          console.log('✅ Universal News Card content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating news card content:', error)
+        }
+      }
+
+      // Format date for news display
+      function formatNewsDate(date) {
+        const now = new Date()
+        const inputDate = new Date(date)
+        const diffTime = Math.abs(now - inputDate)
+        const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+        if (diffHours < 24) {
+          return diffHours === 1 ? 'Hace 1 hora' : `Hace ${diffHours} horas`
+        } else if (diffDays === 1) {
+          return 'Ayer'
+        } else if (diffDays <= 7) {
+          return `Hace ${diffDays} días`
+        } else {
+          return inputDate.toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        }
+      }
+
+      // Update hashtags
+      function updateNewsHashtags(hashtags) {
+        const hashtagsContainer = document.getElementById('newsHashtags')
+        hashtagsContainer.innerHTML = ''
+
+        hashtags.slice(0, 8).forEach((tag) => {
+          const hashtagElement = document.createElement('span')
+          hashtagElement.className = 'news-hashtag'
+          hashtagElement.textContent = tag.startsWith('#') ? tag : `#${tag}`
+          hashtagsContainer.appendChild(hashtagElement)
+        })
+      }
+
+      // Update social media links
+      function updateNewsSocialLinks(links) {
+        const socialContainer = document.querySelector('.news-social-media')
+        const socialLinks =
+          socialContainer.querySelectorAll('.news-social-link')
+
+        if (links.facebook) {
+          socialLinks[0].href = links.facebook
+        }
+        if (links.twitter) {
+          socialLinks[1].href = links.twitter
+        }
+        if (links.instagram) {
+          socialLinks[2].href = links.instagram
+        }
+        if (links.youtube) {
+          socialLinks[3].href = links.youtube
+        }
+        if (links.whatsapp) {
+          socialLinks[4].href = links.whatsapp
+        }
+      }
+
+      // Apply theme colors
+      window.applyNewsCardTheme = function (theme) {
+        const template = document.getElementById('newsCardTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyNewsCardColors = function (colors) {
+        const template = document.getElementById('newsCardTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyNewsCardPattern = function (patternUrl, opacity = 0.05) {
+        const patternElement = document.getElementById('newsPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '250px 250px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add interaction listeners
+      function setupNewsCardInteractionListeners() {
+        // CTA button interaction
+        const ctaButton = document.getElementById('newsCta')
+        ctaButton.addEventListener('click', function (e) {
+          e.preventDefault()
+          this.style.transform = 'translateY(-5px) scale(1.05)'
+          setTimeout(() => {
+            this.style.transform = 'translateY(0) scale(1)'
+          }, 200)
+          console.log('🔗 News card CTA clicked')
+        })
+
+        // Logo interaction
+        const logo = document.querySelector('.news-logo')
+        logo.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1) rotate(10deg)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1) rotate(0deg)'
+          }, 300)
+          console.log('🎯 News card logo clicked')
+        })
+
+        // Social links interactions
+        const socialLinks = document.querySelectorAll('.news-social-link')
+        socialLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault()
+            this.style.transform = 'scale(1.2)'
+
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+
+            const platform = this.title || 'Social Media'
+            console.log(`🔗 ${platform} link clicked`)
+          })
+        })
+
+        // Meta items interactions
+        const metaItems = document.querySelectorAll('.news-meta-item')
+        metaItems.forEach((item) => {
+          item.addEventListener('click', function () {
+            this.style.transform = 'scale(1.1)'
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+          })
+        })
+
+        // Hashtag interactions
+        const hashtags = document.querySelectorAll('.news-hashtag')
+        hashtags.forEach((hashtag) => {
+          hashtag.addEventListener('click', function () {
+            this.style.transform = 'scale(1.1)'
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+            console.log(`#️⃣ Hashtag ${this.textContent} clicked`)
+          })
+        })
+
+        // Breaking news interaction
+        const breakingNews = document.getElementById('newsBreaking')
+        breakingNews.addEventListener('click', function () {
+          this.style.transform = 'scale(1.05)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+          }, 200)
+          console.log('🚨 Breaking news banner clicked')
+        })
+      }
+
+      // Initialize interaction listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupNewsCardInteractionListeners()
+      })
+
+      // Export functions for external use
+      window.UniversalNewsCardTemplate = {
+        updateContent: window.updateNewsCardContent,
+        applyTheme: window.applyNewsCardTheme,
+        applyColors: window.applyNewsCardColors,
+        applyPattern: window.applyNewsCardPattern,
+      }
+
+      console.log('📰 Universal News Card template loaded successfully')
+    </script>
+  </body>
+</html>

@@ -1,0 +1,439 @@
+/**
+ * RDV Image Generator - Default Theme
+ * Primary theme with blue and purple gradients
+ * @version 1.0.0
+ */
+
+:root {
+    /* ========================================
+       DEFAULT THEME VARIABLES
+       ======================================== */
+
+    /* Primary Colors */
+    --theme-primary: #667eea;
+    --theme-primary-rgb: 102, 126, 234;
+    --theme-primary-light: #7c8fee;
+    --theme-primary-dark: #5a6fd8;
+    --theme-primary-50: rgba(102, 126, 234, 0.05);
+    --theme-primary-100: rgba(102, 126, 234, 0.1);
+    --theme-primary-200: rgba(102, 126, 234, 0.2);
+    --theme-primary-300: rgba(102, 126, 234, 0.3);
+    --theme-primary-400: rgba(102, 126, 234, 0.4);
+    --theme-primary-500: rgba(102, 126, 234, 0.5);
+    --theme-primary-600: rgba(102, 126, 234, 0.6);
+    --theme-primary-700: rgba(102, 126, 234, 0.7);
+    --theme-primary-800: rgba(102, 126, 234, 0.8);
+    --theme-primary-900: rgba(102, 126, 234, 0.9);
+
+    /* Secondary Colors */
+    --theme-secondary: #764ba2;
+    --theme-secondary-rgb: 118, 75, 162;
+    --theme-secondary-light: #8a5fb3;
+    --theme-secondary-dark: #63408a;
+    --theme-secondary-50: rgba(118, 75, 162, 0.05);
+    --theme-secondary-100: rgba(118, 75, 162, 0.1);
+    --theme-secondary-200: rgba(118, 75, 162, 0.2);
+    --theme-secondary-300: rgba(118, 75, 162, 0.3);
+    --theme-secondary-400: rgba(118, 75, 162, 0.4);
+    --theme-secondary-500: rgba(118, 75, 162, 0.5);
+    --theme-secondary-600: rgba(118, 75, 162, 0.6);
+    --theme-secondary-700: rgba(118, 75, 162, 0.7);
+    --theme-secondary-800: rgba(118, 75, 162, 0.8);
+    --theme-secondary-900: rgba(118, 75, 162, 0.9);
+
+    /* Accent Colors */
+    --theme-accent: #4facfe;
+    --theme-accent-rgb: 79, 172, 254;
+    --theme-accent-light: #6bb6fe;
+    --theme-accent-dark: #3d8ccc;
+    --theme-accent-50: rgba(79, 172, 254, 0.05);
+    --theme-accent-100: rgba(79, 172, 254, 0.1);
+    --theme-accent-200: rgba(79, 172, 254, 0.2);
+    --theme-accent-300: rgba(79, 172, 254, 0.3);
+    --theme-accent-400: rgba(79, 172, 254, 0.4);
+    --theme-accent-500: rgba(79, 172, 254, 0.5);
+    --theme-accent-600: rgba(79, 172, 254, 0.6);
+    --theme-accent-700: rgba(79, 172, 254, 0.7);
+    --theme-accent-800: rgba(79, 172, 254, 0.8);
+    --theme-accent-900: rgba(79, 172, 254, 0.9);
+
+    /* Background Colors */
+    --theme-background: #ffffff;
+    --theme-background-rgb: 255, 255, 255;
+    --theme-surface: #f8fafc;
+    --theme-surface-rgb: 248, 250, 252;
+    --theme-surface-elevated: #ffffff;
+    --theme-overlay: rgba(0, 0, 0, 0.5);
+
+    /* Text Colors */
+    --theme-text: #1a202c;
+    --theme-text-rgb: 26, 32, 44;
+    --theme-text-secondary: #718096;
+    --theme-text-muted: #a0aec0;
+    --theme-text-inverse: #ffffff;
+    --theme-text-on-primary: #ffffff;
+    --theme-text-on-secondary: #ffffff;
+    --theme-text-on-accent: #ffffff;
+
+    /* Border Colors */
+    --theme-border: #e2e8f0;
+    --theme-border-light: #f1f5f9;
+    --theme-border-strong: #cbd5e0;
+    --theme-divider: #edf2f7;
+
+    /* Status Colors */
+    --theme-success: #48bb78;
+    --theme-success-light: #68d391;
+    --theme-success-dark: #38a169;
+    --theme-warning: #ed8936;
+    --theme-warning-light: #f6ad55;
+    --theme-warning-dark: #dd6b20;
+    --theme-error: #f56565;
+    --theme-error-light: #fc8181;
+    --theme-error-dark: #e53e3e;
+    --theme-info: #4299e1;
+    --theme-info-light: #63b3ed;
+    --theme-info-dark: #3182ce;
+
+    /* Gradients */
+    --theme-gradient-primary: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+    --theme-gradient-secondary: linear-gradient(135deg, var(--theme-secondary), var(--theme-accent));
+    --theme-gradient-accent: linear-gradient(135deg, var(--theme-accent), var(--theme-primary));
+    --theme-gradient-hero: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary), var(--theme-accent));
+    --theme-gradient-surface: linear-gradient(135deg, rgba(102, 126, 234, 0.03), rgba(118, 75, 162, 0.05));
+    --theme-gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+
+    /* Shadows */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(102, 126, 234, 0.1);
+    --theme-shadow-md: 0 4px 6px -1px rgba(102, 126, 234, 0.15);
+    --theme-shadow-lg: 0 10px 15px -3px rgba(102, 126, 234, 0.2);
+    --theme-shadow-xl: 0 20px 25px -5px rgba(102, 126, 234, 0.25);
+    --theme-shadow-2xl: 0 25px 50px -12px rgba(102, 126, 234, 0.3);
+    --theme-shadow-inner: inset 0 2px 4px 0 rgba(102, 126, 234, 0.1);
+
+    /* Template Specific Variables */
+    --template-bg: var(--theme-background);
+    --template-text: var(--theme-text);
+    --template-title: var(--theme-primary);
+    --template-subtitle: var(--theme-text-secondary);
+    --template-accent: var(--theme-accent);
+    --template-overlay: var(--theme-gradient-overlay);
+
+    /* Animation Variables */
+    --theme-transition-fast: 0.15s ease;
+    --theme-transition-normal: 0.3s ease;
+    --theme-transition-slow: 0.5s ease;
+    --theme-animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========================================
+   COMPONENT OVERRIDES
+   ======================================== */
+
+/* Header Styling */
+[data-theme="default"] .header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom-color: var(--theme-border);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="default"] .logo {
+    color: var(--theme-text);
+}
+
+[data-theme="default"] .header-actions .btn-secondary {
+    background: var(--theme-surface);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="default"] .header-actions .btn-secondary:hover {
+    background: var(--theme-gradient-primary);
+    color: var(--theme-text-on-primary);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-md);
+}
+
+/* Platform Selector */
+[data-theme="default"] .platform-btn {
+    background: var(--theme-background);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="default"] .platform-btn:hover {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-50);
+    color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-md);
+}
+
+[data-theme="default"] .platform-btn.active {
+    background: var(--theme-gradient-primary);
+    border-color: var(--theme-primary);
+    color: var(--theme-text-on-primary);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+/* Template Selector */
+[data-theme="default"] .template-btn {
+    background: var(--theme-background);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="default"] .template-btn:hover {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-50);
+    box-shadow: var(--theme-shadow-md);
+}
+
+[data-theme="default"] .template-btn.active {
+    background: var(--theme-gradient-primary);
+    border-color: var(--theme-primary);
+    color: var(--theme-text-on-primary);
+}
+
+/* Color Theme Selector */
+[data-theme="default"] .color-theme {
+    background: var(--theme-background);
+    border-color: var(--theme-border);
+}
+
+[data-theme="default"] .color-theme:hover {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-50);
+    box-shadow: var(--theme-shadow-md);
+}
+
+[data-theme="default"] .color-theme.active {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-50);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+/* Form Elements */
+[data-theme="default"] .form-group input,
+[data-theme="default"] .form-group textarea,
+[data-theme="default"] .form-group select {
+    background: var(--theme-background);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="default"] .form-group input:focus,
+[data-theme="default"] .form-group textarea:focus,
+[data-theme="default"] .form-group select:focus {
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 3px var(--theme-primary-100);
+    outline: none;
+}
+
+[data-theme="default"] .form-group label {
+    color: var(--theme-text);
+}
+
+/* Buttons */
+[data-theme="default"] .btn-primary {
+    background: var(--theme-gradient-primary);
+    border: none;
+    color: var(--theme-text-on-primary);
+    box-shadow: var(--theme-shadow-md);
+}
+
+[data-theme="default"] .btn-primary:hover {
+    background: var(--theme-gradient-secondary);
+    box-shadow: var(--theme-shadow-lg);
+    transform: translateY(-1px);
+}
+
+[data-theme="default"] .btn-secondary {
+    background: var(--theme-surface);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="default"] .btn-secondary:hover {
+    background: var(--theme-primary-50);
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
+}
+
+/* Preview Area */
+[data-theme="default"] .preview-area {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-xl);
+}
+
+[data-theme="default"] .preview-header {
+    background: var(--theme-surface);
+    border-bottom-color: var(--theme-border);
+}
+
+[data-theme="default"] .preview-container {
+    background: var(--theme-surface);
+}
+
+[data-theme="default"] .canvas-wrapper {
+    box-shadow: var(--theme-shadow-2xl);
+}
+
+/* Control Panel */
+[data-theme="default"] .control-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-xl);
+}
+
+[data-theme="default"] .panel-section h3 {
+    color: var(--theme-text);
+}
+
+/* Modal */
+[data-theme="default"] .modal {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+[data-theme="default"] .modal-content {
+    background: var(--theme-background);
+    border-color: var(--theme-border);
+    box-shadow: var(--theme-shadow-2xl);
+}
+
+[data-theme="default"] .modal-header {
+    border-bottom-color: var(--theme-border);
+}
+
+/* Toast Notifications */
+[data-theme="default"] .toast {
+    background: var(--theme-background);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+[data-theme="default"] .toast.success {
+    background: var(--theme-success);
+    color: white;
+    border-color: var(--theme-success-dark);
+}
+
+[data-theme="default"] .toast.error {
+    background: var(--theme-error);
+    color: white;
+    border-color: var(--theme-error-dark);
+}
+
+[data-theme="default"] .toast.warning {
+    background: var(--theme-warning);
+    color: white;
+    border-color: var(--theme-warning-dark);
+}
+
+[data-theme="default"] .toast.info {
+    background: var(--theme-info);
+    color: white;
+    border-color: var(--theme-info-dark);
+}
+
+/* Loading Screen */
+[data-theme="default"] .loading-screen {
+    background: var(--theme-gradient-primary);
+}
+
+[data-theme="default"] .loading-text {
+    color: var(--theme-text-on-primary);
+}
+
+[data-theme="default"] .loading-progress {
+    background: var(--theme-accent);
+}
+
+/* ========================================
+   TEMPLATE CANVAS STYLING
+   ======================================== */
+
+[data-theme="default"] .template-canvas {
+    --color-background: var(--theme-background);
+    --color-text: var(--theme-text);
+    --color-title: var(--theme-primary);
+    --color-subtitle: var(--theme-text-secondary);
+    --color-accent: var(--theme-accent);
+    --color-meta: var(--theme-text-muted);
+    --color-hashtag: var(--theme-secondary);
+    --overlay-gradient: var(--theme-gradient-overlay);
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+    :root {
+        --theme-shadow-md: 0 2px 4px -1px rgba(102, 126, 234, 0.1);
+        --theme-shadow-lg: 0 4px 6px -1px rgba(102, 126, 234, 0.15);
+        --theme-shadow-xl: 0 8px 12px -2px rgba(102, 126, 234, 0.2);
+    }
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    [data-theme="default"][data-auto-dark="true"] {
+        --theme-background: #1a202c;
+        --theme-surface: #2d3748;
+        --theme-text: #ffffff;
+        --theme-text-secondary: #cbd5e0;
+        --theme-border: #4a5568;
+        --theme-overlay: rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* ========================================
+   HIGH CONTRAST MODE
+   ======================================== */
+
+@media (prefers-contrast: high) {
+    [data-theme="default"] {
+        --theme-primary: #5a6fd8;
+        --theme-secondary: #63408a;
+        --theme-accent: #3d8ccc;
+        --theme-border: #2d3748;
+        --theme-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        --theme-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-theme="default"] * {
+        --theme-transition-fast: 0.01ms;
+        --theme-transition-normal: 0.01ms;
+        --theme-transition-slow: 0.01ms;
+        --theme-animation-bounce: linear;
+    }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    [data-theme="default"] {
+        --theme-background: #ffffff;
+        --theme-text: #000000;
+        --theme-primary: #333333;
+        --theme-secondary: #666666;
+        --theme-accent: #999999;
+        --theme-shadow-md: none;
+        --theme-shadow-lg: none;
+        --theme-shadow-xl: none;
+    }
+}

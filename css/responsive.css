@@ -1,0 +1,906 @@
+/**
+ * RDV Image Generator - Responsive Styles
+ * Mobile-first responsive design for all screen sizes
+ * @version 1.0.0
+ */
+
+/* ========================================
+   MOBILE FIRST BASE STYLES
+   ======================================== */
+
+/* Default: Mobile styles (320px+) */
+body {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.main-container {
+    flex-direction: column;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+}
+
+.control-panel {
+    width: 100%;
+    max-height: none;
+    overflow-y: visible;
+    order: 2;
+}
+
+.preview-area {
+    order: 1;
+    min-height: 300px;
+}
+
+.header-content {
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+}
+
+.header-actions {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-xs);
+}
+
+.header-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Platform Selector - Mobile */
+.platform-selector {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+}
+
+.platform-btn {
+    padding: var(--space-md);
+    font-size: 0.75rem;
+}
+
+.platform-icon {
+    font-size: 1.2rem;
+}
+
+/* Template Selector - Mobile */
+.template-selector {
+    gap: var(--space-sm);
+}
+
+.template-btn {
+    padding: var(--space-md);
+    gap: var(--space-sm);
+}
+
+.template-icon {
+    font-size: 1.2rem;
+}
+
+.template-name {
+    font-size: 0.8rem;
+}
+
+.template-dimensions {
+    font-size: 0.7rem;
+}
+
+/* Color Themes - Mobile */
+.color-themes {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-sm);
+}
+
+.color-theme {
+    padding: var(--space-sm);
+    gap: var(--space-xs);
+}
+
+.color-preview {
+    width: 30px;
+    height: 30px;
+}
+
+.color-theme span {
+    font-size: 0.65rem;
+}
+
+/* Form Groups - Mobile */
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-group label {
+    font-size: 0.75rem;
+    margin-bottom: var(--space-xs);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    font-size: 0.875rem;
+    padding: var(--space-sm);
+}
+
+.input-group {
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.input-group .btn-icon {
+    width: 100%;
+    justify-content: center;
+}
+
+/* Button Groups - Mobile */
+.btn-group {
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.btn-group .btn-secondary {
+    width: 100%;
+}
+
+/* Preview Area - Mobile */
+.preview-header {
+    padding: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+}
+
+.preview-info {
+    flex-direction: column;
+    gap: var(--space-xs);
+    align-items: center;
+}
+
+.preview-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xs);
+}
+
+.preview-container {
+    padding: var(--space-md);
+    min-height: 300px;
+}
+
+.canvas-wrapper {
+    max-width: 100%;
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.preview-footer {
+    padding: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+}
+
+.quick-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xs);
+}
+
+.btn-quick {
+    flex: 0 0 auto;
+    min-width: 80px;
+    font-size: 0.7rem;
+    padding: var(--space-xs) var(--space-sm);
+}
+
+/* Modal - Mobile */
+.modal-content {
+    width: 95%;
+    max-width: none;
+    max-height: 95vh;
+    margin: auto;
+    overflow-y: auto;
+}
+
+.modal-header {
+    padding: var(--space-md);
+    flex-direction: column;
+    gap: var(--space-sm);
+    text-align: center;
+}
+
+.modal-header h3 {
+    font-size: 1.1rem;
+}
+
+.generation-progress {
+    text-align: center;
+    padding: var(--space-lg);
+}
+
+.progress-icon {
+    font-size: 3rem;
+}
+
+/* Navigation - Mobile */
+.panel-section {
+    margin-bottom: var(--space-lg);
+}
+
+.panel-section h3 {
+    font-size: 1rem;
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+/* Template Canvas - Mobile */
+.template-canvas {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+}
+
+/* ========================================
+   SMALL MOBILE (375px+)
+   ======================================== */
+
+@media (min-width: 375px) {
+    body {
+        font-size: 15px;
+    }
+
+    .main-container {
+        padding: var(--space-md);
+        gap: var(--space-lg);
+    }
+
+    .platform-btn {
+        padding: var(--space-md) var(--space-sm);
+        font-size: 0.8rem;
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .color-preview {
+        width: 35px;
+        height: 35px;
+    }
+
+    .color-theme span {
+        font-size: 0.7rem;
+    }
+
+    .btn-quick {
+        min-width: 90px;
+        font-size: 0.75rem;
+    }
+}
+
+/* ========================================
+   LARGE MOBILE (425px+)
+   ======================================== */
+
+@media (min-width: 425px) {
+    .platform-selector {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .platform-btn {
+        font-size: 0.85rem;
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .input-group {
+        flex-direction: row;
+    }
+
+    .input-group input {
+        flex: 1;
+    }
+
+    .input-group .btn-icon {
+        width: auto;
+        flex: 0 0 auto;
+    }
+
+    .preview-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .preview-info {
+        flex-direction: row;
+        gap: var(--space-md);
+    }
+}
+
+/* ========================================
+   TABLET PORTRAIT (768px+)
+   ======================================== */
+
+@media (min-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+
+    .header-actions {
+        flex-direction: row;
+        width: auto;
+        gap: var(--space-sm);
+    }
+
+    .header-actions .btn-secondary {
+        width: auto;
+    }
+
+    .main-container {
+        padding: var(--space-lg);
+        gap: var(--space-xl);
+    }
+
+    .control-panel {
+        max-height: calc(100vh - 200px);
+        overflow-y: auto;
+    }
+
+    .platform-btn {
+        padding: var(--space-lg);
+        font-size: 0.875rem;
+    }
+
+    .platform-icon {
+        font-size: 1.5rem;
+    }
+
+    .template-btn {
+        padding: var(--space-lg);
+        gap: var(--space-md);
+    }
+
+    .template-name {
+        font-size: 0.875rem;
+    }
+
+    .template-dimensions {
+        font-size: 0.75rem;
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    .color-preview {
+        width: 40px;
+        height: 40px;
+    }
+
+    .color-theme span {
+        font-size: 0.75rem;
+    }
+
+    .btn-group {
+        flex-direction: row;
+    }
+
+    .btn-group .btn-secondary {
+        width: auto;
+        flex: 1;
+    }
+
+    .preview-container {
+        padding: var(--space-lg);
+        min-height: 400px;
+    }
+
+    .preview-footer {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .quick-actions {
+        flex-wrap: nowrap;
+        gap: var(--space-sm);
+    }
+
+    .btn-quick {
+        font-size: 0.8rem;
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .modal-content {
+        width: 90%;
+        max-width: 600px;
+    }
+
+    .modal-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+    }
+}
+
+/* ========================================
+   TABLET LANDSCAPE / SMALL DESKTOP (1024px+)
+   ======================================== */
+
+@media (min-width: 1024px) {
+    .main-container {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .control-panel {
+        width: 350px;
+        flex-shrink: 0;
+        order: 1;
+        max-height: calc(100vh - 120px);
+        overflow-y: auto;
+        position: sticky;
+        top: 100px;
+    }
+
+    .preview-area {
+        flex: 1;
+        order: 2;
+        min-height: calc(100vh - 120px);
+    }
+
+    .platform-selector {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-md);
+    }
+
+    .color-theme {
+        padding: var(--space-md);
+        gap: var(--space-sm);
+    }
+
+    .preview-container {
+        min-height: 500px;
+        padding: var(--space-xl);
+    }
+
+    .canvas-wrapper {
+        max-height: calc(100vh - 300px);
+    }
+
+    /* Template sizing for desktop */
+    .template-canvas {
+        transform-origin: center;
+        transition: transform var(--transition-normal);
+    }
+
+    /* Zoom controls become visible */
+    .preview-actions {
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   DESKTOP (1200px+)
+   ======================================== */
+
+@media (min-width: 1200px) {
+    .main-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: var(--space-xl);
+    }
+
+    .control-panel {
+        width: 380px;
+    }
+
+    .platform-selector {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-md);
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .template-selector {
+        gap: var(--space-md);
+    }
+
+    .preview-container {
+        padding: var(--space-2xl);
+    }
+
+    .canvas-wrapper {
+        max-height: calc(100vh - 250px);
+    }
+
+    /* Better spacing for desktop */
+    .form-group {
+        margin-bottom: var(--space-lg);
+    }
+
+    .panel-section {
+        margin-bottom: var(--space-xl);
+    }
+
+    /* Desktop-specific enhancements */
+    .template-canvas:hover {
+        transform: scale(1.02);
+    }
+
+    .modal-content {
+        max-width: 800px;
+    }
+}
+
+/* ========================================
+   LARGE DESKTOP (1440px+)
+   ======================================== */
+
+@media (min-width: 1440px) {
+    .main-container {
+        max-width: 1600px;
+    }
+
+    .control-panel {
+        width: 420px;
+    }
+
+    .platform-selector {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-lg);
+    }
+
+    .platform-btn {
+        padding: var(--space-xl);
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(6, 1fr);
+    }
+
+    .preview-container {
+        padding: var(--space-3xl);
+    }
+
+    /* Larger template preview */
+    .canvas-wrapper {
+        max-height: calc(100vh - 200px);
+    }
+}
+
+/* ========================================
+   ULTRA WIDE (1920px+)
+   ======================================== */
+
+@media (min-width: 1920px) {
+    .main-container {
+        max-width: 1800px;
+    }
+
+    .control-panel {
+        width: 450px;
+    }
+
+    .platform-selector {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .color-themes {
+        grid-template-columns: repeat(7, 1fr);
+    }
+
+    /* Optimal spacing for ultra-wide */
+    .main-container {
+        gap: var(--space-3xl);
+    }
+}
+
+/* ========================================
+   LANDSCAPE ORIENTATION
+   ======================================== */
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+
+    .main-container {
+        flex-direction: row;
+        height: calc(100vh - 80px);
+    }
+
+    .control-panel {
+        width: 300px;
+        max-height: 100%;
+        overflow-y: auto;
+    }
+
+    .preview-area {
+        flex: 1;
+        height: 100%;
+    }
+
+    .preview-container {
+        padding: var(--space-md);
+    }
+
+    .canvas-wrapper {
+        max-height: calc(100vh - 200px);
+    }
+
+    /* Compact form elements */
+    .form-group {
+        margin-bottom: var(--space-md);
+    }
+
+    .panel-section h3 {
+        font-size: 0.9rem;
+    }
+
+    .btn-group {
+        gap: var(--space-sm);
+    }
+}
+
+/* ========================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    /* Larger touch targets */
+    .platform-btn,
+    .template-btn,
+    .color-theme {
+        min-height: 48px;
+        padding: var(--space-md);
+    }
+
+    .btn-icon {
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    .btn-quick {
+        min-height: 40px;
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    /* Remove hover effects */
+    .platform-btn:hover,
+    .template-btn:hover,
+    .color-theme:hover,
+    .btn-secondary:hover,
+    .btn-primary:hover {
+        transform: none;
+        box-shadow: inherit;
+    }
+
+    /* Enhanced focus states */
+    .platform-btn:focus,
+    .template-btn:focus,
+    .color-theme:focus {
+        outline: 3px solid var(--primary-blue);
+        outline-offset: 2px;
+    }
+}
+
+/* ========================================
+   HIGH DPI DISPLAYS
+   ======================================== */
+
+@media (-webkit-min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+    .template-canvas {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+
+    .template-logo,
+    .template-bg-image {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* ========================================
+   DARK MODE RESPONSIVE
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    .preview-container {
+        background: var(--gray-900);
+    }
+
+    .canvas-wrapper {
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.8),
+            0 10px 10px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background: var(--gray-800);
+        color: var(--gray-100);
+    }
+}
+
+/* ========================================
+   PRINT RESPONSIVE
+   ======================================== */
+
+@media print {
+
+    .header,
+    .control-panel,
+    .preview-header,
+    .preview-footer,
+    .modal {
+        display: none !important;
+    }
+
+    .main-container {
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+    }
+
+    .preview-area {
+        width: 100%;
+        max-width: none;
+    }
+
+    .preview-container {
+        padding: 0;
+        background: white;
+        box-shadow: none;
+    }
+
+    .canvas-wrapper {
+        max-height: none;
+        overflow: visible;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .template-canvas {
+        max-width: 100%;
+        height: auto;
+        page-break-inside: avoid;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY RESPONSIVE
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .canvas-wrapper,
+    .template-canvas,
+    .platform-btn,
+    .template-btn,
+    .color-theme,
+    .btn-secondary,
+    .btn-primary {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+
+    .canvas-wrapper:hover,
+    .template-canvas:hover {
+        transform: none !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+
+    .platform-btn,
+    .template-btn,
+    .color-theme {
+        border-width: 2px;
+        border-style: solid;
+    }
+
+    .platform-btn.active,
+    .template-btn.active,
+    .color-theme.active {
+        border-width: 3px;
+    }
+
+    .preview-container {
+        border: 2px solid currentColor;
+    }
+
+    .canvas-wrapper {
+        border: 2px solid currentColor;
+    }
+}
+
+/* ========================================
+   PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+@media (max-width: 768px) {
+
+    /* Disable expensive effects on mobile */
+    .canvas-wrapper,
+    .template-canvas {
+        box-shadow: var(--shadow-md);
+        backdrop-filter: none;
+    }
+
+    .template-blur-background,
+    .template-glass-effect {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+
+    /* Simplify animations */
+    .template-animate-fadeIn,
+    .template-animate-slideUp,
+    .template-animate-slideLeft,
+    .template-animate-slideRight {
+        animation-duration: 0.3s;
+    }
+}
+
+/* ========================================
+   FOLDABLE DEVICE SUPPORT
+   ======================================== */
+
+@media (max-width: 1024px) and (orientation: landscape) {
+    .main-container[data-spanning="single-fold-vertical"] {
+        flex-direction: row;
+    }
+
+    .control-panel[data-spanning="single-fold-vertical"] {
+        width: 50%;
+        max-width: 400px;
+    }
+
+    .preview-area[data-spanning="single-fold-vertical"] {
+        width: 50%;
+    }
+}
+
+/* ========================================
+   CONTAINER QUERIES (Future Support)
+   ======================================== */
+
+/* When container queries are supported, these will provide better responsive behavior */
+/*
+@container (max-width: 400px) {
+    .platform-selector {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@container (min-width: 600px) {
+    .platform-selector {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+*/

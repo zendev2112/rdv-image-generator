@@ -1,0 +1,125 @@
+<!-- filepath: /home/zen/Documents/rdv-image-generator/assets/images/patterns/waves.svg -->
+<svg width="400" height="200" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient definitions for waves -->
+    <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#764ba2;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:0.2" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#00f2fe;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#4facfe;stop-opacity:0.15" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:0.15" />
+      <stop offset="50%" style="stop-color:#f5576c;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:0.1" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient4" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#43e97b;stop-opacity:0.2" />
+      <stop offset="50%" style="stop-color:#38f9d7;stop-opacity:0.35" />
+      <stop offset="100%" style="stop-color:#43e97b;stop-opacity:0.15" />
+    </linearGradient>
+    
+    <!-- Wave pattern definition -->
+    <pattern id="wavesPattern" x="0" y="0" width="400" height="200" patternUnits="userSpaceOnUse">
+      <!-- Background -->
+      <rect x="0" y="0" width="400" height="200" fill="transparent"/>
+      
+      <!-- Primary wave layers -->
+      
+      <!-- Wave 1 - Large flowing wave -->
+      <path d="M0,100 Q100,60 200,100 T400,100 L400,120 Q300,80 200,120 T0,120 Z" 
+            fill="url(#waveGradient1)" 
+            opacity="0.6"/>
+      
+      <!-- Wave 2 - Secondary wave with different frequency -->
+      <path d="M0,80 Q80,40 160,80 T320,80 T400,80 L400,95 Q320,55 240,95 T80,95 T0,95 Z" 
+            fill="url(#waveGradient2)" 
+            opacity="0.7"/>
+      
+      <!-- Wave 3 - Smaller amplitude wave -->
+      <path d="M0,130 Q50,110 100,130 Q150,150 200,130 Q250,110 300,130 Q350,150 400,130 L400,145 Q350,125 300,145 Q250,165 200,145 Q150,125 100,145 Q50,165 0,145 Z" 
+            fill="url(#waveGradient3)" 
+            opacity="0.5"/>
+      
+      <!-- Wave 4 - High frequency wave -->
+      <path d="M0,60 Q25,45 50,60 Q75,75 100,60 Q125,45 150,60 Q175,75 200,60 Q225,45 250,60 Q275,75 300,60 Q325,45 350,60 Q375,75 400,60 L400,70 Q375,55 350,70 Q325,85 300,70 Q275,55 250,70 Q225,85 200,70 Q175,55 150,70 Q125,85 100,70 Q75,55 50,70 Q25,85 0,70 Z" 
+            fill="url(#waveGradient4)" 
+            opacity="0.4"/>
+      
+      <!-- Bottom wave -->
+      <path d="M0,160 Q60,140 120,160 Q180,180 240,160 Q300,140 360,160 Q380,170 400,160 L400,180 Q380,170 360,180 Q300,200 240,180 Q180,160 120,180 Q60,200 0,180 Z" 
+            fill="url(#waveGradient1)" 
+            opacity="0.3"/>
+      
+      <!-- Subtle overlay waves for texture -->
+      <path d="M0,90 Q40,85 80,90 Q120,95 160,90 Q200,85 240,90 Q280,95 320,90 Q360,85 400,90 L400,92 Q360,87 320,92 Q280,97 240,92 Q200,87 160,92 Q120,97 80,92 Q40,87 0,92 Z" 
+            fill="#667eea" 
+            opacity="0.2"/>
+      
+      <path d="M0,110 Q30,108 60,110 Q90,112 120,110 Q150,108 180,110 Q210,112 240,110 Q270,108 300,110 Q330,112 360,110 Q380,108 400,110 L400,111 Q380,109 360,111 Q330,113 300,111 Q270,109 240,111 Q210,113 180,111 Q150,109 120,111 Q90,113 60,111 Q30,109 0,111 Z" 
+            fill="#764ba2" 
+            opacity="0.15"/>
+      
+      <!-- Additional decorative elements -->
+      
+      <!-- Floating bubbles/circles -->
+      <circle cx="50" cy="50" r="3" fill="#4facfe" opacity="0.3"/>
+      <circle cx="150" cy="30" r="2" fill="#f093fb" opacity="0.4"/>
+      <circle cx="250" cy="45" r="4" fill="#43e97b" opacity="0.25"/>
+      <circle cx="350" cy="35" r="2.5" fill="#667eea" opacity="0.35"/>
+      
+      <circle cx="80" cy="170" r="2" fill="#764ba2" opacity="0.3"/>
+      <circle cx="180" cy="185" r="3" fill="#4facfe" opacity="0.25"/>
+      <circle cx="280" cy="175" r="2.5" fill="#f5576c" opacity="0.4"/>
+      <circle cx="320" cy="190" r="2" fill="#38f9d7" opacity="0.3"/>
+      
+      <!-- Small wave details -->
+      <path d="M20,25 Q30,20 40,25 Q50,30 60,25" 
+            stroke="#667eea" 
+            stroke-width="1" 
+            fill="none" 
+            opacity="0.3"/>
+      
+      <path d="M120,185 Q130,180 140,185 Q150,190 160,185" 
+            stroke="#4facfe" 
+            stroke-width="1" 
+            fill="none" 
+            opacity="0.4"/>
+      
+      <path d="M240,15 Q250,10 260,15 Q270,20 280,15" 
+            stroke="#f093fb" 
+            stroke-width="1" 
+            fill="none" 
+            opacity="0.3"/>
+      
+      <path d="M340,175 Q350,170 360,175 Q370,180 380,175" 
+            stroke="#43e97b" 
+            stroke-width="1" 
+            fill="none" 
+            opacity="0.35"/>
+      
+      <!-- Connecting flow lines -->
+      <path d="M0,75 Q100,70 200,75 T400,75" 
+            stroke="url(#waveGradient2)" 
+            stroke-width="0.5" 
+            fill="none" 
+            opacity="0.4"/>
+      
+      <path d="M0,125 Q100,120 200,125 T400,125" 
+            stroke="url(#waveGradient3)" 
+            stroke-width="0.5" 
+            fill="none" 
+            opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Apply the pattern -->
+  <rect width="100%" height="100%" fill="url(#wavesPattern)"/>
+</svg>

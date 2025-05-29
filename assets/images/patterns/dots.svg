@@ -1,0 +1,99 @@
+<!-- filepath: /home/zen/Documents/rdv-image-generator/assets/images/patterns/dots.svg -->
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradient definitions for dots -->
+    <radialGradient id="dotGradient1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:0.1" />
+    </radialGradient>
+    
+    <radialGradient id="dotGradient2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#764ba2;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.05" />
+    </radialGradient>
+    
+    <radialGradient id="dotGradient3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#4facfe;stop-opacity:0.1" />
+    </radialGradient>
+    
+    <radialGradient id="dotGradient4" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#f093fb;stop-opacity:0.05" />
+    </radialGradient>
+    
+    <!-- Pattern definition -->
+    <pattern id="dotsPattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+      <!-- Background -->
+      <rect x="0" y="0" width="120" height="120" fill="transparent"/>
+      
+      <!-- Regular dot grid - varying sizes and opacities -->
+      <!-- Row 1 -->
+      <circle cx="20" cy="20" r="4" fill="url(#dotGradient1)"/>
+      <circle cx="60" cy="20" r="3" fill="url(#dotGradient2)"/>
+      <circle cx="100" cy="20" r="5" fill="url(#dotGradient3)"/>
+      
+      <!-- Row 2 -->
+      <circle cx="40" cy="40" r="2" fill="url(#dotGradient4)"/>
+      <circle cx="80" cy="40" r="4" fill="url(#dotGradient1)"/>
+      
+      <!-- Row 3 -->
+      <circle cx="20" cy="60" r="3" fill="url(#dotGradient2)"/>
+      <circle cx="60" cy="60" r="6" fill="url(#dotGradient3)" opacity="0.7"/>
+      <circle cx="100" cy="60" r="2" fill="url(#dotGradient4)"/>
+      
+      <!-- Row 4 -->
+      <circle cx="40" cy="80" r="4" fill="url(#dotGradient1)"/>
+      <circle cx="80" cy="80" r="3" fill="url(#dotGradient2)"/>
+      
+      <!-- Row 5 -->
+      <circle cx="20" cy="100" r="5" fill="url(#dotGradient3)"/>
+      <circle cx="60" cy="100" r="2" fill="url(#dotGradient4)"/>
+      <circle cx="100" cy="100" r="4" fill="url(#dotGradient1)"/>
+      
+      <!-- Additional scattered dots for organic feel -->
+      <circle cx="10" cy="30" r="1.5" fill="#667eea" opacity="0.4"/>
+      <circle cx="30" cy="10" r="1" fill="#764ba2" opacity="0.5"/>
+      <circle cx="50" cy="50" r="1.5" fill="#4facfe" opacity="0.3"/>
+      <circle cx="70" cy="30" r="1" fill="#f093fb" opacity="0.4"/>
+      <circle cx="90" cy="10" r="1.5" fill="#667eea" opacity="0.3"/>
+      <circle cx="110" cy="40" r="1" fill="#764ba2" opacity="0.5"/>
+      <circle cx="10" cy="70" r="1.5" fill="#4facfe" opacity="0.4"/>
+      <circle cx="30" cy="90" r="1" fill="#f093fb" opacity="0.3"/>
+      <circle cx="50" cy="110" r="1.5" fill="#667eea" opacity="0.5"/>
+      <circle cx="70" cy="70" r="1" fill="#764ba2" opacity="0.4"/>
+      <circle cx="90" cy="90" r="1.5" fill="#4facfe" opacity="0.3"/>
+      <circle cx="110" cy="110" r="1" fill="#f093fb" opacity="0.5"/>
+      
+      <!-- Larger background dots for depth -->
+      <circle cx="0" cy="0" r="8" fill="url(#dotGradient1)" opacity="0.2"/>
+      <circle cx="120" cy="120" r="10" fill="url(#dotGradient2)" opacity="0.15"/>
+      <circle cx="0" cy="120" r="7" fill="url(#dotGradient3)" opacity="0.2"/>
+      <circle cx="120" cy="0" r="9" fill="url(#dotGradient4)" opacity="0.1"/>
+      
+      <!-- Medium connecting dots -->
+      <circle cx="15" cy="15" r="2.5" fill="#667eea" opacity="0.2"/>
+      <circle cx="45" cy="15" r="2" fill="#764ba2" opacity="0.25"/>
+      <circle cx="75" cy="15" r="2.5" fill="#4facfe" opacity="0.2"/>
+      <circle cx="105" cy="15" r="2" fill="#f093fb" opacity="0.3"/>
+      
+      <circle cx="15" cy="45" r="2" fill="#764ba2" opacity="0.25"/>
+      <circle cx="45" cy="45" r="2.5" fill="#4facfe" opacity="0.2"/>
+      <circle cx="75" cy="45" r="2" fill="#f093fb" opacity="0.3"/>
+      <circle cx="105" cy="45" r="2.5" fill="#667eea" opacity="0.2"/>
+      
+      <circle cx="15" cy="75" r="2.5" fill="#4facfe" opacity="0.2"/>
+      <circle cx="45" cy="75" r="2" fill="#f093fb" opacity="0.3"/>
+      <circle cx="75" cy="75" r="2.5" fill="#667eea" opacity="0.2"/>
+      <circle cx="105" cy="75" r="2" fill="#764ba2" opacity="0.25"/>
+      
+      <circle cx="15" cy="105" r="2" fill="#f093fb" opacity="0.3"/>
+      <circle cx="45" cy="105" r="2.5" fill="#667eea" opacity="0.2"/>
+      <circle cx="75" cy="105" r="2" fill="#764ba2" opacity="0.25"/>
+      <circle cx="105" cy="105" r="2.5" fill="#4facfe" opacity="0.2"/>
+    </pattern>
+  </defs>
+  
+  <!-- Apply the pattern -->
+  <rect width="100%" height="100%" fill="url(#dotsPattern)"/>
+</svg>

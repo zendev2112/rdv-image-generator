@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Card Template - RDV</title>
+    <style>
+      /* Template-specific styles for Twitter Card */
+      .twitter-card-template {
+        width: 1200px;
+        height: 628px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #1da1f2),
+          var(--color-secondary, #14171a)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+        border-radius: 16px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+      }
+
+      /* Background layer */
+      .card-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 13px;
+      }
+
+      /* Overlay gradient for better text readability */
+      .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(29, 161, 242, 0.2) 0%,
+          rgba(20, 23, 26, 0.4) 50%,
+          rgba(29, 161, 242, 0.3) 100%
+        );
+        z-index: 1;
+        border-radius: 13px;
+      }
+
+      /* Pattern overlay */
+      .card-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.06;
+        z-index: 2;
+        pointer-events: none;
+        border-radius: 13px;
+      }
+
+      /* Main content layout */
+      .card-content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        height: 100%;
+      }
+
+      /* Left content section */
+      .card-content-left {
+        flex: 1;
+        padding: 50px 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* Right visual section */
+      .card-content-right {
+        flex: 0 0 40%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+      }
+
+      /* Header with site info */
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 25px;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .card-site-favicon {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .card-site-favicon img {
+        width: 16px;
+        height: 16px;
+        object-fit: contain;
+      }
+
+      .card-site-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-site-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+
+      .card-site-url {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 400;
+      }
+
+      /* Category badge */
+      .card-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        animation: slideInLeft 0.8s ease-out 0.2s both;
+        align-self: flex-start;
+      }
+
+      /* Card title */
+      .card-title {
+        font-size: clamp(24px, 3vw, 32px);
+        font-weight: 700;
+        line-height: 1.3;
+        margin-bottom: 15px;
+        color: #ffffff;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        animation: slideInLeft 0.8s ease-out 0.4s both;
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+      }
+
+      /* Card description */
+      .card-description {
+        font-size: clamp(16px, 2vw, 18px);
+        line-height: 1.5;
+        margin-bottom: 25px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 500;
+        animation: slideInLeft 0.8s ease-out 0.6s both;
+      }
+
+      /* Card meta info */
+      .card-meta {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 20px;
+        animation: fadeIn 0.8s ease-out 0.8s both;
+      }
+
+      .card-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .card-meta-icon {
+        font-size: 12px;
+      }
+
+      /* Read more button */
+      .card-read-more {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 12px 25px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: bounceIn 1s ease-out 1s both;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        align-self: flex-start;
+      }
+
+      .card-read-more:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .card-read-more-icon {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+      }
+
+      .card-read-more:hover .card-read-more-icon {
+        transform: translateX(3px);
+      }
+
+      /* Right side visual elements */
+      .card-visual {
+        animation: fadeInRight 1s ease-out 0.4s both;
+        width: 100%;
+      }
+
+      .card-visual-logo {
+        width: 140px;
+        height: 140px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 25px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .card-visual-logo:hover {
+        transform: scale(1.05) rotate(2deg);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .card-visual-logo img {
+        width: 90px;
+        height: 90px;
+        object-fit: contain;
+      }
+
+      .card-visual-brand {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+        margin-bottom: 8px;
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+      }
+
+      .card-visual-tagline {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        margin-bottom: 20px;
+      }
+
+      .card-visual-handle {
+        font-size: 16px;
+        color: #1da1f2;
+        font-weight: 600;
+        background: rgba(29, 161, 242, 0.2);
+        backdrop-filter: blur(5px);
+        padding: 6px 15px;
+        border-radius: 20px;
+        border: 1px solid rgba(29, 161, 242, 0.4);
+      }
+
+      /* Twitter card type indicator */
+      .card-type-indicator {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(29, 161, 242, 0.9);
+        color: white;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out 0.1s both;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      /* Breaking news banner */
+      .card-breaking {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 8px 0;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out 0.1s both,
+          glow 2s infinite alternate;
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        display: none; /* Hidden by default */
+        border-radius: 13px 13px 0 0;
+      }
+
+      /* Social engagement preview */
+      .card-engagement {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        display: flex;
+        gap: 15px;
+        z-index: 15;
+        animation: slideInUp 0.8s ease-out 1.2s both;
+      }
+
+      .card-engagement-item {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 6px 12px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .card-engagement-item:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+
+      .card-engagement-icon {
+        font-size: 11px;
+      }
+
+      /* Link preview indicator */
+      .card-link-preview {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        z-index: 15;
+        animation: fadeInUp 0.8s ease-out 1.4s both;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .card-link-icon {
+        font-size: 11px;
+      }
+
+      /* Decorative elements */
+      .card-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.1;
+      }
+
+      .card-decorative.top-left {
+        top: 80px;
+        left: 100px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 161, 242, 0.4),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .card-decorative.bottom-right {
+        bottom: 100px;
+        right: 80px;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite reverse;
+      }
+
+      /* Animations */
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+        to {
+          box-shadow: 0 4px 25px rgba(229, 62, 62, 0.7);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+        .twitter-card-template {
+          width: 1024px;
+          height: 536px;
+        }
+
+        .card-content-left {
+          padding: 40px 50px;
+        }
+
+        .card-content-right {
+          padding: 30px;
+        }
+
+        .card-title {
+          font-size: clamp(20px, 3.5vw, 26px);
+        }
+
+        .card-visual-logo {
+          width: 120px;
+          height: 120px;
+        }
+
+        .card-visual-logo img {
+          width: 75px;
+          height: 75px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .twitter-card-template {
+          width: 600px;
+          height: 314px;
+        }
+
+        .card-content {
+          flex-direction: column;
+        }
+
+        .card-content-left {
+          flex: 1;
+          padding: 30px 40px 20px;
+        }
+
+        .card-content-right {
+          flex: none;
+          padding: 10px 40px 30px;
+        }
+
+        .card-title {
+          font-size: clamp(16px, 4vw, 20px);
+          margin-bottom: 12px;
+        }
+
+        .card-description {
+          font-size: clamp(13px, 3vw, 15px);
+          margin-bottom: 15px;
+        }
+
+        .card-category {
+          font-size: 11px;
+          padding: 6px 14px;
+          margin-bottom: 15px;
+        }
+
+        .card-visual-logo {
+          width: 80px;
+          height: 80px;
+          margin-bottom: 15px;
+        }
+
+        .card-visual-logo img {
+          width: 50px;
+          height: 50px;
+        }
+
+        .card-visual-brand {
+          font-size: 16px;
+          margin-bottom: 5px;
+        }
+
+        .card-visual-tagline {
+          font-size: 12px;
+          margin-bottom: 10px;
+        }
+
+        .card-visual-handle {
+          font-size: 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .card-title {
+          font-size: clamp(14px, 5vw, 18px);
+          margin-bottom: 10px;
+        }
+
+        .card-description {
+          font-size: clamp(12px, 4vw, 14px);
+          margin-bottom: 12px;
+        }
+
+        .card-category {
+          font-size: 10px;
+          padding: 5px 12px;
+          margin-bottom: 12px;
+        }
+
+        .card-read-more {
+          font-size: 12px;
+          padding: 8px 16px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .card-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+      }
+
+      [data-theme='dark'] .card-overlay {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.5) 50%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .card-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .twitter-card-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #1da1f2, #14171a)
+        );
+      }
+
+      [data-theme='brand'] .card-visual-handle {
+        color: var(--rdv-primary, #e53e3e);
+        background: var(--rdv-primary-light, rgba(229, 62, 62, 0.15));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.3));
+      }
+
+      [data-theme='brand'] .card-read-more {
+        background: var(--rdv-primary, rgba(229, 62, 62, 0.2));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.4));
+      }
+
+      [data-theme='brand'] .card-read-more:hover {
+        background: var(--rdv-primary-dark, rgba(197, 48, 48, 0.3));
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .card-overlay {
+          background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.7) 50%,
+            rgba(0, 0, 0, 0.6) 100%
+          );
+        }
+
+        .card-title,
+        .card-visual-brand {
+          text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .twitter-card-template {
+          width: 297mm;
+          height: 155mm;
+          background: white !important;
+          color: black !important;
+          border: 1px solid #ccc;
+        }
+
+        .card-overlay,
+        .card-pattern,
+        .card-decorative {
+          display: none;
+        }
+
+        .card-title,
+        .card-visual-brand {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="twitter-card-template" id="cardTemplate">
+      <!-- Background image -->
+      <div class="card-background" id="cardBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="card-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="card-pattern" id="cardPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="card-decorative top-left"></div>
+      <div class="card-decorative bottom-right"></div>
+
+      <!-- Card type indicator -->
+      <div class="card-type-indicator" id="cardTypeIndicator">Summary Card</div>
+
+      <!-- Breaking news banner -->
+      <div class="card-breaking" id="cardBreaking">
+        🚨 ÚLTIMA HORA - RADIO DEL VOLGA
+      </div>
+
+      <!-- Main content -->
+      <div class="card-content">
+        <!-- Left content section -->
+        <div class="card-content-left">
+          <!-- Header with site info -->
+          <div class="card-header">
+            <div class="card-site-favicon">
+              <img
+                src="../../assets/images/logos/rdv-white.svg"
+                alt="RDV"
+                id="cardFavicon"
+              />
+            </div>
+            <div class="card-site-info">
+              <div class="card-site-name" id="cardSiteName">
+                Radio del Volga
+              </div>
+              <div class="card-site-url" id="cardSiteUrl">
+                radiodelvolga.com
+              </div>
+            </div>
+          </div>
+
+          <!-- Category badge -->
+          <div class="card-category" id="cardCategory">NOTICIAS</div>
+
+          <!-- Card title -->
+          <h1 class="card-title" id="cardTitle">
+            Radio del Volga: Tu fuente confiable de información y
+            entretenimiento
+          </h1>
+
+          <!-- Card description -->
+          <p class="card-description" id="cardDescription">
+            Mantente informado con las últimas noticias, música y programas de
+            Radio del Volga. Tu compañía las 24 horas desde Villa Mercedes, San
+            Luis.
+          </p>
+
+          <!-- Meta information -->
+          <div class="card-meta">
+            <div class="card-meta-item">
+              <span class="card-meta-icon">📅</span>
+              <span id="cardDate">Hace 2 horas</span>
+            </div>
+            <div class="card-meta-item">
+              <span class="card-meta-icon">⏱️</span>
+              <span id="cardReadTime">3 min lectura</span>
+            </div>
+            <div class="card-meta-item">
+              <span class="card-meta-icon">👤</span>
+              <span id="cardAuthor">RDV Redacción</span>
+            </div>
+          </div>
+
+          <!-- Read more button -->
+          <a href="#" class="card-read-more" id="cardReadMore">
+            <span>Leer más</span>
+            <span class="card-read-more-icon">→</span>
+          </a>
+        </div>
+
+        <!-- Right visual section -->
+        <div class="card-content-right">
+          <div class="card-visual">
+            <div class="card-visual-logo">
+              <img
+                src="../../assets/images/logos/rdv-white.svg"
+                alt="RDV"
+                id="cardVisualLogo"
+              />
+            </div>
+            <div class="card-visual-brand" id="cardVisualBrand">
+              Radio del Volga
+            </div>
+            <div class="card-visual-tagline" id="cardVisualTagline">
+              Tu radio de confianza
+            </div>
+            <div class="card-visual-handle" id="cardVisualHandle">
+              @radiodelvolga
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social engagement preview -->
+      <div class="card-engagement">
+        <div class="card-engagement-item" id="cardLikes">
+          <span class="card-engagement-icon">❤️</span>
+          <span>234</span>
+        </div>
+        <div class="card-engagement-item" id="cardRetweets">
+          <span class="card-engagement-icon">🔄</span>
+          <span>89</span>
+        </div>
+        <div class="card-engagement-item" id="cardComments">
+          <span class="card-engagement-icon">💬</span>
+          <span>45</span>
+        </div>
+      </div>
+
+      <!-- Link preview indicator -->
+      <div class="card-link-preview">
+        <span class="card-link-icon">🔗</span>
+        <span>Twitter Card</span>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateTwitterCardContent = function (data) {
+        try {
+          // Update site information
+          if (data.siteName) {
+            document.getElementById('cardSiteName').textContent = data.siteName
+            document.getElementById('cardVisualBrand').textContent =
+              data.siteName
+          }
+
+          if (data.siteUrl) {
+            document.getElementById('cardSiteUrl').textContent = data.siteUrl
+          }
+
+          if (data.title) {
+            document.getElementById('cardTitle').textContent = data.title
+          }
+
+          if (data.description) {
+            document.getElementById('cardDescription').textContent =
+              data.description
+          }
+
+          if (data.category) {
+            document.getElementById('cardCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          if (data.tagline) {
+            document.getElementById('cardVisualTagline').textContent =
+              data.tagline
+          }
+
+          if (data.handle) {
+            const handle = data.handle.startsWith('@')
+              ? data.handle
+              : `@${data.handle}`
+            document.getElementById('cardVisualHandle').textContent = handle
+          }
+
+          // Update meta information
+          if (data.meta) {
+            if (data.meta.date) {
+              document.getElementById('cardDate').textContent = formatCardDate(
+                data.meta.date
+              )
+            }
+            if (data.meta.readTime) {
+              document.getElementById(
+                'cardReadTime'
+              ).textContent = `${data.meta.readTime} min lectura`
+            }
+            if (data.meta.author) {
+              document.getElementById('cardAuthor').textContent =
+                data.meta.author
+            }
+          }
+
+          // Update engagement stats
+          if (data.engagement) {
+            if (data.engagement.likes) {
+              document
+                .getElementById('cardLikes')
+                .querySelector('span:last-child').textContent =
+                formatEngagementCount(data.engagement.likes)
+            }
+            if (data.engagement.retweets) {
+              document
+                .getElementById('cardRetweets')
+                .querySelector('span:last-child').textContent =
+                formatEngagementCount(data.engagement.retweets)
+            }
+            if (data.engagement.comments) {
+              document
+                .getElementById('cardComments')
+                .querySelector('span:last-child').textContent =
+                formatEngagementCount(data.engagement.comments)
+            }
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('cardBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update card type
+          if (data.cardType) {
+            document.getElementById('cardTypeIndicator').textContent =
+              data.cardType
+          }
+
+          // Update read more link
+          if (data.readMoreText) {
+            const readMoreElement = document.getElementById('cardReadMore')
+            readMoreElement.querySelector('span:first-child').textContent =
+              data.readMoreText
+          }
+
+          if (data.readMoreUrl) {
+            document.getElementById('cardReadMore').href = data.readMoreUrl
+          }
+
+          // Show/hide breaking news
+          if (data.isBreaking) {
+            const breakingElement = document.getElementById('cardBreaking')
+            breakingElement.style.display = 'block'
+            if (data.breakingText) {
+              breakingElement.textContent = `🚨 ${data.breakingText}`
+            }
+          }
+
+          console.log('✅ Twitter Card content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating Twitter card content:', error)
+        }
+      }
+
+      // Format engagement count
+      function formatEngagementCount(count) {
+        if (count >= 1000000) {
+          return (count / 1000000).toFixed(1) + 'M'
+        } else if (count >= 1000) {
+          return (count / 1000).toFixed(1) + 'K'
+        }
+        return count.toString()
+      }
+
+      // Format date for card display
+      function formatCardDate(date) {
+        const now = new Date()
+        const inputDate = new Date(date)
+        const diffTime = Math.abs(now - inputDate)
+        const diffMinutes = Math.ceil(diffTime / (1000 * 60))
+        const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+        if (diffMinutes < 60) {
+          return `Hace ${diffMinutes} min`
+        } else if (diffHours < 24) {
+          return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`
+        } else if (diffDays <= 7) {
+          return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`
+        } else {
+          return inputDate.toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        }
+      }
+
+      // Apply theme colors
+      window.applyTwitterCardTheme = function (theme) {
+        const template = document.getElementById('cardTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyTwitterCardColors = function (colors) {
+        const template = document.getElementById('cardTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyTwitterCardPattern = function (patternUrl, opacity = 0.06) {
+        const patternElement = document.getElementById('cardPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '200px 200px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add interaction listeners
+      function setupCardInteractionListeners() {
+        // Read more button interaction
+        const readMoreButton = document.getElementById('cardReadMore')
+        readMoreButton.addEventListener('click', function (e) {
+          e.preventDefault()
+          this.style.transform = 'translateY(-4px) scale(1.05)'
+          setTimeout(() => {
+            this.style.transform = 'translateY(0) scale(1)'
+          }, 200)
+          console.log('🔗 Card "Read more" clicked')
+        })
+
+        // Engagement items interactions
+        const engagementItems = document.querySelectorAll(
+          '.card-engagement-item'
+        )
+        engagementItems.forEach((item) => {
+          item.addEventListener('click', function () {
+            // Add click animation
+            this.style.transform = 'scale(1.15)'
+
+            // Get current count and increment
+            const countElement = this.querySelector('span:last-child')
+            let count =
+              parseInt(countElement.textContent.replace(/[KM]/g, '')) || 0
+            if (countElement.textContent.includes('K')) count *= 1000
+            if (countElement.textContent.includes('M')) count *= 1000000
+            count += 1
+            countElement.textContent = formatEngagementCount(count)
+
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+
+            const action = this.id.replace('card', '').toLowerCase()
+            console.log(`💫 Card ${action} clicked`)
+          })
+        })
+
+        // Logo interaction
+        const logo = document.querySelector('.card-visual-logo')
+        logo.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1) rotate(10deg)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1) rotate(0deg)'
+          }, 300)
+          console.log('🎯 Card logo clicked')
+        })
+
+        // Visual handle interaction
+        const handle = document.getElementById('cardVisualHandle')
+        handle.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1)'
+          this.style.background = 'rgba(29, 161, 242, 0.4)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+            this.style.background = 'rgba(29, 161, 242, 0.2)'
+          }, 200)
+          console.log('📱 Card handle clicked')
+        })
+
+        // Card type indicator interaction
+        const typeIndicator = document.getElementById('cardTypeIndicator')
+        typeIndicator.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+          }, 200)
+          console.log('ℹ️ Card type indicator clicked')
+        })
+      }
+
+      // Initialize interaction listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupCardInteractionListeners()
+      })
+
+      // Export functions for external use
+      window.TwitterCardTemplate = {
+        updateContent: window.updateTwitterCardContent,
+        applyTheme: window.applyTwitterCardTheme,
+        applyColors: window.applyTwitterCardColors,
+        applyPattern: window.applyTwitterCardPattern,
+      }
+
+      console.log('🃏 Twitter Card template loaded successfully')
+    </script>
+  </body>
+</html>

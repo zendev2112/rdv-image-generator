@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facebook Story Template - RDV</title>
+    <style>
+      /* Template-specific styles for Facebook Story */
+      .facebook-story-template {
+        width: 1080px;
+        height: 1920px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #1877f2),
+          var(--color-secondary, #42a5f5)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+      }
+
+      /* Background layer */
+      .story-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .story-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(24, 119, 242, 0.1) 0%,
+          rgba(24, 119, 242, 0.2) 30%,
+          rgba(24, 119, 242, 0.4) 70%,
+          rgba(24, 119, 242, 0.6) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .story-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.08;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Header section with logo and time */
+      .story-header {
+        position: absolute;
+        top: 80px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .story-profile {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .story-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .story-avatar img {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+      }
+
+      .story-profile-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .story-username {
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      }
+
+      .story-time {
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+      }
+
+      .story-close {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 18px;
+        cursor: pointer;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .story-close:hover {
+        background: rgba(0, 0, 0, 0.6);
+        transform: scale(1.1);
+      }
+
+      /* Progress bar */
+      .story-progress {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        z-index: 15;
+      }
+
+      .story-progress-fill {
+        height: 100%;
+        background: #ffffff;
+        border-radius: 2px;
+        width: 0%;
+        animation: progressFill 5s ease-out forwards;
+      }
+
+      /* Main content container */
+      .story-content {
+        position: absolute;
+        top: 50%;
+        left: 60px;
+        right: 60px;
+        transform: translateY(-50%);
+        z-index: 10;
+        text-align: center;
+        animation: fadeInUp 1s ease-out 0.3s both;
+      }
+
+      /* Category badge */
+      .story-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 35px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        animation: pulse 2s infinite;
+      }
+
+      /* Main title */
+      .story-title {
+        font-size: clamp(48px, 4.5vw, 76px);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 30px;
+        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        animation: slideInLeft 0.8s ease-out 0.5s both;
+      }
+
+      /* Excerpt text */
+      .story-excerpt {
+        font-size: clamp(22px, 2.2vw, 30px);
+        line-height: 1.4;
+        margin-bottom: 40px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 500;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        animation: slideInRight 0.8s ease-out 0.7s both;
+      }
+
+      /* Call to action */
+      .story-cta {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(20px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 35px;
+        padding: 18px 45px;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: bounceIn 1s ease-out 0.9s both;
+        cursor: pointer;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .story-cta:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .story-cta-icon {
+        font-size: 24px;
+        animation: bounce 2s infinite;
+      }
+
+      /* Footer section */
+      .story-footer {
+        position: absolute;
+        bottom: 150px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: fadeInUp 0.8s ease-out 1.1s both;
+      }
+
+      .story-source {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .story-author {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      /* Facebook Story interaction elements */
+      .story-interactions {
+        position: absolute;
+        bottom: 60px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        z-index: 10;
+        animation: slideInUp 0.8s ease-out 1.3s both;
+      }
+
+      .story-reaction-button {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .story-reaction-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+      }
+
+      .story-share-button {
+        background: rgba(24, 119, 242, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .story-share-button:hover {
+        background: rgba(24, 119, 242, 1);
+        transform: scale(1.05);
+      }
+
+      /* Breaking news indicator */
+      .story-breaking {
+        position: absolute;
+        top: 160px;
+        left: 60px;
+        right: 60px;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+        z-index: 12;
+        animation: slideInDown 0.8s ease-out 0.2s both,
+          glow 2s infinite alternate;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 20px rgba(229, 62, 62, 0.5);
+        display: none; /* Hidden by default */
+      }
+
+      /* Hashtags section */
+      .story-hashtags {
+        position: absolute;
+        bottom: 220px;
+        left: 60px;
+        right: 60px;
+        text-align: center;
+        z-index: 10;
+        animation: fadeIn 0.8s ease-out 1.5s both;
+      }
+
+      .story-hashtag {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(5px);
+        padding: 6px 14px;
+        border-radius: 18px;
+        margin: 4px;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .story-hashtag:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+      }
+
+      /* Decorative elements */
+      .story-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.12;
+      }
+
+      .story-decorative.top-right {
+        top: 300px;
+        right: 80px;
+        width: 120px;
+        height: 120px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .story-decorative.bottom-left {
+        bottom: 400px;
+        left: 80px;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      /* Animations */
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-5px);
+        }
+        60% {
+          transform: translateY(-3px);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 20px rgba(229, 62, 62, 0.5);
+        }
+        to {
+          box-shadow: 0 4px 30px rgba(229, 62, 62, 0.8);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      @keyframes progressFill {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .facebook-story-template {
+          width: 375px;
+          height: 667px;
+        }
+
+        .story-header {
+          top: 40px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-content {
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-footer {
+          bottom: 100px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-interactions {
+          bottom: 40px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-hashtags {
+          bottom: 160px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-breaking {
+          top: 120px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-title {
+          font-size: clamp(28px, 7vw, 48px);
+        }
+
+        .story-excerpt {
+          font-size: clamp(16px, 4vw, 22px);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .story-title {
+          font-size: clamp(24px, 8vw, 36px);
+          margin-bottom: 20px;
+        }
+
+        .story-excerpt {
+          font-size: clamp(14px, 5vw, 18px);
+          margin-bottom: 25px;
+        }
+
+        .story-category {
+          font-size: 14px;
+          padding: 10px 20px;
+          margin-bottom: 25px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .story-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+      }
+
+      [data-theme='dark'] .story-overlay {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(0, 0, 0, 0.3) 30%,
+          rgba(0, 0, 0, 0.5) 70%,
+          rgba(0, 0, 0, 0.7) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .story-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .facebook-story-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #1877f2, #42a5f5)
+        );
+      }
+
+      [data-theme='brand'] .story-share-button {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .story-share-button:hover {
+        background: var(--rdv-primary-dark, #c53030);
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .story-overlay {
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.5) 30%,
+            rgba(0, 0, 0, 0.7) 70%,
+            rgba(0, 0, 0, 0.9) 100%
+          );
+        }
+
+        .story-title,
+        .story-excerpt {
+          text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .facebook-story-template {
+          width: 210mm;
+          height: 297mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .story-overlay,
+        .story-pattern,
+        .story-decorative,
+        .story-progress {
+          display: none;
+        }
+
+        .story-title,
+        .story-excerpt {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="facebook-story-template" id="storyTemplate">
+      <!-- Progress bar -->
+      <div class="story-progress">
+        <div class="story-progress-fill"></div>
+      </div>
+
+      <!-- Background image -->
+      <div class="story-background" id="storyBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="story-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="story-pattern" id="storyPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="story-decorative top-right"></div>
+      <div class="story-decorative bottom-left"></div>
+
+      <!-- Breaking news indicator -->
+      <div class="story-breaking" id="storyBreaking">🚨 ÚLTIMA HORA</div>
+
+      <!-- Header section -->
+      <div class="story-header">
+        <div class="story-profile">
+          <div class="story-avatar">
+            <img
+              src="../../assets/images/logos/rdv-white.svg"
+              alt="RDV"
+              id="storyAvatar"
+            />
+          </div>
+          <div class="story-profile-info">
+            <div class="story-username" id="storyUsername">Radio del Volga</div>
+            <div class="story-time" id="storyTime">Hace 2 min</div>
+          </div>
+        </div>
+        <div class="story-close">✕</div>
+      </div>
+
+      <!-- Main content -->
+      <div class="story-content">
+        <div class="story-category" id="storyCategory">NOTICIAS</div>
+
+        <h1 class="story-title" id="storyTitle">Radio del Volga Informa</h1>
+
+        <p class="story-excerpt" id="storyExcerpt">
+          Mantente al día con las últimas noticias y actualidad de la región del
+          Volga.
+        </p>
+
+        <a href="#" class="story-cta" id="storyCta">
+          <span class="story-cta-icon">👆</span>
+          <span>Desliza hacia arriba</span>
+        </a>
+      </div>
+
+      <!-- Hashtags -->
+      <div class="story-hashtags" id="storyHashtags">
+        <span class="story-hashtag">#RDV</span>
+        <span class="story-hashtag">#Noticias</span>
+        <span class="story-hashtag">#Facebook</span>
+        <span class="story-hashtag">#Actualidad</span>
+      </div>
+
+      <!-- Footer section -->
+      <div class="story-footer">
+        <div class="story-source" id="storySource">radiodelvolga.com</div>
+        <div class="story-author" id="storyAuthor">Redacción RDV</div>
+      </div>
+
+      <!-- Interaction buttons -->
+      <div class="story-interactions">
+        <div class="story-reaction-button" id="storyLike">
+          <span>👍</span>
+          <span>Me gusta</span>
+        </div>
+        <div class="story-share-button" id="storyShare">
+          <span>📤</span>
+          <span>Enviar</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateFacebookStoryContent = function (data) {
+        try {
+          // Update text content
+          if (data.title) {
+            document.getElementById('storyTitle').textContent = data.title
+          }
+
+          if (data.excerpt) {
+            document.getElementById('storyExcerpt').textContent = data.excerpt
+          }
+
+          if (data.category) {
+            document.getElementById('storyCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          if (data.username) {
+            document.getElementById('storyUsername').textContent = data.username
+          }
+
+          if (data.author) {
+            document.getElementById('storyAuthor').textContent = data.author
+          }
+
+          if (data.source) {
+            document.getElementById('storySource').textContent = data.source
+          }
+
+          if (data.time) {
+            const formattedTime = formatStoryTime(data.time)
+            document.getElementById('storyTime').textContent = formattedTime
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('storyBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update hashtags
+          if (data.hashtags && Array.isArray(data.hashtags)) {
+            updateStoryHashtags(data.hashtags)
+          }
+
+          // Update CTA text
+          if (data.ctaText) {
+            const ctaElement = document.getElementById('storyCta')
+            const textSpan = ctaElement.querySelector('span:last-child')
+            if (textSpan) {
+              textSpan.textContent = data.ctaText
+            }
+          }
+
+          // Show/hide breaking news
+          if (data.isBreaking) {
+            document.getElementById('storyBreaking').style.display = 'block'
+          }
+
+          console.log('✅ Facebook Story content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating Facebook story content:', error)
+        }
+      }
+
+      // Update hashtags
+      function updateStoryHashtags(hashtags) {
+        const hashtagsContainer = document.getElementById('storyHashtags')
+        hashtagsContainer.innerHTML = ''
+
+        hashtags.slice(0, 6).forEach((tag) => {
+          const hashtagElement = document.createElement('span')
+          hashtagElement.className = 'story-hashtag'
+          hashtagElement.textContent = tag.startsWith('#') ? tag : `#${tag}`
+          hashtagsContainer.appendChild(hashtagElement)
+        })
+      }
+
+      // Format time for story display
+      function formatStoryTime(time) {
+        const now = new Date()
+        const inputTime = new Date(time)
+        const diffTime = Math.abs(now - inputTime)
+        const diffMinutes = Math.ceil(diffTime / (1000 * 60))
+        const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
+
+        if (diffMinutes < 60) {
+          return diffMinutes === 1 ? 'Hace 1 min' : `Hace ${diffMinutes} min`
+        } else if (diffHours < 24) {
+          return diffHours === 1 ? 'Hace 1 h' : `Hace ${diffHours} h`
+        } else {
+          return inputTime.toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+          })
+        }
+      }
+
+      // Apply theme colors
+      window.applyFacebookStoryTheme = function (theme) {
+        const template = document.getElementById('storyTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyFacebookStoryColors = function (colors) {
+        const template = document.getElementById('storyTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyFacebookStoryPattern = function (patternUrl, opacity = 0.08) {
+        const patternElement = document.getElementById('storyPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '200px 200px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add interaction listeners
+      function setupStoryInteractionListeners() {
+        const likeButton = document.getElementById('storyLike')
+        const shareButton = document.getElementById('storyShare')
+
+        likeButton.addEventListener('click', function () {
+          const icon = this.querySelector('span:first-child')
+          const isLiked = icon.textContent === '👍'
+          icon.textContent = isLiked ? '💙' : '👍'
+          this.style.transform = 'scale(1.1)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+          }, 200)
+          console.log('👍 Facebook Story liked')
+        })
+
+        shareButton.addEventListener('click', function () {
+          this.style.transform = 'scale(1.1)'
+          this.style.background = 'rgba(24, 119, 242, 1)'
+          setTimeout(() => {
+            this.style.transform = 'scale(1)'
+            this.style.background = 'rgba(24, 119, 242, 0.8)'
+          }, 200)
+          console.log('📤 Facebook Story shared')
+        })
+
+        // Close button functionality
+        const closeButton = document.querySelector('.story-close')
+        closeButton.addEventListener('click', function () {
+          console.log('✕ Facebook Story closed')
+        })
+      }
+
+      // Initialize listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupStoryInteractionListeners()
+
+        // Start progress bar animation
+        const progressFill = document.querySelector('.story-progress-fill')
+        if (progressFill) {
+          progressFill.style.animationPlayState = 'running'
+        }
+      })
+
+      // Export functions for external use
+      window.FacebookStoryTemplate = {
+        updateContent: window.updateFacebookStoryContent,
+        applyTheme: window.applyFacebookStoryTheme,
+        applyColors: window.applyFacebookStoryColors,
+        applyPattern: window.applyFacebookStoryPattern,
+      }
+
+      console.log('📘 Facebook Story template loaded successfully')
+    </script>
+  </body>
+</html>

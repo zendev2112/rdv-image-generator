@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Story Template - RDV</title>
+    <style>
+      /* Template-specific styles for Instagram Story */
+      .instagram-story-template {
+        width: 1080px;
+        height: 1920px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #667eea),
+          var(--color-secondary, #764ba2)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+      }
+
+      /* Background layer */
+      .story-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .story-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.1) 0%,
+          rgba(0, 0, 0, 0.3) 40%,
+          rgba(0, 0, 0, 0.4) 60%,
+          rgba(0, 0, 0, 0.6) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .story-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.1;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Header section with logo and source */
+      .story-header {
+        position: absolute;
+        top: 80px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .story-logo {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .story-logo img {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+      }
+
+      .story-source {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Main content container */
+      .story-content {
+        position: absolute;
+        top: 50%;
+        left: 60px;
+        right: 60px;
+        transform: translateY(-50%);
+        z-index: 10;
+        text-align: center;
+        animation: fadeInUp 1s ease-out 0.2s both;
+      }
+
+      /* Category badge */
+      .story-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.9));
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 30px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        animation: pulse 2s infinite;
+      }
+
+      /* Main title */
+      .story-title {
+        font-size: clamp(48px, 4.5vw, 72px);
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 30px;
+        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        animation: slideInLeft 0.8s ease-out 0.4s both;
+      }
+
+      /* Excerpt text */
+      .story-excerpt {
+        font-size: clamp(24px, 2.2vw, 32px);
+        line-height: 1.4;
+        margin-bottom: 40px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+        font-weight: 500;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        animation: slideInRight 0.8s ease-out 0.6s both;
+      }
+
+      /* CTA section */
+      .story-cta {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
+        padding: 20px 40px;
+        display: inline-flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: bounceIn 1s ease-out 0.8s both;
+        cursor: pointer;
+      }
+
+      .story-cta:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .story-cta-icon {
+        font-size: 24px;
+        animation: bounce 2s infinite;
+      }
+
+      /* Footer section */
+      .story-footer {
+        position: absolute;
+        bottom: 120px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: fadeInUp 0.8s ease-out 1s both;
+      }
+
+      .story-date {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .story-author {
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Instagram Story UI elements */
+      .story-progress-bar {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        right: 20px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        z-index: 15;
+      }
+
+      .story-progress-fill {
+        height: 100%;
+        background: #ffffff;
+        border-radius: 2px;
+        width: 0%;
+        animation: progressFill 3s ease-out forwards;
+      }
+
+      /* Engagement stickers */
+      .story-engagement {
+        position: absolute;
+        bottom: 300px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .story-poll {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        animation: slideInUp 0.8s ease-out 1.2s both;
+        max-width: 300px;
+      }
+
+      .story-poll-question {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #ffffff;
+      }
+
+      .story-poll-options {
+        display: flex;
+        gap: 10px;
+      }
+
+      .story-poll-option {
+        flex: 1;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        padding: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .story-poll-option:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+      }
+
+      /* Hashtags */
+      .story-hashtags {
+        position: absolute;
+        bottom: 200px;
+        left: 60px;
+        right: 60px;
+        text-align: center;
+        z-index: 10;
+        animation: fadeIn 0.8s ease-out 1.4s both;
+      }
+
+      .story-hashtag {
+        display: inline-block;
+        background: rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(5px);
+        padding: 6px 12px;
+        border-radius: 15px;
+        margin: 3px;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      /* Animations */
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-5px);
+        }
+        60% {
+          transform: translateY(-3px);
+        }
+      }
+
+      @keyframes progressFill {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 480px) {
+        .instagram-story-template {
+          width: 375px;
+          height: 667px;
+        }
+
+        .story-header {
+          top: 40px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-content {
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-footer {
+          bottom: 60px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .story-title {
+          font-size: clamp(24px, 6vw, 36px);
+        }
+
+        .story-excerpt {
+          font-size: clamp(16px, 4vw, 20px);
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .story-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.9));
+      }
+
+      [data-theme='dark'] .story-overlay {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(0, 0, 0, 0.4) 40%,
+          rgba(0, 0, 0, 0.5) 60%,
+          rgba(0, 0, 0, 0.7) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .story-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .instagram-story-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #667eea, #764ba2)
+        );
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .story-overlay {
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.8) 100%
+          );
+        }
+
+        .story-title,
+        .story-excerpt {
+          text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .instagram-story-template {
+          width: 210mm;
+          height: 297mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .story-overlay,
+        .story-pattern,
+        .story-progress-bar {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="instagram-story-template" id="storyTemplate">
+      <!-- Progress bar (Instagram UI element) -->
+      <div class="story-progress-bar">
+        <div class="story-progress-fill"></div>
+      </div>
+
+      <!-- Background image -->
+      <div class="story-background" id="storyBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="story-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="story-pattern" id="storyPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Header section -->
+      <div class="story-header">
+        <div class="story-logo">
+          <img
+            src="../../assets/images/logos/rdv-white.svg"
+            alt="RDV"
+            id="storyLogo"
+          />
+        </div>
+        <div class="story-source" id="storySource">@rdvnoticias</div>
+      </div>
+
+      <!-- Main content -->
+      <div class="story-content">
+        <div class="story-category" id="storyCategory">NOTICIAS</div>
+
+        <h1 class="story-title" id="storyTitle">Radio del Volga Informa</h1>
+
+        <p class="story-excerpt" id="storyExcerpt">
+          Mantente al día con las últimas noticias y actualidad de la región.
+        </p>
+
+        <a href="#" class="story-cta" id="storyCta">
+          <span class="story-cta-icon">👆</span>
+          <span>Desliza para más</span>
+        </a>
+      </div>
+
+      <!-- Engagement section -->
+      <div class="story-engagement">
+        <div class="story-poll" id="storyPoll" style="display: none">
+          <div class="story-poll-question">¿Te gustó esta noticia?</div>
+          <div class="story-poll-options">
+            <div class="story-poll-option">Sí 👍</div>
+            <div class="story-poll-option">No 👎</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hashtags -->
+      <div class="story-hashtags" id="storyHashtags">
+        <span class="story-hashtag">#RDV</span>
+        <span class="story-hashtag">#Noticias</span>
+        <span class="story-hashtag">#Actualidad</span>
+      </div>
+
+      <!-- Footer section -->
+      <div class="story-footer">
+        <div class="story-date" id="storyDate">Hoy</div>
+        <div class="story-author" id="storyAuthor">Redacción RDV</div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateStoryContent = function (data) {
+        try {
+          // Update text content
+          if (data.title) {
+            document.getElementById('storyTitle').textContent = data.title
+          }
+
+          if (data.excerpt) {
+            document.getElementById('storyExcerpt').textContent = data.excerpt
+          }
+
+          if (data.category) {
+            document.getElementById('storyCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          if (data.author) {
+            document.getElementById('storyAuthor').textContent = data.author
+          }
+
+          if (data.source) {
+            document.getElementById('storySource').textContent = data.source
+          }
+
+          if (data.date) {
+            const formattedDate = formatStoryDate(data.date)
+            document.getElementById('storyDate').textContent = formattedDate
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('storyBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update hashtags
+          if (data.hashtags && Array.isArray(data.hashtags)) {
+            updateStoryHashtags(data.hashtags)
+          }
+
+          // Update CTA text
+          if (data.ctaText) {
+            const ctaElement = document.getElementById('storyCta')
+            const textSpan = ctaElement.querySelector('span:last-child')
+            if (textSpan) {
+              textSpan.textContent = data.ctaText
+            }
+          }
+
+          // Show/hide engagement elements
+          if (data.showPoll) {
+            document.getElementById('storyPoll').style.display = 'block'
+          }
+
+          console.log('✅ Instagram Story content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating story content:', error)
+        }
+      }
+
+      // Update hashtags
+      function updateStoryHashtags(hashtags) {
+        const hashtagsContainer = document.getElementById('storyHashtags')
+        hashtagsContainer.innerHTML = ''
+
+        hashtags.slice(0, 5).forEach((tag) => {
+          const hashtagElement = document.createElement('span')
+          hashtagElement.className = 'story-hashtag'
+          hashtagElement.textContent = tag.startsWith('#') ? tag : `#${tag}`
+          hashtagsContainer.appendChild(hashtagElement)
+        })
+      }
+
+      // Format date for story display
+      function formatStoryDate(date) {
+        const now = new Date()
+        const inputDate = new Date(date)
+        const diffTime = Math.abs(now - inputDate)
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+        if (diffDays === 1) {
+          return 'Hoy'
+        } else if (diffDays === 2) {
+          return 'Ayer'
+        } else if (diffDays <= 7) {
+          return `Hace ${diffDays - 1} días`
+        } else {
+          return inputDate.toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+          })
+        }
+      }
+
+      // Apply theme colors
+      window.applyStoryTheme = function (theme) {
+        const template = document.getElementById('storyTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyStoryColors = function (colors) {
+        const template = document.getElementById('storyTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyStoryPattern = function (patternUrl, opacity = 0.1) {
+        const patternElement = document.getElementById('storyPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '200px 200px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Trigger animations on load
+      window.addEventListener('load', function () {
+        // Start progress bar animation
+        const progressFill = document.querySelector('.story-progress-fill')
+        if (progressFill) {
+          progressFill.style.animationPlayState = 'running'
+        }
+      })
+
+      // Export functions for external use
+      window.InstagramStoryTemplate = {
+        updateContent: window.updateStoryContent,
+        applyTheme: window.applyStoryTheme,
+        applyColors: window.applyStoryColors,
+        applyPattern: window.applyStoryPattern,
+      }
+
+      console.log('📱 Instagram Story template loaded successfully')
+    </script>
+  </body>
+</html>

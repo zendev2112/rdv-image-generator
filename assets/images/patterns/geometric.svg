@@ -1,0 +1,60 @@
+<!-- filepath: /home/zen/Documents/rdv-image-generator/assets/images/patterns/geometric.svg -->
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Define gradients for modern look -->
+    <linearGradient id="geometricGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <linearGradient id="geometricGradient2" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:0.2" />
+    </linearGradient>
+    
+    <linearGradient id="geometricGradient3" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:0.25" />
+    </linearGradient>
+    
+    <!-- Pattern definition -->
+    <pattern id="geometricPattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+      <!-- Large background shapes -->
+      <rect x="0" y="0" width="200" height="200" fill="transparent"/>
+      
+      <!-- Main geometric elements -->
+      <polygon points="50,20 80,20 65,50" fill="url(#geometricGradient1)" transform="rotate(45 65 30)"/>
+      <circle cx="150" cy="50" r="25" fill="url(#geometricGradient2)" opacity="0.6"/>
+      <rect x="20" y="120" width="40" height="40" fill="url(#geometricGradient3)" transform="rotate(30 40 140)"/>
+      
+      <!-- Secondary elements -->
+      <polygon points="120,80 140,80 130,100" fill="url(#geometricGradient1)" opacity="0.4"/>
+      <circle cx="60" cy="170" r="15" fill="url(#geometricGradient2)" opacity="0.5"/>
+      <rect x="140" y="120" width="30" height="30" fill="url(#geometricGradient3)" transform="rotate(-20 155 135)" opacity="0.7"/>
+      
+      <!-- Connecting lines -->
+      <line x1="65" y1="50" x2="130" y2="100" stroke="url(#geometricGradient1)" stroke-width="2" opacity="0.3"/>
+      <line x1="150" y1="75" x2="155" y2="120" stroke="url(#geometricGradient2)" stroke-width="1.5" opacity="0.4"/>
+      
+      <!-- Small accent dots -->
+      <circle cx="30" cy="30" r="3" fill="#667eea" opacity="0.5"/>
+      <circle cx="170" cy="170" r="3" fill="#764ba2" opacity="0.6"/>
+      <circle cx="100" cy="40" r="2" fill="#4facfe" opacity="0.4"/>
+      <circle cx="180" cy="90" r="2" fill="#f5576c" opacity="0.5"/>
+      
+      <!-- Additional geometric shapes for complexity -->
+      <polygon points="160,160 180,160 170,180" fill="url(#geometricGradient1)" opacity="0.3"/>
+      <rect x="10" y="80" width="20" height="20" fill="url(#geometricGradient2)" transform="rotate(60 20 90)" opacity="0.4"/>
+      
+      <!-- Hexagonal elements -->
+      <polygon points="90,140 100,135 110,140 110,150 100,155 90,150" fill="url(#geometricGradient3)" opacity="0.5"/>
+      
+      <!-- Triangular grid elements -->
+      <polygon points="180,20 190,20 185,30" fill="#667eea" opacity="0.2"/>
+      <polygon points="10,160 20,160 15,170" fill="#764ba2" opacity="0.3"/>
+    </pattern>
+  </defs>
+  
+  <!-- Apply the pattern -->
+  <rect width="100%" height="100%" fill="url(#geometricPattern)"/>
+</svg>

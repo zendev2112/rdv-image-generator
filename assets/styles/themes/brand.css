@@ -1,0 +1,817 @@
+/**
+ * RDV Image Generator - Brand Theme
+ * Official Radio del Volga brand colors and styling
+ * @version 1.0.0
+ */
+
+:root {
+    /* ========================================
+       RDV BRAND VARIABLES
+       ======================================== */
+
+    /* RDV Primary Brand Colors */
+    --rdv-primary: #e53e3e;
+    /* RDV Red */
+    --rdv-primary-rgb: 229, 62, 62;
+    --rdv-primary-light: #fc8181;
+    --rdv-primary-dark: #c53030;
+    --rdv-primary-50: rgba(229, 62, 62, 0.05);
+    --rdv-primary-100: rgba(229, 62, 62, 0.1);
+    --rdv-primary-200: rgba(229, 62, 62, 0.2);
+    --rdv-primary-300: rgba(229, 62, 62, 0.3);
+    --rdv-primary-400: rgba(229, 62, 62, 0.4);
+    --rdv-primary-500: rgba(229, 62, 62, 0.5);
+    --rdv-primary-600: rgba(229, 62, 62, 0.6);
+    --rdv-primary-700: rgba(229, 62, 62, 0.7);
+    --rdv-primary-800: rgba(229, 62, 62, 0.8);
+    --rdv-primary-900: rgba(229, 62, 62, 0.9);
+
+    /* RDV Secondary Brand Colors */
+    --rdv-secondary: #2b6cb0;
+    /* RDV Blue */
+    --rdv-secondary-rgb: 43, 108, 176;
+    --rdv-secondary-light: #4299e1;
+    --rdv-secondary-dark: #2c5282;
+    --rdv-secondary-50: rgba(43, 108, 176, 0.05);
+    --rdv-secondary-100: rgba(43, 108, 176, 0.1);
+    --rdv-secondary-200: rgba(43, 108, 176, 0.2);
+    --rdv-secondary-300: rgba(43, 108, 176, 0.3);
+    --rdv-secondary-400: rgba(43, 108, 176, 0.4);
+    --rdv-secondary-500: rgba(43, 108, 176, 0.5);
+    --rdv-secondary-600: rgba(43, 108, 176, 0.6);
+    --rdv-secondary-700: rgba(43, 108, 176, 0.7);
+    --rdv-secondary-800: rgba(43, 108, 176, 0.8);
+    --rdv-secondary-900: rgba(43, 108, 176, 0.9);
+
+    /* RDV Accent Colors */
+    --rdv-accent: #f6ad55;
+    /* RDV Orange/Gold */
+    --rdv-accent-rgb: 246, 173, 85;
+    --rdv-accent-light: #fbb965;
+    --rdv-accent-dark: #ed8936;
+    --rdv-accent-50: rgba(246, 173, 85, 0.05);
+    --rdv-accent-100: rgba(246, 173, 85, 0.1);
+    --rdv-accent-200: rgba(246, 173, 85, 0.2);
+    --rdv-accent-300: rgba(246, 173, 85, 0.3);
+    --rdv-accent-400: rgba(246, 173, 85, 0.4);
+    --rdv-accent-500: rgba(246, 173, 85, 0.5);
+    --rdv-accent-600: rgba(246, 173, 85, 0.6);
+    --rdv-accent-700: rgba(246, 173, 85, 0.7);
+    --rdv-accent-800: rgba(246, 173, 85, 0.8);
+    --rdv-accent-900: rgba(246, 173, 85, 0.9);
+
+    /* RDV Neutral Colors */
+    --rdv-neutral: #2d3748;
+    /* RDV Dark Gray */
+    --rdv-neutral-rgb: 45, 55, 72;
+    --rdv-neutral-light: #4a5568;
+    --rdv-neutral-dark: #1a202c;
+
+    /* Theme Assignment */
+    --theme-primary: var(--rdv-primary);
+    --theme-primary-rgb: var(--rdv-primary-rgb);
+    --theme-primary-light: var(--rdv-primary-light);
+    --theme-primary-dark: var(--rdv-primary-dark);
+    --theme-primary-50: var(--rdv-primary-50);
+    --theme-primary-100: var(--rdv-primary-100);
+    --theme-primary-200: var(--rdv-primary-200);
+    --theme-primary-300: var(--rdv-primary-300);
+    --theme-primary-400: var(--rdv-primary-400);
+    --theme-primary-500: var(--rdv-primary-500);
+    --theme-primary-600: var(--rdv-primary-600);
+    --theme-primary-700: var(--rdv-primary-700);
+    --theme-primary-800: var(--rdv-primary-800);
+    --theme-primary-900: var(--rdv-primary-900);
+
+    --theme-secondary: var(--rdv-secondary);
+    --theme-secondary-rgb: var(--rdv-secondary-rgb);
+    --theme-secondary-light: var(--rdv-secondary-light);
+    --theme-secondary-dark: var(--rdv-secondary-dark);
+    --theme-secondary-50: var(--rdv-secondary-50);
+    --theme-secondary-100: var(--rdv-secondary-100);
+    --theme-secondary-200: var(--rdv-secondary-200);
+    --theme-secondary-300: var(--rdv-secondary-300);
+    --theme-secondary-400: var(--rdv-secondary-400);
+    --theme-secondary-500: var(--rdv-secondary-500);
+    --theme-secondary-600: var(--rdv-secondary-600);
+    --theme-secondary-700: var(--rdv-secondary-700);
+    --theme-secondary-800: var(--rdv-secondary-800);
+    --theme-secondary-900: var(--rdv-secondary-900);
+
+    --theme-accent: var(--rdv-accent);
+    --theme-accent-rgb: var(--rdv-accent-rgb);
+    --theme-accent-light: var(--rdv-accent-light);
+    --theme-accent-dark: var(--rdv-accent-dark);
+    --theme-accent-50: var(--rdv-accent-50);
+    --theme-accent-100: var(--rdv-accent-100);
+    --theme-accent-200: var(--rdv-accent-200);
+    --theme-accent-300: var(--rdv-accent-300);
+    --theme-accent-400: var(--rdv-accent-400);
+    --theme-accent-500: var(--rdv-accent-500);
+    --theme-accent-600: var(--rdv-accent-600);
+    --theme-accent-700: var(--rdv-accent-700);
+    --theme-accent-800: var(--rdv-accent-800);
+    --theme-accent-900: var(--rdv-accent-900);
+
+    /* Background Colors */
+    --theme-background: #ffffff;
+    --theme-background-rgb: 255, 255, 255;
+    --theme-surface: #f7fafc;
+    --theme-surface-rgb: 247, 250, 252;
+    --theme-surface-elevated: #ffffff;
+    --theme-overlay: rgba(45, 55, 72, 0.5);
+
+    /* Text Colors */
+    --theme-text: var(--rdv-neutral);
+    --theme-text-rgb: var(--rdv-neutral-rgb);
+    --theme-text-secondary: #718096;
+    --theme-text-muted: #a0aec0;
+    --theme-text-inverse: #ffffff;
+    --theme-text-on-primary: #ffffff;
+    --theme-text-on-secondary: #ffffff;
+    --theme-text-on-accent: var(--rdv-neutral);
+
+    /* Border Colors */
+    --theme-border: #e2e8f0;
+    --theme-border-light: #f1f5f9;
+    --theme-border-strong: #cbd5e0;
+    --theme-divider: #edf2f7;
+
+    /* Status Colors - RDV themed */
+    --theme-success: #38a169;
+    /* Green for success */
+    --theme-success-light: #68d391;
+    --theme-success-dark: #2f855a;
+    --theme-warning: var(--rdv-accent);
+    /* Use RDV orange for warnings */
+    --theme-warning-light: var(--rdv-accent-light);
+    --theme-warning-dark: var(--rdv-accent-dark);
+    --theme-error: var(--rdv-primary);
+    /* Use RDV red for errors */
+    --theme-error-light: var(--rdv-primary-light);
+    --theme-error-dark: var(--rdv-primary-dark);
+    --theme-info: var(--rdv-secondary);
+    /* Use RDV blue for info */
+    --theme-info-light: var(--rdv-secondary-light);
+    --theme-info-dark: var(--rdv-secondary-dark);
+
+    /* RDV Brand Gradients */
+    --rdv-gradient-primary: linear-gradient(135deg, var(--rdv-primary), var(--rdv-primary-dark));
+    --rdv-gradient-secondary: linear-gradient(135deg, var(--rdv-secondary), var(--rdv-secondary-dark));
+    --rdv-gradient-accent: linear-gradient(135deg, var(--rdv-accent), var(--rdv-accent-dark));
+    --rdv-gradient-brand: linear-gradient(135deg, var(--rdv-primary), var(--rdv-secondary), var(--rdv-accent));
+    --rdv-gradient-news: linear-gradient(135deg, var(--rdv-primary), var(--rdv-neutral));
+    --rdv-gradient-hero: linear-gradient(135deg, var(--rdv-primary) 0%, var(--rdv-secondary) 50%, var(--rdv-accent) 100%);
+
+    /* Theme Gradients */
+    --theme-gradient-primary: var(--rdv-gradient-primary);
+    --theme-gradient-secondary: var(--rdv-gradient-secondary);
+    --theme-gradient-accent: var(--rdv-gradient-accent);
+    --theme-gradient-hero: var(--rdv-gradient-hero);
+    --theme-gradient-surface: linear-gradient(135deg, rgba(229, 62, 62, 0.02), rgba(43, 108, 176, 0.03));
+    --theme-gradient-overlay: linear-gradient(180deg, rgba(45, 55, 72, 0.4), rgba(45, 55, 72, 0.7));
+
+    /* RDV Shadows with brand colors */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(229, 62, 62, 0.1);
+    --theme-shadow-md: 0 4px 6px -1px rgba(229, 62, 62, 0.15);
+    --theme-shadow-lg: 0 10px 15px -3px rgba(229, 62, 62, 0.2);
+    --theme-shadow-xl: 0 20px 25px -5px rgba(229, 62, 62, 0.25);
+    --theme-shadow-2xl: 0 25px 50px -12px rgba(229, 62, 62, 0.3);
+    --theme-shadow-inner: inset 0 2px 4px 0 rgba(229, 62, 62, 0.1);
+    --theme-shadow-brand: 0 4px 12px -2px rgba(229, 62, 62, 0.2);
+
+    /* Template Specific Variables */
+    --template-bg: var(--theme-background);
+    --template-text: var(--rdv-neutral);
+    --template-title: var(--rdv-primary);
+    --template-subtitle: var(--rdv-secondary);
+    --template-accent: var(--rdv-accent);
+    --template-overlay: var(--theme-gradient-overlay);
+
+    /* Animation Variables */
+    --theme-transition-fast: 0.15s ease;
+    --theme-transition-normal: 0.3s ease;
+    --theme-transition-slow: 0.5s ease;
+    --theme-animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    /* RDV Typography Scale */
+    --rdv-font-headline: 'Playfair Display', Georgia, serif;
+    --rdv-font-body: 'Inter', -apple-system, sans-serif;
+    --rdv-font-accent: 'Roboto', -apple-system, sans-serif;
+}
+
+/* ========================================
+   COMPONENT OVERRIDES
+   ======================================== */
+
+/* Header Styling */
+[data-theme="brand"] .header {
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 2px solid var(--rdv-primary);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-md);
+}
+
+[data-theme="brand"] .logo {
+    color: var(--rdv-primary);
+    font-weight: 800;
+    font-family: var(--rdv-font-headline);
+}
+
+[data-theme="brand"] .header-actions .btn-secondary {
+    background: var(--theme-surface);
+    border: 2px solid var(--rdv-primary-200);
+    color: var(--rdv-primary);
+    font-weight: 600;
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .header-actions .btn-secondary:hover {
+    background: var(--rdv-gradient-primary);
+    color: var(--theme-text-on-primary);
+    border-color: var(--rdv-primary);
+    box-shadow: var(--theme-shadow-brand);
+    transform: translateY(-1px);
+}
+
+/* Navigation */
+[data-theme="brand"] .nav-item {
+    color: var(--rdv-neutral);
+    font-weight: 600;
+    transition: all var(--theme-transition-fast);
+}
+
+[data-theme="brand"] .nav-item:hover {
+    color: var(--rdv-primary);
+}
+
+[data-theme="brand"] .nav-item.active {
+    color: var(--rdv-primary);
+    position: relative;
+}
+
+[data-theme="brand"] .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--rdv-gradient-primary);
+    border-radius: 2px;
+}
+
+/* Platform Selector */
+[data-theme="brand"] .platform-btn {
+    background: var(--theme-background);
+    border: 2px solid var(--rdv-primary-200);
+    color: var(--rdv-neutral);
+    font-weight: 600;
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .platform-btn:hover {
+    border-color: var(--rdv-primary);
+    background: var(--rdv-primary-50);
+    color: var(--rdv-primary);
+    box-shadow: var(--theme-shadow-brand);
+    transform: translateY(-1px);
+}
+
+[data-theme="brand"] .platform-btn.active {
+    background: var(--rdv-gradient-primary);
+    border-color: var(--rdv-primary);
+    color: var(--theme-text-on-primary);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+[data-theme="brand"] .platform-btn.active .platform-icon {
+    filter: brightness(0) invert(1);
+}
+
+/* Template Selector */
+[data-theme="brand"] .template-btn {
+    background: var(--theme-background);
+    border: 2px solid var(--rdv-secondary-200);
+    color: var(--rdv-neutral);
+    font-weight: 500;
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .template-btn:hover {
+    border-color: var(--rdv-secondary);
+    background: var(--rdv-secondary-50);
+    box-shadow: var(--theme-shadow-md);
+    transform: translateY(-1px);
+}
+
+[data-theme="brand"] .template-btn.active {
+    background: var(--rdv-gradient-secondary);
+    border-color: var(--rdv-secondary);
+    color: var(--theme-text-on-secondary);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+/* Color Theme Selector */
+[data-theme="brand"] .color-theme {
+    background: var(--theme-background);
+    border: 2px solid var(--rdv-accent-200);
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .color-theme:hover {
+    border-color: var(--rdv-accent);
+    background: var(--rdv-accent-50);
+    box-shadow: var(--theme-shadow-md);
+    transform: scale(1.02);
+}
+
+[data-theme="brand"] .color-theme.active {
+    border-color: var(--rdv-accent);
+    background: var(--rdv-accent-100);
+    box-shadow: var(--theme-shadow-lg);
+    transform: scale(1.05);
+}
+
+/* Form Elements */
+[data-theme="brand"] .form-group input,
+[data-theme="brand"] .form-group textarea,
+[data-theme="brand"] .form-group select {
+    background: var(--theme-background);
+    border: 2px solid var(--rdv-primary-200);
+    color: var(--rdv-neutral);
+    font-weight: 500;
+    font-family: var(--rdv-font-body);
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .form-group input:focus,
+[data-theme="brand"] .form-group textarea:focus,
+[data-theme="brand"] .form-group select:focus {
+    border-color: var(--rdv-primary);
+    box-shadow: 0 0 0 3px var(--rdv-primary-100);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+[data-theme="brand"] .form-group label {
+    color: var(--rdv-neutral);
+    font-family: var(--rdv-font-body);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.875rem;
+}
+
+/* Buttons */
+[data-theme="brand"] .btn-primary {
+    background: var(--rdv-gradient-primary);
+    border: none;
+    color: var(--theme-text-on-primary);
+    box-shadow: var(--theme-shadow-brand);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: var(--rdv-font-body);
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .btn-primary:hover {
+    background: var(--rdv-gradient-hero);
+    box-shadow: var(--theme-shadow-xl);
+    transform: translateY(-2px);
+}
+
+[data-theme="brand"] .btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--theme-shadow-md);
+}
+
+[data-theme="brand"] .btn-secondary {
+    background: var(--theme-surface);
+    border: 2px solid var(--rdv-secondary);
+    color: var(--rdv-secondary);
+    font-weight: 600;
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .btn-secondary:hover {
+    background: var(--rdv-gradient-secondary);
+    border-color: var(--rdv-secondary);
+    color: var(--theme-text-on-secondary);
+    transform: translateY(-1px);
+}
+
+[data-theme="brand"] .btn-accent {
+    background: var(--rdv-gradient-accent);
+    border: none;
+    color: var(--theme-text-on-accent);
+    font-weight: 600;
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .btn-accent:hover {
+    background: linear-gradient(135deg, var(--rdv-accent-light), var(--rdv-accent));
+    transform: translateY(-1px);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+/* Preview Area */
+[data-theme="brand"] .preview-area {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-xl);
+    border: 2px solid var(--rdv-primary-100);
+    border-radius: 12px;
+}
+
+[data-theme="brand"] .preview-header {
+    background: var(--theme-gradient-surface);
+    border-bottom: 2px solid var(--rdv-primary-200);
+    border-radius: 10px 10px 0 0;
+    padding: 1rem;
+}
+
+[data-theme="brand"] .preview-title {
+    color: var(--rdv-neutral);
+    font-family: var(--rdv-font-headline);
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+[data-theme="brand"] .preview-container {
+    background: var(--theme-surface);
+    padding: 2rem;
+}
+
+[data-theme="brand"] .canvas-wrapper {
+    box-shadow: var(--theme-shadow-2xl);
+    border: 3px solid var(--rdv-primary-100);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .canvas-wrapper:hover {
+    transform: scale(1.02);
+    box-shadow: var(--theme-shadow-2xl);
+}
+
+/* Control Panel */
+[data-theme="brand"] .control-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-xl);
+    border: 2px solid var(--rdv-secondary-100);
+    border-radius: 12px;
+}
+
+[data-theme="brand"] .panel-section {
+    border-bottom: 1px solid var(--theme-divider);
+    padding: 1.5rem;
+}
+
+[data-theme="brand"] .panel-section:last-child {
+    border-bottom: none;
+}
+
+[data-theme="brand"] .panel-section h3 {
+    color: var(--rdv-neutral);
+    font-family: var(--rdv-font-headline);
+    font-weight: 700;
+    font-size: 1.125rem;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+[data-theme="brand"] .panel-section h3::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 30px;
+    height: 3px;
+    background: var(--rdv-gradient-primary);
+    border-radius: 2px;
+}
+
+/* Cards */
+[data-theme="brand"] .card {
+    background: var(--theme-background);
+    border: 2px solid var(--theme-border);
+    border-radius: 8px;
+    box-shadow: var(--theme-shadow-sm);
+    transition: all var(--theme-transition-normal);
+}
+
+[data-theme="brand"] .card:hover {
+    border-color: var(--rdv-primary-200);
+    box-shadow: var(--theme-shadow-md);
+    transform: translateY(-2px);
+}
+
+[data-theme="brand"] .card-header {
+    background: var(--theme-gradient-surface);
+    border-bottom: 1px solid var(--theme-border);
+    padding: 1rem;
+    border-radius: 6px 6px 0 0;
+}
+
+/* Modal */
+[data-theme="brand"] .modal {
+    background: rgba(45, 55, 72, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+[data-theme="brand"] .modal-content {
+    background: var(--theme-background);
+    border: 2px solid var(--rdv-primary-100);
+    border-radius: 12px;
+    box-shadow: var(--theme-shadow-2xl);
+}
+
+[data-theme="brand"] .modal-header {
+    background: var(--theme-gradient-surface);
+    border-bottom: 2px solid var(--rdv-primary-200);
+    border-radius: 10px 10px 0 0;
+    padding: 1.5rem;
+}
+
+[data-theme="brand"] .modal-title {
+    color: var(--rdv-neutral);
+    font-family: var(--rdv-font-headline);
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+[data-theme="brand"] .modal-body {
+    padding: 1.5rem;
+}
+
+[data-theme="brand"] .modal-footer {
+    background: var(--theme-surface);
+    border-top: 1px solid var(--theme-border);
+    border-radius: 0 0 10px 10px;
+    padding: 1rem 1.5rem;
+}
+
+/* Tooltips */
+[data-theme="brand"] .tooltip {
+    background: var(--rdv-neutral);
+    color: var(--theme-text-inverse);
+    border-radius: 6px;
+    box-shadow: var(--theme-shadow-lg);
+    font-family: var(--rdv-font-body);
+    font-weight: 500;
+}
+
+[data-theme="brand"] .tooltip::before {
+    border-top-color: var(--rdv-neutral);
+}
+
+/* Progress Bars */
+[data-theme="brand"] .progress {
+    background: var(--theme-border-light);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+[data-theme="brand"] .progress-bar {
+    background: var(--rdv-gradient-primary);
+    transition: width var(--theme-transition-normal);
+}
+
+/* Loading States */
+[data-theme="brand"] .loading {
+    color: var(--rdv-primary);
+}
+
+[data-theme="brand"] .spinner {
+    border-color: var(--rdv-primary-200);
+    border-top-color: var(--rdv-primary);
+}
+
+/* Notifications */
+[data-theme="brand"] .notification.success {
+    background: var(--theme-success);
+    border-left: 4px solid var(--theme-success-dark);
+}
+
+[data-theme="brand"] .notification.warning {
+    background: var(--rdv-accent);
+    border-left: 4px solid var(--rdv-accent-dark);
+}
+
+[data-theme="brand"] .notification.error {
+    background: var(--rdv-primary);
+    border-left: 4px solid var(--rdv-primary-dark);
+}
+
+[data-theme="brand"] .notification.info {
+    background: var(--rdv-secondary);
+    border-left: 4px solid var(--rdv-secondary-dark);
+}
+
+/* Scrollbars */
+[data-theme="brand"] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+[data-theme="brand"] ::-webkit-scrollbar-track {
+    background: var(--theme-border-light);
+    border-radius: 4px;
+}
+
+[data-theme="brand"] ::-webkit-scrollbar-thumb {
+    background: var(--rdv-gradient-primary);
+    border-radius: 4px;
+}
+
+[data-theme="brand"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--rdv-gradient-hero);
+}
+
+/* ========================================
+   TEMPLATE SPECIFIC STYLES
+   ======================================== */
+
+/* Instagram Templates */
+[data-theme="brand"] .instagram-template {
+    background: var(--theme-gradient-surface);
+}
+
+[data-theme="brand"] .instagram-template .template-title {
+    font-family: var(--rdv-font-headline);
+    color: var(--rdv-primary);
+    font-weight: 700;
+}
+
+[data-theme="brand"] .instagram-template .template-subtitle {
+    font-family: var(--rdv-font-body);
+    color: var(--rdv-secondary);
+    font-weight: 600;
+}
+
+/* Facebook Templates */
+[data-theme="brand"] .facebook-template {
+    background: var(--theme-background);
+}
+
+[data-theme="brand"] .facebook-template .template-accent {
+    color: var(--rdv-accent);
+    font-family: var(--rdv-font-accent);
+}
+
+/* Twitter Templates */
+[data-theme="brand"] .twitter-template {
+    background: linear-gradient(135deg, var(--rdv-secondary-50), var(--theme-background));
+}
+
+/* Universal Templates */
+[data-theme="brand"] .universal-template {
+    background: var(--rdv-gradient-brand);
+}
+
+[data-theme="brand"] .universal-template .breaking-news {
+    background: var(--rdv-gradient-news);
+    color: var(--theme-text-on-primary);
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+    [data-theme="brand"] .header {
+        border-bottom-width: 1px;
+    }
+
+    [data-theme="brand"] .preview-area,
+    [data-theme="brand"] .control-panel {
+        border-width: 1px;
+        border-radius: 8px;
+    }
+
+    [data-theme="brand"] .platform-btn,
+    [data-theme="brand"] .template-btn {
+        border-width: 1px;
+    }
+
+    [data-theme="brand"] .canvas-wrapper {
+        border-width: 2px;
+    }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-theme="brand"] * {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    [data-theme="brand"] {
+        --theme-border: #000000;
+        --theme-border-strong: #000000;
+    }
+
+    [data-theme="brand"] .btn-primary,
+    [data-theme="brand"] .btn-secondary,
+    [data-theme="brand"] .btn-accent {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Focus indicators */
+[data-theme="brand"] *:focus-visible {
+    outline: 3px solid var(--rdv-primary);
+    outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+    [data-theme="brand"] * {
+        background: white !important;
+        color: black !important;
+        box-shadow: none !important;
+    }
+}
+
+/* ========================================
+   CUSTOM BRAND ANIMATIONS
+   ======================================== */
+
+@keyframes rdvPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes rdvSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rdvFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[data-theme="brand"] .animate-pulse {
+    animation: rdvPulse 2s ease-in-out infinite;
+}
+
+[data-theme="brand"] .animate-slide-in {
+    animation: rdvSlideIn 0.5s ease-out;
+}
+
+[data-theme="brand"] .animate-fade-in-up {
+    animation: rdvFadeInUp 0.6s ease-out;
+}
+
+/* Brand loading animation */
+[data-theme="brand"] .rdv-loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--rdv-primary-200);
+    border-top: 3px solid var(--rdv-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

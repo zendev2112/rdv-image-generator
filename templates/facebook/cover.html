@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Facebook Cover Template - RDV</title>
+    <style>
+      /* Template-specific styles for Facebook Cover */
+      .facebook-cover-template {
+        width: 1640px;
+        height: 859px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #1877f2),
+          var(--color-secondary, #42a5f5)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Background layer */
+      .cover-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .cover-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(24, 119, 242, 0.2) 0%,
+          rgba(66, 165, 245, 0.3) 50%,
+          rgba(24, 119, 242, 0.25) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .cover-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.05;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Main content container */
+      .cover-content {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        max-width: 90%;
+        padding: 0 80px;
+        animation: fadeInUp 1s ease-out 0.3s both;
+      }
+
+      /* Left section for logo and branding */
+      .cover-left {
+        position: absolute;
+        left: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        animation: slideInLeft 1s ease-out 0.2s both;
+      }
+
+      /* Right section for content */
+      .cover-right {
+        position: absolute;
+        right: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: right;
+        z-index: 10;
+        animation: slideInRight 1s ease-out 0.4s both;
+        max-width: 50%;
+      }
+
+      /* Center content layout */
+      .cover-content-center {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 80px;
+      }
+
+      /* Logo section */
+      .cover-logo-section {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .cover-main-logo {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .cover-main-logo img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+      }
+
+      .cover-brand-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .cover-brand-name {
+        font-size: 48px;
+        font-weight: 800;
+        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        line-height: 1.1;
+      }
+
+      .cover-brand-tagline {
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Content section */
+      .cover-content-section {
+        text-align: right;
+      }
+
+      /* Category badge */
+      .cover-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        animation: pulse 2s infinite;
+      }
+
+      /* Main title */
+      .cover-title {
+        font-size: clamp(36px, 4vw, 56px);
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        max-width: 600px;
+      }
+
+      /* Excerpt text */
+      .cover-excerpt {
+        font-size: clamp(18px, 2vw, 24px);
+        line-height: 1.5;
+        margin-bottom: 30px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 500;
+        max-width: 500px;
+      }
+
+      /* Call to action */
+      .cover-cta {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 30px;
+        padding: 15px 35px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: bounceIn 1s ease-out 0.8s both;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .cover-cta:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .cover-cta-icon {
+        font-size: 20px;
+        animation: bounce 2s infinite;
+      }
+
+      /* Social media links */
+      .cover-social {
+        position: absolute;
+        bottom: 40px;
+        right: 80px;
+        display: flex;
+        gap: 15px;
+        z-index: 10;
+        animation: fadeInUp 0.8s ease-out 1s both;
+      }
+
+      .cover-social-link {
+        width: 45px;
+        height: 45px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 18px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .cover-social-link:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.1);
+      }
+
+      /* Contact info */
+      .cover-contact {
+        position: absolute;
+        bottom: 40px;
+        left: 80px;
+        z-index: 10;
+        animation: fadeInUp 0.8s ease-out 1.2s both;
+      }
+
+      .cover-contact-item {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      /* Breaking news banner */
+      .cover-breaking {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 12px 0;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        text-align: center;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out 0.1s both,
+          glow 2s infinite alternate;
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        display: none; /* Hidden by default */
+      }
+
+      /* Statistics section */
+      .cover-stats {
+        position: absolute;
+        top: 40px;
+        right: 80px;
+        display: flex;
+        gap: 20px;
+        z-index: 10;
+        animation: fadeInDown 0.8s ease-out 0.6s both;
+      }
+
+      .cover-stat {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        border-radius: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .cover-stat-number {
+        font-size: 20px;
+        font-weight: 700;
+        color: #ffffff;
+        display: block;
+      }
+
+      .cover-stat-label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Decorative elements */
+      .cover-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.1;
+      }
+
+      .cover-decorative.top-left {
+        top: 100px;
+        left: 200px;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.4),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .cover-decorative.bottom-right {
+        bottom: 120px;
+        right: 300px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      .cover-decorative.center {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.08),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite;
+      }
+
+      /* Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px) translateY(-50%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) translateY(-50%);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px) translateY(-50%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0) translateY(-50%);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-3px);
+        }
+        60% {
+          transform: translateY(-2px);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+        to {
+          box-shadow: 0 4px 25px rgba(229, 62, 62, 0.7);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1366px) {
+        .facebook-cover-template {
+          width: 1200px;
+          height: 630px;
+        }
+
+        .cover-content-center {
+          padding: 0 60px;
+        }
+
+        .cover-left,
+        .cover-right {
+          position: relative;
+          transform: none;
+          top: auto;
+          left: auto;
+          right: auto;
+          max-width: none;
+          text-align: center;
+        }
+
+        .cover-content-center {
+          flex-direction: column;
+          gap: 30px;
+          text-align: center;
+        }
+
+        .cover-brand-name {
+          font-size: clamp(32px, 5vw, 42px);
+        }
+
+        .cover-title {
+          font-size: clamp(28px, 4vw, 36px);
+        }
+
+        .cover-excerpt {
+          font-size: clamp(16px, 2.5vw, 20px);
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .facebook-cover-template {
+          width: 1024px;
+          height: 537px;
+        }
+
+        .cover-content-center {
+          padding: 0 40px;
+        }
+
+        .cover-main-logo {
+          width: 80px;
+          height: 80px;
+        }
+
+        .cover-main-logo img {
+          width: 50px;
+          height: 50px;
+        }
+
+        .cover-brand-name {
+          font-size: clamp(24px, 6vw, 32px);
+        }
+
+        .cover-social,
+        .cover-contact {
+          position: relative;
+          bottom: auto;
+          left: auto;
+          right: auto;
+          justify-content: center;
+          margin-top: 20px;
+        }
+
+        .cover-stats {
+          position: relative;
+          top: auto;
+          right: auto;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .facebook-cover-template {
+          width: 600px;
+          height: 315px;
+        }
+
+        .cover-content-center {
+          padding: 0 30px;
+          gap: 20px;
+        }
+
+        .cover-logo-section {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .cover-brand-info {
+          align-items: center;
+          text-align: center;
+        }
+
+        .cover-brand-name {
+          font-size: clamp(20px, 7vw, 28px);
+        }
+
+        .cover-brand-tagline {
+          font-size: 14px;
+        }
+
+        .cover-title {
+          font-size: clamp(18px, 5vw, 24px);
+          margin-bottom: 15px;
+        }
+
+        .cover-excerpt {
+          font-size: clamp(14px, 3vw, 16px);
+          margin-bottom: 20px;
+        }
+
+        .cover-category {
+          font-size: 14px;
+          padding: 8px 16px;
+          margin-bottom: 15px;
+        }
+
+        .cover-cta {
+          font-size: 16px;
+          padding: 12px 24px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .cover-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+      }
+
+      [data-theme='dark'] .cover-overlay {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.4) 50%,
+          rgba(0, 0, 0, 0.35) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .cover-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .facebook-cover-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #1877f2, #42a5f5)
+        );
+      }
+
+      [data-theme='brand'] .cover-cta {
+        background: var(--rdv-primary, #e53e3e);
+        border-color: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .cover-cta:hover {
+        background: var(--rdv-primary-dark, #c53030);
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .cover-overlay {
+          background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.6) 50%,
+            rgba(0, 0, 0, 0.55) 100%
+          );
+        }
+
+        .cover-brand-name,
+        .cover-title,
+        .cover-excerpt {
+          text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .facebook-cover-template {
+          width: 297mm;
+          height: 156mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .cover-overlay,
+        .cover-pattern,
+        .cover-decorative {
+          display: none;
+        }
+
+        .cover-brand-name,
+        .cover-title,
+        .cover-excerpt {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="facebook-cover-template" id="coverTemplate">
+      <!-- Background image -->
+      <div class="cover-background" id="coverBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="cover-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="cover-pattern" id="coverPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="cover-decorative top-left"></div>
+      <div class="cover-decorative bottom-right"></div>
+      <div class="cover-decorative center"></div>
+
+      <!-- Breaking news banner -->
+      <div class="cover-breaking" id="coverBreaking">
+        🚨 ÚLTIMA HORA - RADIO DEL VOLGA INFORMA
+      </div>
+
+      <!-- Statistics section -->
+      <div class="cover-stats" id="coverStats">
+        <div class="cover-stat">
+          <span class="cover-stat-number" id="coverFollowers">15K</span>
+          <span class="cover-stat-label">Seguidores</span>
+        </div>
+        <div class="cover-stat">
+          <span class="cover-stat-number" id="coverReach">50K</span>
+          <span class="cover-stat-label">Alcance</span>
+        </div>
+        <div class="cover-stat">
+          <span class="cover-stat-number" id="coverYears">25</span>
+          <span class="cover-stat-label">Años</span>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="cover-content-center">
+        <!-- Left section - Logo and branding -->
+        <div class="cover-logo-section">
+          <div class="cover-main-logo">
+            <img
+              src="../../assets/images/logos/rdv-white.svg"
+              alt="RDV"
+              id="coverLogo"
+            />
+          </div>
+          <div class="cover-brand-info">
+            <div class="cover-brand-name" id="coverBrandName">
+              Radio del Volga
+            </div>
+            <div class="cover-brand-tagline" id="coverBrandTagline">
+              Tu radio de confianza desde 1999
+            </div>
+          </div>
+        </div>
+
+        <!-- Right section - Content -->
+        <div class="cover-content-section">
+          <div class="cover-category" id="coverCategory">NOTICIAS</div>
+
+          <h1 class="cover-title" id="coverTitle">
+            Información confiable para toda la comunidad
+          </h1>
+
+          <p class="cover-excerpt" id="coverExcerpt">
+            Conectando al Volga con noticias, música y entretenimiento de
+            calidad las 24 horas.
+          </p>
+
+          <a href="#" class="cover-cta" id="coverCta">
+            <span class="cover-cta-icon">📻</span>
+            <span>Escúchanos en vivo</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Contact info -->
+      <div class="cover-contact" id="coverContact">
+        <div class="cover-contact-item">
+          <span>📍</span>
+          <span id="coverLocation">Villa Mercedes, San Luis</span>
+        </div>
+        <div class="cover-contact-item">
+          <span>📞</span>
+          <span id="coverPhone">+54 2657 123456</span>
+        </div>
+        <div class="cover-contact-item">
+          <span>🌐</span>
+          <span id="coverWebsite">radiodelvolga.com</span>
+        </div>
+      </div>
+
+      <!-- Social media links -->
+      <div class="cover-social" id="coverSocial">
+        <a href="#" class="cover-social-link" title="Facebook"> 📘 </a>
+        <a href="#" class="cover-social-link" title="Instagram"> 📷 </a>
+        <a href="#" class="cover-social-link" title="Twitter"> 🐦 </a>
+        <a href="#" class="cover-social-link" title="YouTube"> 📺 </a>
+        <a href="#" class="cover-social-link" title="WhatsApp"> 📱 </a>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateFacebookCoverContent = function (data) {
+        try {
+          // Update brand information
+          if (data.brandName) {
+            document.getElementById('coverBrandName').textContent =
+              data.brandName
+          }
+
+          if (data.brandTagline) {
+            document.getElementById('coverBrandTagline').textContent =
+              data.brandTagline
+          }
+
+          if (data.title) {
+            document.getElementById('coverTitle').textContent = data.title
+          }
+
+          if (data.excerpt) {
+            document.getElementById('coverExcerpt').textContent = data.excerpt
+          }
+
+          if (data.category) {
+            document.getElementById('coverCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          // Update contact information
+          if (data.location) {
+            document.getElementById('coverLocation').textContent = data.location
+          }
+
+          if (data.phone) {
+            document.getElementById('coverPhone').textContent = data.phone
+          }
+
+          if (data.website) {
+            document.getElementById('coverWebsite').textContent = data.website
+          }
+
+          // Update statistics
+          if (data.stats) {
+            if (data.stats.followers) {
+              document.getElementById('coverFollowers').textContent =
+                formatNumber(data.stats.followers)
+            }
+            if (data.stats.reach) {
+              document.getElementById('coverReach').textContent = formatNumber(
+                data.stats.reach
+              )
+            }
+            if (data.stats.years) {
+              document.getElementById('coverYears').textContent =
+                data.stats.years
+            }
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('coverBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update CTA text
+          if (data.ctaText) {
+            const ctaElement = document.getElementById('coverCta')
+            const textSpan = ctaElement.querySelector('span:last-child')
+            if (textSpan) {
+              textSpan.textContent = data.ctaText
+            }
+          }
+
+          // Show/hide breaking news
+          if (data.isBreaking) {
+            const breakingElement = document.getElementById('coverBreaking')
+            breakingElement.style.display = 'block'
+            if (data.breakingText) {
+              breakingElement.textContent = `🚨 ${data.breakingText}`
+            }
+          }
+
+          // Update social media links
+          if (data.socialLinks) {
+            updateSocialLinks(data.socialLinks)
+          }
+
+          console.log('✅ Facebook Cover content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating Facebook cover content:', error)
+        }
+      }
+
+      // Format numbers for statistics
+      function formatNumber(num) {
+        if (num >= 1000000) {
+          return (num / 1000000).toFixed(1) + 'M'
+        } else if (num >= 1000) {
+          return (num / 1000).toFixed(1) + 'K'
+        }
+        return num.toString()
+      }
+
+      // Update social media links
+      function updateSocialLinks(links) {
+        const socialContainer = document.getElementById('coverSocial')
+        const socialLinks =
+          socialContainer.querySelectorAll('.cover-social-link')
+
+        if (links.facebook) {
+          socialLinks[0].href = links.facebook
+        }
+        if (links.instagram) {
+          socialLinks[1].href = links.instagram
+        }
+        if (links.twitter) {
+          socialLinks[2].href = links.twitter
+        }
+        if (links.youtube) {
+          socialLinks[3].href = links.youtube
+        }
+        if (links.whatsapp) {
+          socialLinks[4].href = links.whatsapp
+        }
+      }
+
+      // Apply theme colors
+      window.applyFacebookCoverTheme = function (theme) {
+        const template = document.getElementById('coverTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyFacebookCoverColors = function (colors) {
+        const template = document.getElementById('coverTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyFacebookCoverPattern = function (patternUrl, opacity = 0.05) {
+        const patternElement = document.getElementById('coverPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '300px 300px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add social link interactions
+      function setupSocialLinkListeners() {
+        const socialLinks = document.querySelectorAll('.cover-social-link')
+
+        socialLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault()
+
+            // Add click animation
+            this.style.transform = 'scale(1.2)'
+            this.style.background = 'rgba(24, 119, 242, 0.5)'
+
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+              this.style.background = 'rgba(255, 255, 255, 0.15)'
+            }, 200)
+
+            const platform = this.title || 'Social Media'
+            console.log(`🔗 ${platform} link clicked`)
+          })
+        })
+      }
+
+      // Initialize listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupSocialLinkListeners()
+      })
+
+      // Export functions for external use
+      window.FacebookCoverTemplate = {
+        updateContent: window.updateFacebookCoverContent,
+        applyTheme: window.applyFacebookCoverTheme,
+        applyColors: window.applyFacebookCoverColors,
+        applyPattern: window.applyFacebookCoverPattern,
+      }
+
+      console.log('📸 Facebook Cover template loaded successfully')
+    </script>
+  </body>
+</html>

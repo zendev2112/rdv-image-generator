@@ -1,0 +1,32 @@
+{
+  "name": "rdv-image-generator",
+  "version": "1.0.0",
+  "description": "Professional social media image generator for Radio del Volga",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -p 3000 -o",
+    "build": "echo 'No build step required for static site'",
+    "deploy": "netlify deploy --prod --dir ."
+  },
+  "keywords": [
+    "image-generator",
+    "social-media",
+    "news",
+    "rdv",
+    "canvas",
+    "html2canvas"
+  ],
+  "author": "Radio del Volga",
+  "license": "Private",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "html2canvas": "^1.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rdv/rdv-image-generator.git"
+  },
+  "homepage": "https://rdv-image-generator.netlify.app"
+}

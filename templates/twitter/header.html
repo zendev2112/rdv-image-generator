@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Header Template - RDV</title>
+    <style>
+      /* Template-specific styles for Twitter Header */
+      .twitter-header-template {
+        width: 1500px;
+        height: 500px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #1da1f2),
+          var(--color-secondary, #14171a)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Background layer */
+      .header-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .header-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(29, 161, 242, 0.2) 0%,
+          rgba(20, 23, 26, 0.4) 50%,
+          rgba(29, 161, 242, 0.25) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .header-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.08;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Main content container */
+      .header-content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 80px;
+        box-sizing: border-box;
+      }
+
+      /* Left section for branding */
+      .header-brand-section {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+        animation: slideInLeft 1s ease-out 0.3s both;
+      }
+
+      .header-logo-container {
+        position: relative;
+      }
+
+      .header-main-logo {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .header-main-logo:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+      }
+
+      .header-main-logo img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+      }
+
+      .header-brand-info {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .header-brand-name {
+        font-size: clamp(36px, 4vw, 56px);
+        font-weight: 800;
+        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        line-height: 1.1;
+        margin-bottom: 5px;
+      }
+
+      .header-brand-tagline {
+        font-size: clamp(16px, 2vw, 22px);
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        line-height: 1.4;
+      }
+
+      .header-brand-handle {
+        font-size: 18px;
+        color: #1da1f2;
+        font-weight: 600;
+        margin-top: 5px;
+      }
+
+      /* Right section for content */
+      .header-content-section {
+        text-align: center;
+        max-width: 500px;
+        animation: slideInRight 1s ease-out 0.5s both;
+      }
+
+      /* Category badge */
+      .header-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+        color: white;
+        padding: 12px 28px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 25px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        animation: pulse 2s infinite;
+      }
+
+      /* Main headline */
+      .header-headline {
+        font-size: clamp(28px, 3.5vw, 42px);
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        color: #ffffff;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+      }
+
+      /* Description text */
+      .header-description {
+        font-size: clamp(16px, 2vw, 20px);
+        line-height: 1.5;
+        margin-bottom: 25px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        font-weight: 500;
+      }
+
+      /* Call to action */
+      .header-cta {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 35px;
+        padding: 15px 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #ffffff;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        animation: bounceIn 1s ease-out 0.9s both;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .header-cta:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .header-cta-icon {
+        font-size: 18px;
+        animation: bounce 2s infinite;
+      }
+
+      /* Live indicator */
+      .header-live-indicator {
+        position: absolute;
+        top: 30px;
+        left: 80px;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out 0.2s both,
+          glow 2s infinite alternate;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.5);
+        display: none; /* Hidden by default */
+      }
+
+      .header-live-dot {
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+        animation: pulse 1s infinite;
+      }
+
+      /* Social stats */
+      .header-social-stats {
+        position: absolute;
+        top: 30px;
+        right: 80px;
+        display: flex;
+        gap: 20px;
+        z-index: 15;
+        animation: fadeInDown 0.8s ease-out 0.7s both;
+      }
+
+      .header-stat {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 12px 20px;
+        border-radius: 25px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .header-stat:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: scale(1.05);
+      }
+
+      .header-stat-number {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        display: block;
+        line-height: 1;
+      }
+
+      .header-stat-label {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 2px;
+      }
+
+      /* Contact info footer */
+      .header-contact-info {
+        position: absolute;
+        bottom: 30px;
+        left: 80px;
+        right: 80px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 15;
+        animation: fadeInUp 0.8s ease-out 1.1s both;
+      }
+
+      .header-contact-left {
+        display: flex;
+        gap: 25px;
+      }
+
+      .header-contact-item {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .header-social-links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .header-social-link {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .header-social-link:hover {
+        background: rgba(29, 161, 242, 0.3);
+        transform: scale(1.1);
+        border-color: rgba(29, 161, 242, 0.5);
+      }
+
+      /* Hashtags ribbon */
+      .header-hashtags {
+        position: absolute;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 12px;
+        z-index: 15;
+        animation: slideInUp 0.8s ease-out 1.3s both;
+      }
+
+      .header-hashtag {
+        background: rgba(29, 161, 242, 0.2);
+        backdrop-filter: blur(5px);
+        padding: 6px 14px;
+        border-radius: 18px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1da1f2;
+        border: 1px solid rgba(29, 161, 242, 0.4);
+        transition: all 0.3s ease;
+      }
+
+      .header-hashtag:hover {
+        background: rgba(29, 161, 242, 0.3);
+        transform: scale(1.05);
+      }
+
+      /* Decorative elements */
+      .header-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.12;
+      }
+
+      .header-decorative.top-center {
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .header-decorative.bottom-left {
+        bottom: 100px;
+        left: 200px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 161, 242, 0.4),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      .header-decorative.bottom-right {
+        bottom: 120px;
+        right: 200px;
+        width: 80px;
+        height: 80px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 10s ease-in-out infinite;
+      }
+
+      /* Animations */
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-80px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(80px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes bounceIn {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.05);
+          opacity: 0.8;
+        }
+      }
+
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-4px);
+        }
+        60% {
+          transform: translateY(-2px);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 15px rgba(229, 62, 62, 0.5);
+        }
+        to {
+          box-shadow: 0 4px 25px rgba(229, 62, 62, 0.8);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1366px) {
+        .twitter-header-template {
+          width: 1200px;
+          height: 400px;
+        }
+
+        .header-content {
+          padding: 0 60px;
+        }
+
+        .header-main-logo {
+          width: 100px;
+          height: 100px;
+        }
+
+        .header-main-logo img {
+          width: 60px;
+          height: 60px;
+        }
+
+        .header-brand-name {
+          font-size: clamp(28px, 4vw, 42px);
+        }
+
+        .header-headline {
+          font-size: clamp(22px, 3.5vw, 32px);
+        }
+      }
+
+      @media (max-width: 1024px) {
+        .twitter-header-template {
+          width: 1024px;
+          height: 341px;
+        }
+
+        .header-content {
+          flex-direction: column;
+          justify-content: center;
+          gap: 30px;
+          text-align: center;
+          padding: 0 40px;
+        }
+
+        .header-brand-section {
+          flex-direction: column;
+          gap: 20px;
+          text-align: center;
+        }
+
+        .header-brand-info {
+          align-items: center;
+        }
+
+        .header-contact-info {
+          position: relative;
+          bottom: auto;
+          left: auto;
+          right: auto;
+          flex-direction: column;
+          gap: 20px;
+          margin-top: 20px;
+        }
+
+        .header-contact-left {
+          justify-content: center;
+        }
+
+        .header-social-stats {
+          position: relative;
+          top: auto;
+          right: auto;
+          justify-content: center;
+          margin-bottom: 20px;
+        }
+
+        .header-hashtags {
+          position: relative;
+          bottom: auto;
+          left: auto;
+          transform: none;
+          justify-content: center;
+          margin-top: 15px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .twitter-header-template {
+          width: 600px;
+          height: 200px;
+        }
+
+        .header-content {
+          padding: 0 30px;
+          gap: 20px;
+        }
+
+        .header-main-logo {
+          width: 60px;
+          height: 60px;
+        }
+
+        .header-main-logo img {
+          width: 40px;
+          height: 40px;
+        }
+
+        .header-brand-name {
+          font-size: clamp(20px, 5vw, 28px);
+        }
+
+        .header-brand-tagline {
+          font-size: clamp(12px, 3vw, 16px);
+        }
+
+        .header-headline {
+          font-size: clamp(16px, 4vw, 22px);
+          margin-bottom: 15px;
+        }
+
+        .header-description {
+          font-size: clamp(12px, 3vw, 16px);
+          margin-bottom: 15px;
+        }
+
+        .header-category {
+          font-size: 12px;
+          padding: 8px 16px;
+          margin-bottom: 15px;
+        }
+
+        .header-cta {
+          font-size: 14px;
+          padding: 10px 20px;
+        }
+
+        .header-live-indicator {
+          top: 15px;
+          left: 30px;
+          font-size: 12px;
+          padding: 6px 12px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .header-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+      }
+
+      [data-theme='dark'] .header-overlay {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.5) 50%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .header-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .twitter-header-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #1da1f2, #14171a)
+        );
+      }
+
+      [data-theme='brand'] .header-hashtag {
+        color: var(--rdv-primary, #e53e3e);
+        background: var(--rdv-primary-light, rgba(229, 62, 62, 0.15));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.3));
+      }
+
+      [data-theme='brand'] .header-cta {
+        background: var(--rdv-primary, rgba(229, 62, 62, 0.2));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.4));
+      }
+
+      [data-theme='brand'] .header-cta:hover {
+        background: var(--rdv-primary-dark, rgba(197, 48, 48, 0.3));
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .header-overlay {
+          background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.7) 50%,
+            rgba(0, 0, 0, 0.6) 100%
+          );
+        }
+
+        .header-brand-name,
+        .header-headline {
+          text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .twitter-header-template {
+          width: 297mm;
+          height: 99mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .header-overlay,
+        .header-pattern,
+        .header-decorative {
+          display: none;
+        }
+
+        .header-brand-name,
+        .header-headline {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="twitter-header-template" id="headerTemplate">
+      <!-- Background image -->
+      <div class="header-background" id="headerBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="header-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="header-pattern" id="headerPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="header-decorative top-center"></div>
+      <div class="header-decorative bottom-left"></div>
+      <div class="header-decorative bottom-right"></div>
+
+      <!-- Live indicator -->
+      <div class="header-live-indicator" id="headerLiveIndicator">
+        <span class="header-live-dot"></span>
+        EN VIVO
+      </div>
+
+      <!-- Social stats -->
+      <div class="header-social-stats" id="headerSocialStats">
+        <div class="header-stat">
+          <span class="header-stat-number" id="headerFollowers">45.8K</span>
+          <span class="header-stat-label">Seguidores</span>
+        </div>
+        <div class="header-stat">
+          <span class="header-stat-number" id="headerFollowing">1.2K</span>
+          <span class="header-stat-label">Siguiendo</span>
+        </div>
+        <div class="header-stat">
+          <span class="header-stat-number" id="headerTweets">2.1K</span>
+          <span class="header-stat-label">Tweets</span>
+        </div>
+      </div>
+
+      <!-- Main content -->
+      <div class="header-content">
+        <!-- Left section - Branding -->
+        <div class="header-brand-section">
+          <div class="header-logo-container">
+            <div class="header-main-logo">
+              <img
+                src="../../assets/images/logos/rdv-white.svg"
+                alt="RDV"
+                id="headerLogo"
+              />
+            </div>
+          </div>
+          <div class="header-brand-info">
+            <div class="header-brand-name" id="headerBrandName">
+              Radio del Volga
+            </div>
+            <div class="header-brand-tagline" id="headerBrandTagline">
+              Tu radio de confianza desde 1999
+            </div>
+            <div class="header-brand-handle" id="headerBrandHandle">
+              @radiodelvolga
+            </div>
+          </div>
+        </div>
+
+        <!-- Right section - Content -->
+        <div class="header-content-section">
+          <div class="header-category" id="headerCategory">NOTICIAS</div>
+
+          <h1 class="header-headline" id="headerHeadline">
+            Conectando el Volga con información de calidad
+          </h1>
+
+          <p class="header-description" id="headerDescription">
+            Noticias, música y entretenimiento las 24 horas del día para toda la
+            comunidad.
+          </p>
+
+          <a href="#" class="header-cta" id="headerCta">
+            <span class="header-cta-icon">📻</span>
+            <span>Síguenos</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hashtags ribbon -->
+      <div class="header-hashtags" id="headerHashtags">
+        <span class="header-hashtag">#RDV</span>
+        <span class="header-hashtag">#Radio</span>
+        <span class="header-hashtag">#Noticias</span>
+        <span class="header-hashtag">#VillaMercedes</span>
+        <span class="header-hashtag">#Twitter</span>
+      </div>
+
+      <!-- Contact info footer -->
+      <div class="header-contact-info">
+        <div class="header-contact-left">
+          <div class="header-contact-item">
+            <span>📍</span>
+            <span id="headerLocation">Villa Mercedes, San Luis</span>
+          </div>
+          <div class="header-contact-item">
+            <span>🌐</span>
+            <span id="headerWebsite">radiodelvolga.com</span>
+          </div>
+          <div class="header-contact-item">
+            <span>📧</span>
+            <span id="headerEmail">info@radiodelvolga.com</span>
+          </div>
+        </div>
+
+        <div class="header-social-links" id="headerSocialLinks">
+          <a href="#" class="header-social-link" title="Twitter">🐦</a>
+          <a href="#" class="header-social-link" title="Facebook">📘</a>
+          <a href="#" class="header-social-link" title="Instagram">📷</a>
+          <a href="#" class="header-social-link" title="YouTube">📺</a>
+          <a href="#" class="header-social-link" title="WhatsApp">📱</a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateTwitterHeaderContent = function (data) {
+        try {
+          // Update brand information
+          if (data.brandName) {
+            document.getElementById('headerBrandName').textContent =
+              data.brandName
+          }
+
+          if (data.brandTagline) {
+            document.getElementById('headerBrandTagline').textContent =
+              data.brandTagline
+          }
+
+          if (data.brandHandle) {
+            const handle = data.brandHandle.startsWith('@')
+              ? data.brandHandle
+              : `@${data.brandHandle}`
+            document.getElementById('headerBrandHandle').textContent = handle
+          }
+
+          if (data.headline) {
+            document.getElementById('headerHeadline').textContent =
+              data.headline
+          }
+
+          if (data.description) {
+            document.getElementById('headerDescription').textContent =
+              data.description
+          }
+
+          if (data.category) {
+            document.getElementById('headerCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          // Update contact information
+          if (data.location) {
+            document.getElementById('headerLocation').textContent =
+              data.location
+          }
+
+          if (data.website) {
+            document.getElementById('headerWebsite').textContent = data.website
+          }
+
+          if (data.email) {
+            document.getElementById('headerEmail').textContent = data.email
+          }
+
+          // Update social stats
+          if (data.socialStats) {
+            if (data.socialStats.followers) {
+              document.getElementById('headerFollowers').textContent =
+                formatSocialNumber(data.socialStats.followers)
+            }
+            if (data.socialStats.following) {
+              document.getElementById('headerFollowing').textContent =
+                formatSocialNumber(data.socialStats.following)
+            }
+            if (data.socialStats.tweets) {
+              document.getElementById('headerTweets').textContent =
+                formatSocialNumber(data.socialStats.tweets)
+            }
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('headerBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update hashtags
+          if (data.hashtags && Array.isArray(data.hashtags)) {
+            updateHeaderHashtags(data.hashtags)
+          }
+
+          // Update CTA text
+          if (data.ctaText) {
+            const ctaElement = document.getElementById('headerCta')
+            const textSpan = ctaElement.querySelector('span:last-child')
+            if (textSpan) {
+              textSpan.textContent = data.ctaText
+            }
+          }
+
+          // Show/hide live indicator
+          if (data.isLive) {
+            const liveElement = document.getElementById('headerLiveIndicator')
+            liveElement.style.display = 'block'
+            if (data.liveText) {
+              liveElement.innerHTML = `<span class="header-live-dot"></span>${data.liveText}`
+            }
+          }
+
+          // Update social links
+          if (data.socialLinks) {
+            updateSocialLinks(data.socialLinks)
+          }
+
+          console.log('✅ Twitter Header content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating Twitter header content:', error)
+        }
+      }
+
+      // Format numbers for social stats
+      function formatSocialNumber(num) {
+        if (num >= 1000000) {
+          return (num / 1000000).toFixed(1) + 'M'
+        } else if (num >= 1000) {
+          return (num / 1000).toFixed(1) + 'K'
+        }
+        return num.toString()
+      }
+
+      // Update hashtags
+      function updateHeaderHashtags(hashtags) {
+        const hashtagsContainer = document.getElementById('headerHashtags')
+        hashtagsContainer.innerHTML = ''
+
+        hashtags.slice(0, 6).forEach((tag) => {
+          const hashtagElement = document.createElement('span')
+          hashtagElement.className = 'header-hashtag'
+          hashtagElement.textContent = tag.startsWith('#') ? tag : `#${tag}`
+          hashtagsContainer.appendChild(hashtagElement)
+        })
+      }
+
+      // Update social media links
+      function updateSocialLinks(links) {
+        const socialContainer = document.getElementById('headerSocialLinks')
+        const socialLinks = socialContainer.querySelectorAll(
+          '.header-social-link'
+        )
+
+        if (links.twitter) {
+          socialLinks[0].href = links.twitter
+        }
+        if (links.facebook) {
+          socialLinks[1].href = links.facebook
+        }
+        if (links.instagram) {
+          socialLinks[2].href = links.instagram
+        }
+        if (links.youtube) {
+          socialLinks[3].href = links.youtube
+        }
+        if (links.whatsapp) {
+          socialLinks[4].href = links.whatsapp
+        }
+      }
+
+      // Apply theme colors
+      window.applyTwitterHeaderTheme = function (theme) {
+        const template = document.getElementById('headerTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyTwitterHeaderColors = function (colors) {
+        const template = document.getElementById('headerTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyTwitterHeaderPattern = function (patternUrl, opacity = 0.08) {
+        const patternElement = document.getElementById('headerPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '300px 300px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add interaction listeners
+      function setupHeaderInteractionListeners() {
+        // Social stats interactions
+        const stats = document.querySelectorAll('.header-stat')
+        stats.forEach((stat) => {
+          stat.addEventListener('click', function () {
+            this.style.transform = 'scale(1.1)'
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+            console.log('📊 Social stat clicked')
+          })
+        })
+
+        // CTA button interaction
+        const ctaButton = document.getElementById('headerCta')
+        ctaButton.addEventListener('click', function (e) {
+          e.preventDefault()
+          this.style.transform = 'translateY(-4px) scale(1.05)'
+          setTimeout(() => {
+            this.style.transform = 'translateY(0) scale(1)'
+          }, 200)
+          console.log('🔗 Header CTA clicked')
+        })
+
+        // Social links interactions
+        const socialLinks = document.querySelectorAll('.header-social-link')
+        socialLinks.forEach((link) => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault()
+            this.style.transform = 'scale(1.2)'
+            this.style.background = 'rgba(29, 161, 242, 0.5)'
+
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+              this.style.background = 'rgba(255, 255, 255, 0.15)'
+            }, 200)
+
+            const platform = this.title || 'Social Media'
+            console.log(`🔗 ${platform} link clicked`)
+          })
+        })
+
+        // Logo hover effect
+        const logo = document.querySelector('.header-main-logo')
+        logo.addEventListener('mouseenter', function () {
+          this.style.transform = 'scale(1.1) rotate(5deg)'
+        })
+
+        logo.addEventListener('mouseleave', function () {
+          this.style.transform = 'scale(1) rotate(0deg)'
+        })
+
+        // Hashtag interactions
+        const hashtags = document.querySelectorAll('.header-hashtag')
+        hashtags.forEach((hashtag) => {
+          hashtag.addEventListener('click', function () {
+            this.style.transform = 'scale(1.1)'
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+            console.log(`#️⃣ Hashtag ${this.textContent} clicked`)
+          })
+        })
+      }
+
+      // Initialize listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupHeaderInteractionListeners()
+      })
+
+      // Export functions for external use
+      window.TwitterHeaderTemplate = {
+        updateContent: window.updateTwitterHeaderContent,
+        applyTheme: window.applyTwitterHeaderTheme,
+        applyColors: window.applyTwitterHeaderColors,
+        applyPattern: window.applyTwitterHeaderPattern,
+      }
+
+      console.log('🎯 Twitter Header template loaded successfully')
+    </script>
+  </body>
+</html>

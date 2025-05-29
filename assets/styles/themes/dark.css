@@ -1,0 +1,510 @@
+/**
+ * RDV Image Generator - Dark Theme
+ * Professional dark mode theme for low-light environments
+ * @version 1.0.0
+ */
+
+:root {
+    /* ========================================
+       DARK THEME VARIABLES
+       ======================================== */
+
+    /* Primary Colors - Lighter for dark backgrounds */
+    --theme-primary: #7c8fee;
+    --theme-primary-rgb: 124, 143, 238;
+    --theme-primary-light: #9ca7f3;
+    --theme-primary-dark: #667eea;
+    --theme-primary-50: rgba(124, 143, 238, 0.05);
+    --theme-primary-100: rgba(124, 143, 238, 0.1);
+    --theme-primary-200: rgba(124, 143, 238, 0.2);
+    --theme-primary-300: rgba(124, 143, 238, 0.3);
+    --theme-primary-400: rgba(124, 143, 238, 0.4);
+    --theme-primary-500: rgba(124, 143, 238, 0.5);
+    --theme-primary-600: rgba(124, 143, 238, 0.6);
+    --theme-primary-700: rgba(124, 143, 238, 0.7);
+    --theme-primary-800: rgba(124, 143, 238, 0.8);
+    --theme-primary-900: rgba(124, 143, 238, 0.9);
+
+    /* Secondary Colors */
+    --theme-secondary: #8a5fb3;
+    --theme-secondary-rgb: 138, 95, 179;
+    --theme-secondary-light: #a078c4;
+    --theme-secondary-dark: #764ba2;
+    --theme-secondary-50: rgba(138, 95, 179, 0.05);
+    --theme-secondary-100: rgba(138, 95, 179, 0.1);
+    --theme-secondary-200: rgba(138, 95, 179, 0.2);
+    --theme-secondary-300: rgba(138, 95, 179, 0.3);
+    --theme-secondary-400: rgba(138, 95, 179, 0.4);
+    --theme-secondary-500: rgba(138, 95, 179, 0.5);
+    --theme-secondary-600: rgba(138, 95, 179, 0.6);
+    --theme-secondary-700: rgba(138, 95, 179, 0.7);
+    --theme-secondary-800: rgba(138, 95, 179, 0.8);
+    --theme-secondary-900: rgba(138, 95, 179, 0.9);
+
+    /* Accent Colors */
+    --theme-accent: #6bb6fe;
+    --theme-accent-rgb: 107, 182, 254;
+    --theme-accent-light: #87c4fe;
+    --theme-accent-dark: #4facfe;
+    --theme-accent-50: rgba(107, 182, 254, 0.05);
+    --theme-accent-100: rgba(107, 182, 254, 0.1);
+    --theme-accent-200: rgba(107, 182, 254, 0.2);
+    --theme-accent-300: rgba(107, 182, 254, 0.3);
+    --theme-accent-400: rgba(107, 182, 254, 0.4);
+    --theme-accent-500: rgba(107, 182, 254, 0.5);
+    --theme-accent-600: rgba(107, 182, 254, 0.6);
+    --theme-accent-700: rgba(107, 182, 254, 0.7);
+    --theme-accent-800: rgba(107, 182, 254, 0.8);
+    --theme-accent-900: rgba(107, 182, 254, 0.9);
+
+    /* Background Colors - Dark palette */
+    --theme-background: #0f1419;
+    --theme-background-rgb: 15, 20, 25;
+    --theme-surface: #1a202c;
+    --theme-surface-rgb: 26, 32, 44;
+    --theme-surface-elevated: #2d3748;
+    --theme-surface-elevated-rgb: 45, 55, 72;
+    --theme-overlay: rgba(0, 0, 0, 0.7);
+
+    /* Text Colors - Light for dark backgrounds */
+    --theme-text: #f7fafc;
+    --theme-text-rgb: 247, 250, 252;
+    --theme-text-secondary: #cbd5e0;
+    --theme-text-muted: #a0aec0;
+    --theme-text-inverse: #1a202c;
+    --theme-text-on-primary: #1a202c;
+    --theme-text-on-secondary: #ffffff;
+    --theme-text-on-accent: #1a202c;
+
+    /* Border Colors - Subtle for dark theme */
+    --theme-border: #4a5568;
+    --theme-border-light: #2d3748;
+    --theme-border-strong: #718096;
+    --theme-divider: #2d3748;
+
+    /* Status Colors - Adjusted for dark theme */
+    --theme-success: #68d391;
+    --theme-success-light: #9ae6b4;
+    --theme-success-dark: #48bb78;
+    --theme-warning: #f6ad55;
+    --theme-warning-light: #fbb965;
+    --theme-warning-dark: #ed8936;
+    --theme-error: #fc8181;
+    --theme-error-light: #feb2b2;
+    --theme-error-dark: #f56565;
+    --theme-info: #63b3ed;
+    --theme-info-light: #90cdf4;
+    --theme-info-dark: #4299e1;
+
+    /* Gradients - Darker variations */
+    --theme-gradient-primary: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary));
+    --theme-gradient-secondary: linear-gradient(135deg, var(--theme-secondary), var(--theme-accent));
+    --theme-gradient-accent: linear-gradient(135deg, var(--theme-accent), var(--theme-primary));
+    --theme-gradient-hero: linear-gradient(135deg, var(--theme-primary), var(--theme-secondary), var(--theme-accent));
+    --theme-gradient-surface: linear-gradient(135deg, rgba(124, 143, 238, 0.05), rgba(138, 95, 179, 0.08));
+    --theme-gradient-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8));
+    --theme-gradient-backdrop: linear-gradient(135deg, #0f1419, #1a202c, #2d3748);
+
+    /* Shadows - Stronger for dark theme */
+    --theme-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --theme-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --theme-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --theme-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    --theme-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+    --theme-shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.3);
+    --theme-shadow-colored: 0 4px 12px -2px rgba(124, 143, 238, 0.2);
+
+    /* Template Specific Variables */
+    --template-bg: var(--theme-surface-elevated);
+    --template-text: var(--theme-text);
+    --template-title: var(--theme-primary);
+    --template-subtitle: var(--theme-text-secondary);
+    --template-accent: var(--theme-accent);
+    --template-overlay: var(--theme-gradient-overlay);
+
+    /* Animation Variables */
+    --theme-transition-fast: 0.15s ease;
+    --theme-transition-normal: 0.3s ease;
+    --theme-transition-slow: 0.5s ease;
+    --theme-animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ========================================
+   COMPONENT OVERRIDES
+   ======================================== */
+
+/* Header Styling */
+[data-theme="dark"] .header {
+    background: rgba(26, 32, 44, 0.95);
+    border-bottom-color: var(--theme-border);
+    backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .logo {
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .header-actions .btn-secondary {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .header-actions .btn-secondary:hover {
+    background: var(--theme-gradient-primary);
+    color: var(--theme-text-on-primary);
+    border-color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+/* Platform Selector */
+[data-theme="dark"] .platform-btn {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .platform-btn:hover {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-100);
+    color: var(--theme-primary);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+[data-theme="dark"] .platform-btn.active {
+    background: var(--theme-gradient-primary);
+    border-color: var(--theme-primary);
+    color: var(--theme-text-on-primary);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+/* Template Selector */
+[data-theme="dark"] .template-btn {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .template-btn:hover {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-100);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+[data-theme="dark"] .template-btn.active {
+    background: var(--theme-gradient-primary);
+    border-color: var(--theme-primary);
+    color: var(--theme-text-on-primary);
+}
+
+/* Color Theme Selector */
+[data-theme="dark"] .color-theme {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+}
+
+[data-theme="dark"] .color-theme:hover {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-100);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+[data-theme="dark"] .color-theme.active {
+    border-color: var(--theme-primary);
+    background: var(--theme-primary-100);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+/* Form Elements */
+[data-theme="dark"] .form-group input,
+[data-theme="dark"] .form-group textarea,
+[data-theme="dark"] .form-group select {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group textarea:focus,
+[data-theme="dark"] .form-group select:focus {
+    border-color: var(--theme-primary);
+    box-shadow: 0 0 0 3px var(--theme-primary-200);
+    outline: none;
+}
+
+[data-theme="dark"] .form-group label {
+    color: var(--theme-text-secondary);
+}
+
+/* Buttons */
+[data-theme="dark"] .btn-primary {
+    background: var(--theme-gradient-primary);
+    border: none;
+    color: var(--theme-text-on-primary);
+    box-shadow: var(--theme-shadow-colored);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+    background: var(--theme-gradient-secondary);
+    box-shadow: var(--theme-shadow-lg);
+    transform: translateY(-1px);
+}
+
+[data-theme="dark"] .btn-secondary {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background: var(--theme-primary-100);
+    border-color: var(--theme-primary);
+    color: var(--theme-primary);
+}
+
+/* Preview Area */
+[data-theme="dark"] .preview-area {
+    background: rgba(26, 32, 44, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-xl);
+}
+
+[data-theme="dark"] .preview-header {
+    background: var(--theme-surface);
+    border-bottom-color: var(--theme-border);
+}
+
+[data-theme="dark"] .preview-container {
+    background: var(--theme-background);
+}
+
+[data-theme="dark"] .canvas-wrapper {
+    box-shadow: var(--theme-shadow-2xl);
+}
+
+/* Control Panel */
+[data-theme="dark"] .control-panel {
+    background: rgba(26, 32, 44, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--theme-shadow-xl);
+}
+
+[data-theme="dark"] .panel-section h3 {
+    color: var(--theme-text);
+}
+
+/* Modal */
+[data-theme="dark"] .modal {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .modal-content {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    box-shadow: var(--theme-shadow-2xl);
+}
+
+[data-theme="dark"] .modal-header {
+    border-bottom-color: var(--theme-border);
+}
+
+/* Toast Notifications */
+[data-theme="dark"] .toast {
+    background: var(--theme-surface-elevated);
+    border-color: var(--theme-border);
+    color: var(--theme-text);
+    box-shadow: var(--theme-shadow-lg);
+}
+
+[data-theme="dark"] .toast.success {
+    background: var(--theme-success);
+    color: var(--theme-text-inverse);
+    border-color: var(--theme-success-dark);
+}
+
+[data-theme="dark"] .toast.error {
+    background: var(--theme-error);
+    color: var(--theme-text-inverse);
+    border-color: var(--theme-error-dark);
+}
+
+[data-theme="dark"] .toast.warning {
+    background: var(--theme-warning);
+    color: var(--theme-text-inverse);
+    border-color: var(--theme-warning-dark);
+}
+
+[data-theme="dark"] .toast.info {
+    background: var(--theme-info);
+    color: var(--theme-text-inverse);
+    border-color: var(--theme-info-dark);
+}
+
+/* Loading Screen */
+[data-theme="dark"] .loading-screen {
+    background: var(--theme-gradient-backdrop);
+}
+
+[data-theme="dark"] .loading-text {
+    color: var(--theme-text);
+}
+
+[data-theme="dark"] .loading-progress {
+    background: var(--theme-primary);
+}
+
+/* ========================================
+   TEMPLATE CANVAS STYLING
+   ======================================== */
+
+[data-theme="dark"] .template-canvas {
+    --color-background: var(--theme-surface-elevated);
+    --color-text: var(--theme-text);
+    --color-title: var(--theme-primary);
+    --color-subtitle: var(--theme-text-secondary);
+    --color-accent: var(--theme-accent);
+    --color-meta: var(--theme-text-muted);
+    --color-hashtag: var(--theme-secondary);
+    --overlay-gradient: var(--theme-gradient-overlay);
+}
+
+/* Dark theme specific template adjustments */
+[data-theme="dark"] .template-canvas .template-title {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .template-canvas .template-excerpt {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .template-logo {
+    filter: brightness(1.1) contrast(1.1);
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--theme-background);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--theme-border);
+    border-radius: 4px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--theme-border-strong);
+}
+
+/* ========================================
+   GLOW EFFECTS
+   ======================================== */
+
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] .platform-btn.active,
+[data-theme="dark"] .template-btn.active {
+    box-shadow:
+        var(--theme-shadow-lg),
+        0 0 20px rgba(124, 143, 238, 0.3);
+}
+
+[data-theme="dark"] .canvas-wrapper {
+    box-shadow:
+        var(--theme-shadow-2xl),
+        0 0 30px rgba(124, 143, 238, 0.1);
+}
+
+/* ========================================
+   BACKDROP ELEMENTS
+   ======================================== */
+
+[data-theme="dark"] .control-panel::before,
+[data-theme="dark"] .preview-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--theme-gradient-surface);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ========================================
+   HIGH CONTRAST MODE
+   ======================================== */
+
+@media (prefers-contrast: high) {
+    [data-theme="dark"] {
+        --theme-background: #000000;
+        --theme-surface: #111111;
+        --theme-surface-elevated: #222222;
+        --theme-text: #ffffff;
+        --theme-border: #666666;
+        --theme-primary: #9ca7f3;
+        --theme-secondary: #a078c4;
+        --theme-accent: #87c4fe;
+    }
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+    [data-theme="dark"] {
+        --theme-shadow-md: 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        --theme-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+        --theme-shadow-xl: 0 8px 12px -2px rgba(0, 0, 0, 0.5);
+        --theme-shadow-colored: 0 2px 8px -1px rgba(124, 143, 238, 0.2);
+    }
+}
+
+/* ========================================
+   REDUCED MOTION
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    [data-theme="dark"] * {
+        --theme-transition-fast: 0.01ms;
+        --theme-transition-normal: 0.01ms;
+        --theme-transition-slow: 0.01ms;
+        --theme-animation-bounce: linear;
+    }
+
+    [data-theme="dark"] .btn-primary:hover,
+    [data-theme="dark"] .platform-btn.active,
+    [data-theme="dark"] .template-btn.active {
+        box-shadow: var(--theme-shadow-lg);
+    }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    [data-theme="dark"] {
+        --theme-background: #ffffff;
+        --theme-surface: #ffffff;
+        --theme-surface-elevated: #ffffff;
+        --theme-text: #000000;
+        --theme-primary: #333333;
+        --theme-secondary: #666666;
+        --theme-accent: #999999;
+        --theme-shadow-md: none;
+        --theme-shadow-lg: none;
+        --theme-shadow-xl: none;
+        --theme-shadow-colored: none;
+    }
+}

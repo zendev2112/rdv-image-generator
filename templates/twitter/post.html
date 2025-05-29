@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitter Post Template - RDV</title>
+    <style>
+      /* Template-specific styles for Twitter Post */
+      .twitter-post-template {
+        width: 1200px;
+        height: 675px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #1da1f2),
+          var(--color-secondary, #14171a)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+      }
+
+      /* Background layer */
+      .twitter-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .twitter-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(29, 161, 242, 0.15) 0%,
+          rgba(20, 23, 26, 0.3) 50%,
+          rgba(29, 161, 242, 0.2) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .twitter-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.06;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Main content layout */
+      .twitter-content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        padding: 60px 80px;
+        box-sizing: border-box;
+      }
+
+      /* Left content section */
+      .twitter-content-left {
+        flex: 1;
+        padding-right: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      /* Right visual section */
+      .twitter-content-right {
+        flex: 0 0 35%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* Header with profile info */
+      .twitter-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .twitter-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .twitter-avatar img {
+        width: 30px;
+        height: 30px;
+        object-fit: contain;
+      }
+
+      .twitter-profile {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .twitter-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .twitter-verified {
+        font-size: 16px;
+        color: #1da1f2;
+      }
+
+      .twitter-handle {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 500;
+      }
+
+      .twitter-timestamp {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 400;
+      }
+
+      /* Category badge */
+      .twitter-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+        color: white;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 25px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        animation: slideInLeft 0.8s ease-out 0.2s both;
+      }
+
+      /* Tweet text */
+      .twitter-tweet {
+        font-size: clamp(24px, 3vw, 36px);
+        font-weight: 600;
+        line-height: 1.3;
+        margin-bottom: 25px;
+        color: #ffffff;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        animation: slideInLeft 0.8s ease-out 0.4s both;
+      }
+
+      /* Hashtags */
+      .twitter-hashtags {
+        margin-bottom: 30px;
+        animation: fadeIn 0.8s ease-out 0.6s both;
+      }
+
+      .twitter-hashtag {
+        display: inline-block;
+        color: #1da1f2;
+        background: rgba(29, 161, 242, 0.15);
+        backdrop-filter: blur(5px);
+        padding: 4px 10px;
+        border-radius: 12px;
+        margin-right: 8px;
+        margin-bottom: 4px;
+        font-size: 16px;
+        font-weight: 500;
+        border: 1px solid rgba(29, 161, 242, 0.3);
+        transition: all 0.3s ease;
+        text-shadow: none;
+      }
+
+      .twitter-hashtag:hover {
+        background: rgba(29, 161, 242, 0.25);
+        transform: scale(1.05);
+      }
+
+      /* Engagement stats */
+      .twitter-engagement {
+        display: flex;
+        gap: 25px;
+        margin-bottom: 20px;
+        animation: slideInUp 0.8s ease-out 0.8s both;
+      }
+
+      .twitter-stat {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .twitter-stat:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
+      }
+
+      .twitter-stat-icon {
+        font-size: 16px;
+      }
+
+      .twitter-stat-count {
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      /* Right side visual elements */
+      .twitter-visual {
+        animation: fadeInRight 1s ease-out 0.4s both;
+      }
+
+      .twitter-visual-logo {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .twitter-visual-logo img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+      }
+
+      .twitter-visual-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        margin-bottom: 10px;
+      }
+
+      .twitter-visual-handle {
+        font-size: 14px;
+        color: #1da1f2;
+        font-weight: 500;
+      }
+
+      /* Breaking news indicator */
+      .twitter-breaking {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #e53e3e, #ff6b6b);
+        color: white;
+        padding: 10px 0;
+        font-size: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-align: center;
+        z-index: 15;
+        animation: slideInDown 0.8s ease-out 0.1s both,
+          glow 2s infinite alternate;
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        display: none; /* Hidden by default */
+      }
+
+      /* Twitter actions */
+      .twitter-actions {
+        display: flex;
+        gap: 20px;
+        animation: slideInUp 0.8s ease-out 1s both;
+      }
+
+      .twitter-action {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .twitter-action:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .twitter-action.reply:hover {
+        background: rgba(29, 161, 242, 0.3);
+        border-color: rgba(29, 161, 242, 0.5);
+      }
+
+      .twitter-action.retweet:hover {
+        background: rgba(23, 191, 99, 0.3);
+        border-color: rgba(23, 191, 99, 0.5);
+      }
+
+      .twitter-action.like:hover {
+        background: rgba(224, 36, 94, 0.3);
+        border-color: rgba(224, 36, 94, 0.5);
+      }
+
+      /* Decorative elements */
+      .twitter-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.1;
+      }
+
+      .twitter-decorative.top-left {
+        top: 100px;
+        left: 150px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 161, 242, 0.4),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .twitter-decorative.bottom-right {
+        bottom: 120px;
+        right: 150px;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(
+          circle,
+          rgba(29, 161, 242, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite reverse;
+      }
+
+      /* Animations */
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+        to {
+          box-shadow: 0 4px 25px rgba(229, 62, 62, 0.7);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+        .twitter-post-template {
+          width: 1024px;
+          height: 576px;
+        }
+
+        .twitter-content {
+          padding: 40px 60px;
+        }
+
+        .twitter-content-left {
+          padding-right: 40px;
+        }
+
+        .twitter-tweet {
+          font-size: clamp(20px, 3.5vw, 28px);
+        }
+
+        .twitter-visual-logo {
+          width: 80px;
+          height: 80px;
+        }
+
+        .twitter-visual-logo img {
+          width: 50px;
+          height: 50px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .twitter-post-template {
+          width: 600px;
+          height: 338px;
+        }
+
+        .twitter-content {
+          flex-direction: column;
+          padding: 30px 40px;
+          text-align: center;
+        }
+
+        .twitter-content-left {
+          padding-right: 0;
+          margin-bottom: 20px;
+        }
+
+        .twitter-content-right {
+          flex: none;
+        }
+
+        .twitter-tweet {
+          font-size: clamp(16px, 4vw, 22px);
+          margin-bottom: 20px;
+        }
+
+        .twitter-engagement {
+          justify-content: center;
+          margin-bottom: 15px;
+        }
+
+        .twitter-actions {
+          justify-content: center;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .twitter-tweet {
+          font-size: clamp(14px, 5vw, 18px);
+          margin-bottom: 15px;
+        }
+
+        .twitter-category {
+          font-size: 12px;
+          padding: 6px 14px;
+          margin-bottom: 20px;
+        }
+
+        .twitter-hashtag {
+          font-size: 14px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .twitter-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+      }
+
+      [data-theme='dark'] .twitter-overlay {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.5) 50%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .twitter-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .twitter-post-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #1da1f2, #14171a)
+        );
+      }
+
+      [data-theme='brand'] .twitter-hashtag {
+        color: var(--rdv-primary, #e53e3e);
+        background: var(--rdv-primary-light, rgba(229, 62, 62, 0.15));
+        border-color: var(--rdv-primary, rgba(229, 62, 62, 0.3));
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .twitter-overlay {
+          background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.5) 0%,
+            rgba(0, 0, 0, 0.7) 50%,
+            rgba(0, 0, 0, 0.6) 100%
+          );
+        }
+
+        .twitter-tweet,
+        .twitter-name {
+          text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .twitter-post-template {
+          width: 297mm;
+          height: 167mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .twitter-overlay,
+        .twitter-pattern,
+        .twitter-decorative {
+          display: none;
+        }
+
+        .twitter-tweet,
+        .twitter-name {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="twitter-post-template" id="twitterTemplate">
+      <!-- Background image -->
+      <div class="twitter-background" id="twitterBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="twitter-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="twitter-pattern" id="twitterPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Decorative elements -->
+      <div class="twitter-decorative top-left"></div>
+      <div class="twitter-decorative bottom-right"></div>
+
+      <!-- Breaking news indicator -->
+      <div class="twitter-breaking" id="twitterBreaking">
+        🚨 ÚLTIMA HORA - RADIO DEL VOLGA
+      </div>
+
+      <!-- Main content -->
+      <div class="twitter-content">
+        <!-- Left content section -->
+        <div class="twitter-content-left">
+          <!-- Header with profile info -->
+          <div class="twitter-header">
+            <div class="twitter-avatar">
+              <img
+                src="../../assets/images/logos/rdv-white.svg"
+                alt="RDV"
+                id="twitterAvatar"
+              />
+            </div>
+            <div class="twitter-profile">
+              <div class="twitter-name" id="twitterName">
+                Radio del Volga
+                <span class="twitter-verified" id="twitterVerified">✓</span>
+              </div>
+              <div class="twitter-handle" id="twitterHandle">
+                @radiodelvolga
+              </div>
+              <div class="twitter-timestamp" id="twitterTimestamp">hace 2h</div>
+            </div>
+          </div>
+
+          <!-- Category badge -->
+          <div class="twitter-category" id="twitterCategory">NOTICIAS</div>
+
+          <!-- Tweet text -->
+          <div class="twitter-tweet" id="twitterTweet">
+            🔴 AHORA: Radio del Volga te mantiene informado con las últimas
+            noticias de la región.
+          </div>
+
+          <!-- Hashtags -->
+          <div class="twitter-hashtags" id="twitterHashtags">
+            <span class="twitter-hashtag">#RDV</span>
+            <span class="twitter-hashtag">#Noticias</span>
+            <span class="twitter-hashtag">#Actualidad</span>
+            <span class="twitter-hashtag">#VillaMercedes</span>
+          </div>
+
+          <!-- Engagement stats -->
+          <div class="twitter-engagement">
+            <div class="twitter-stat" id="twitterReplies">
+              <span class="twitter-stat-icon">💬</span>
+              <span class="twitter-stat-count">24</span>
+            </div>
+            <div class="twitter-stat" id="twitterRetweets">
+              <span class="twitter-stat-icon">🔄</span>
+              <span class="twitter-stat-count">156</span>
+            </div>
+            <div class="twitter-stat" id="twitterLikes">
+              <span class="twitter-stat-icon">❤️</span>
+              <span class="twitter-stat-count">432</span>
+            </div>
+          </div>
+
+          <!-- Twitter actions -->
+          <div class="twitter-actions">
+            <div class="twitter-action reply" id="twitterReply">
+              <span>💬</span>
+              <span>Responder</span>
+            </div>
+            <div class="twitter-action retweet" id="twitterRetweet">
+              <span>🔄</span>
+              <span>Retuitear</span>
+            </div>
+            <div class="twitter-action like" id="twitterLike">
+              <span>❤️</span>
+              <span>Me gusta</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right visual section -->
+        <div class="twitter-content-right">
+          <div class="twitter-visual">
+            <div class="twitter-visual-logo">
+              <img
+                src="../../assets/images/logos/rdv-white.svg"
+                alt="RDV"
+                id="twitterVisualLogo"
+              />
+            </div>
+            <div class="twitter-visual-text" id="twitterVisualText">
+              Radio del Volga
+            </div>
+            <div class="twitter-visual-handle" id="twitterVisualHandle">
+              @radiodelvolga
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateTwitterContent = function (data) {
+        try {
+          // Update profile information
+          if (data.name) {
+            document.getElementById('twitterName').childNodes[0].textContent =
+              data.name + ' '
+            document.getElementById('twitterVisualText').textContent = data.name
+          }
+
+          if (data.handle) {
+            const handle = data.handle.startsWith('@')
+              ? data.handle
+              : `@${data.handle}`
+            document.getElementById('twitterHandle').textContent = handle
+            document.getElementById('twitterVisualHandle').textContent = handle
+          }
+
+          if (data.tweet) {
+            document.getElementById('twitterTweet').textContent = data.tweet
+          }
+
+          if (data.category) {
+            document.getElementById('twitterCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          if (data.timestamp) {
+            const formattedTime = formatTwitterTime(data.timestamp)
+            document.getElementById('twitterTimestamp').textContent =
+              formattedTime
+          }
+
+          // Update engagement stats
+          if (data.engagement) {
+            if (data.engagement.replies) {
+              document
+                .getElementById('twitterReplies')
+                .querySelector('.twitter-stat-count').textContent =
+                formatEngagementCount(data.engagement.replies)
+            }
+            if (data.engagement.retweets) {
+              document
+                .getElementById('twitterRetweets')
+                .querySelector('.twitter-stat-count').textContent =
+                formatEngagementCount(data.engagement.retweets)
+            }
+            if (data.engagement.likes) {
+              document
+                .getElementById('twitterLikes')
+                .querySelector('.twitter-stat-count').textContent =
+                formatEngagementCount(data.engagement.likes)
+            }
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('twitterBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update hashtags
+          if (data.hashtags && Array.isArray(data.hashtags)) {
+            updateTwitterHashtags(data.hashtags)
+          }
+
+          // Show/hide verified badge
+          if (data.isVerified !== undefined) {
+            const verifiedBadge = document.getElementById('twitterVerified')
+            verifiedBadge.style.display = data.isVerified ? 'inline' : 'none'
+          }
+
+          // Show/hide breaking news
+          if (data.isBreaking) {
+            const breakingElement = document.getElementById('twitterBreaking')
+            breakingElement.style.display = 'block'
+            if (data.breakingText) {
+              breakingElement.textContent = `🚨 ${data.breakingText}`
+            }
+          }
+
+          console.log('✅ Twitter Post content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating Twitter content:', error)
+        }
+      }
+
+      // Update hashtags
+      function updateTwitterHashtags(hashtags) {
+        const hashtagsContainer = document.getElementById('twitterHashtags')
+        hashtagsContainer.innerHTML = ''
+
+        hashtags.slice(0, 6).forEach((tag) => {
+          const hashtagElement = document.createElement('span')
+          hashtagElement.className = 'twitter-hashtag'
+          hashtagElement.textContent = tag.startsWith('#') ? tag : `#${tag}`
+          hashtagsContainer.appendChild(hashtagElement)
+        })
+      }
+
+      // Format engagement count
+      function formatEngagementCount(count) {
+        if (count >= 1000000) {
+          return (count / 1000000).toFixed(1) + 'M'
+        } else if (count >= 1000) {
+          return (count / 1000).toFixed(1) + 'K'
+        }
+        return count.toString()
+      }
+
+      // Format time for Twitter display
+      function formatTwitterTime(time) {
+        const now = new Date()
+        const inputTime = new Date(time)
+        const diffTime = Math.abs(now - inputTime)
+        const diffMinutes = Math.ceil(diffTime / (1000 * 60))
+        const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+        if (diffMinutes < 60) {
+          return `hace ${diffMinutes}m`
+        } else if (diffHours < 24) {
+          return `hace ${diffHours}h`
+        } else if (diffDays <= 7) {
+          return `hace ${diffDays}d`
+        } else {
+          return inputTime.toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+          })
+        }
+      }
+
+      // Apply theme colors
+      window.applyTwitterTheme = function (theme) {
+        const template = document.getElementById('twitterTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyTwitterColors = function (colors) {
+        const template = document.getElementById('twitterTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyTwitterPattern = function (patternUrl, opacity = 0.06) {
+        const patternElement = document.getElementById('twitterPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '200px 200px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add Twitter action interactions
+      function setupTwitterActionListeners() {
+        const replyButton = document.getElementById('twitterReply')
+        const retweetButton = document.getElementById('twitterRetweet')
+        const likeButton = document.getElementById('twitterLike')
+
+        ;[replyButton, retweetButton, likeButton].forEach((button) => {
+          button.addEventListener('click', function () {
+            // Add click animation
+            this.style.transform = 'translateY(-4px) scale(1.05)'
+
+            // Get current engagement count and increment
+            if (this === likeButton) {
+              const likeStat = document.getElementById('twitterLikes')
+              const countElement = likeStat.querySelector('.twitter-stat-count')
+              let count =
+                parseInt(countElement.textContent.replace(/[KM]/g, '')) || 0
+              if (countElement.textContent.includes('K')) count *= 1000
+              if (countElement.textContent.includes('M')) count *= 1000000
+              count += 1
+              countElement.textContent = formatEngagementCount(count)
+
+              // Change heart color temporarily
+              const icon = this.querySelector('span:first-child')
+              icon.textContent = '💙'
+              setTimeout(() => {
+                icon.textContent = '❤️'
+              }, 1000)
+            } else if (this === retweetButton) {
+              const retweetStat = document.getElementById('twitterRetweets')
+              const countElement = retweetStat.querySelector(
+                '.twitter-stat-count'
+              )
+              let count =
+                parseInt(countElement.textContent.replace(/[KM]/g, '')) || 0
+              if (countElement.textContent.includes('K')) count *= 1000
+              if (countElement.textContent.includes('M')) count *= 1000000
+              count += 1
+              countElement.textContent = formatEngagementCount(count)
+            }
+
+            setTimeout(() => {
+              this.style.transform = 'translateY(0) scale(1)'
+            }, 200)
+
+            console.log(`🐦 Twitter ${this.classList[1]} clicked`)
+          })
+        })
+
+        // Add engagement stat interactions
+        const stats = document.querySelectorAll('.twitter-stat')
+        stats.forEach((stat) => {
+          stat.addEventListener('click', function () {
+            this.style.transform = 'scale(1.1)'
+            setTimeout(() => {
+              this.style.transform = 'scale(1)'
+            }, 200)
+          })
+        })
+      }
+
+      // Initialize action listeners when DOM is ready
+      window.addEventListener('load', function () {
+        setupTwitterActionListeners()
+      })
+
+      // Export functions for external use
+      window.TwitterPostTemplate = {
+        updateContent: window.updateTwitterContent,
+        applyTheme: window.applyTwitterTheme,
+        applyColors: window.applyTwitterColors,
+        applyPattern: window.applyTwitterPattern,
+      }
+
+      console.log('🐦 Twitter Post template loaded successfully')
+    </script>
+  </body>
+</html>

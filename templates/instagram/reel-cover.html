@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Instagram Reel Cover Template - RDV</title>
+    <style>
+      /* Template-specific styles for Instagram Reel Cover */
+      .instagram-reel-template {
+        width: 1080px;
+        height: 1920px;
+        position: relative;
+        background: linear-gradient(
+          135deg,
+          var(--color-background, #667eea),
+          var(--color-secondary, #764ba2)
+        );
+        font-family: var(
+          --font-primary,
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif
+        );
+        overflow: hidden;
+        color: var(--color-text, #ffffff);
+        box-sizing: border-box;
+      }
+
+      /* Background layer */
+      .reel-background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      /* Overlay gradient for better text readability */
+      .reel-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.2) 0%,
+          rgba(0, 0, 0, 0.3) 30%,
+          rgba(0, 0, 0, 0.5) 70%,
+          rgba(0, 0, 0, 0.7) 100%
+        );
+        z-index: 1;
+      }
+
+      /* Pattern overlay */
+      .reel-pattern {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.05;
+        z-index: 2;
+        pointer-events: none;
+      }
+
+      /* Header section with logo */
+      .reel-header {
+        position: absolute;
+        top: 60px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: fadeInDown 0.8s ease-out;
+      }
+
+      .reel-logo {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(15px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .reel-logo img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+      }
+
+      .reel-duration {
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      /* Play button overlay */
+      .reel-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(20px);
+        border: 3px solid rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 15;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        animation: pulse 2s infinite;
+      }
+
+      .reel-play-button:hover {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      }
+
+      .reel-play-icon {
+        font-size: 48px;
+        color: #ffffff;
+        margin-left: 8px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      /* Main content container */
+      .reel-content {
+        position: absolute;
+        bottom: 300px;
+        left: 60px;
+        right: 60px;
+        z-index: 10;
+        animation: fadeInUp 1s ease-out 0.2s both;
+      }
+
+      /* Category badge */
+      .reel-category {
+        display: inline-block;
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+        color: white;
+        padding: 12px 24px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 25px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        animation: slideInLeft 0.8s ease-out 0.4s both;
+      }
+
+      /* Main title */
+      .reel-title {
+        font-size: clamp(52px, 5vw, 84px);
+        font-weight: 900;
+        line-height: 1.05;
+        margin-bottom: 20px;
+        color: #ffffff;
+        text-shadow: 2px 2px 12px rgba(0, 0, 0, 0.7);
+        font-family: var(--font-display, 'Playfair Display', Georgia, serif);
+        animation: slideInUp 0.8s ease-out 0.6s both;
+        word-wrap: break-word;
+        hyphens: auto;
+      }
+
+      /* Excerpt text */
+      .reel-excerpt {
+        font-size: clamp(20px, 2.2vw, 28px);
+        line-height: 1.4;
+        margin-bottom: 30px;
+        color: rgba(255, 255, 255, 0.95);
+        text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.6);
+        font-weight: 500;
+        animation: slideInUp 0.8s ease-out 0.8s both;
+      }
+
+      /* Footer section */
+      .reel-footer {
+        position: absolute;
+        bottom: 120px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: fadeInUp 0.8s ease-out 1s both;
+      }
+
+      .reel-source {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(15px);
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .reel-date {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(15px);
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      /* Instagram Reel UI elements */
+      .reel-ui-elements {
+        position: absolute;
+        bottom: 60px;
+        left: 60px;
+        right: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        animation: slideInUp 0.8s ease-out 1.2s both;
+      }
+
+      .reel-hashtags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        max-width: 70%;
+      }
+
+      .reel-hashtag {
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .reel-hashtag:hover {
+        background: rgba(0, 0, 0, 0.7);
+        transform: scale(1.05);
+      }
+
+      .reel-view-count {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Breaking news indicator */
+      .reel-breaking {
+        position: absolute;
+        top: 140px;
+        left: 60px;
+        right: 60px;
+        background: linear-gradient(90deg, #ff0000, #ff4444);
+        color: white;
+        padding: 15px 30px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-align: center;
+        z-index: 12;
+        animation: slideInDown 0.8s ease-out 0.2s both,
+          glow 2s infinite alternate;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+        display: none; /* Hidden by default */
+      }
+
+      /* Decorative elements */
+      .reel-decorative {
+        position: absolute;
+        z-index: 3;
+        opacity: 0.15;
+      }
+
+      .reel-decorative.top-accent {
+        top: 200px;
+        right: 80px;
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+      }
+
+      .reel-decorative.bottom-accent {
+        bottom: 350px;
+        left: 80px;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite reverse;
+      }
+
+      /* Visual effects */
+      .reel-glow-effect {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(255, 255, 255, 0.1) 0%,
+          transparent 70%
+        );
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      /* Animations */
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.05);
+          box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+      }
+
+      @keyframes glow {
+        from {
+          box-shadow: 0 4px 20px rgba(255, 0, 0, 0.4);
+        }
+        to {
+          box-shadow: 0 4px 30px rgba(255, 0, 0, 0.8);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-25px);
+        }
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .instagram-reel-template {
+          width: 375px;
+          height: 667px;
+        }
+
+        .reel-header {
+          top: 40px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .reel-content {
+          bottom: 200px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .reel-footer {
+          bottom: 80px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .reel-ui-elements {
+          bottom: 40px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .reel-breaking {
+          top: 100px;
+          left: 30px;
+          right: 30px;
+        }
+
+        .reel-title {
+          font-size: clamp(28px, 7vw, 48px);
+        }
+
+        .reel-excerpt {
+          font-size: clamp(16px, 4vw, 20px);
+        }
+
+        .reel-play-button {
+          width: 80px;
+          height: 80px;
+        }
+
+        .reel-play-icon {
+          font-size: 32px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .reel-title {
+          font-size: clamp(24px, 8vw, 36px);
+          margin-bottom: 15px;
+        }
+
+        .reel-excerpt {
+          font-size: clamp(14px, 5vw, 18px);
+          margin-bottom: 20px;
+        }
+
+        .reel-category {
+          font-size: 14px;
+          padding: 8px 16px;
+          margin-bottom: 20px;
+        }
+      }
+
+      /* Dark theme support */
+      [data-theme='dark'] .reel-category {
+        background: var(--color-accent, rgba(229, 62, 62, 0.95));
+      }
+
+      [data-theme='dark'] .reel-overlay {
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.3) 0%,
+          rgba(0, 0, 0, 0.4) 30%,
+          rgba(0, 0, 0, 0.6) 70%,
+          rgba(0, 0, 0, 0.8) 100%
+        );
+      }
+
+      /* Brand theme adjustments */
+      [data-theme='brand'] .reel-category {
+        background: var(--rdv-primary, #e53e3e);
+      }
+
+      [data-theme='brand'] .instagram-reel-template {
+        background: var(
+          --rdv-gradient-hero,
+          linear-gradient(135deg, #667eea, #764ba2)
+        );
+      }
+
+      /* High contrast mode */
+      @media (prefers-contrast: high) {
+        .reel-overlay {
+          background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.4) 0%,
+            rgba(0, 0, 0, 0.5) 30%,
+            rgba(0, 0, 0, 0.7) 70%,
+            rgba(0, 0, 0, 0.9) 100%
+          );
+        }
+
+        .reel-title,
+        .reel-excerpt {
+          text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9);
+        }
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* Print optimization */
+      @media print {
+        .instagram-reel-template {
+          width: 210mm;
+          height: 297mm;
+          background: white !important;
+          color: black !important;
+        }
+
+        .reel-overlay,
+        .reel-pattern,
+        .reel-decorative,
+        .reel-play-button {
+          display: none;
+        }
+
+        .reel-title,
+        .reel-excerpt {
+          text-shadow: none;
+          color: black !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="instagram-reel-template" id="reelTemplate">
+      <!-- Background image -->
+      <div class="reel-background" id="reelBackground">
+        <!-- Background image will be injected here -->
+      </div>
+
+      <!-- Overlay gradient -->
+      <div class="reel-overlay"></div>
+
+      <!-- Pattern overlay -->
+      <div class="reel-pattern" id="reelPattern">
+        <!-- Pattern will be injected here -->
+      </div>
+
+      <!-- Glow effect -->
+      <div class="reel-glow-effect"></div>
+
+      <!-- Decorative elements -->
+      <div class="reel-decorative top-accent"></div>
+      <div class="reel-decorative bottom-accent"></div>
+
+      <!-- Breaking news indicator -->
+      <div class="reel-breaking" id="reelBreaking">🚨 ÚLTIMA HORA</div>
+
+      <!-- Header section -->
+      <div class="reel-header">
+        <div class="reel-logo">
+          <img
+            src="../../assets/images/logos/rdv-white.svg"
+            alt="RDV"
+            id="reelLogo"
+          />
+        </div>
+        <div class="reel-duration" id="reelDuration">0:30</div>
+      </div>
+
+      <!-- Play button overlay -->
+      <div class="reel-play-button" id="reelPlayButton">
+        <div class="reel-play-icon">▶</div>
+      </div>
+
+      <!-- Main content -->
+      <div class="reel-content">
+        <div class="reel-category" id="reelCategory">NOTICIAS</div>
+
+        <h1 class="reel-title" id="reelTitle">Radio del Volga Informa</h1>
+
+        <p class="reel-excerpt" id="reelExcerpt">
+          Las noticias más importantes en formato dinámico y visual.
+        </p>
+      </div>
+
+      <!-- Footer section -->
+      <div class="reel-footer">
+        <div class="reel-source" id="reelSource">@rdvnoticias</div>
+        <div class="reel-date" id="reelDate">Hoy</div>
+      </div>
+
+      <!-- UI elements -->
+      <div class="reel-ui-elements">
+        <div class="reel-hashtags" id="reelHashtags">
+          <span class="reel-hashtag">#RDV</span>
+          <span class="reel-hashtag">#Reels</span>
+          <span class="reel-hashtag">#Noticias</span>
+        </div>
+        <div class="reel-view-count" id="reelViewCount">
+          <span>👁️</span>
+          <span>1.2K</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Template data injection functions
+      window.updateReelContent = function (data) {
+        try {
+          // Update text content
+          if (data.title) {
+            document.getElementById('reelTitle').textContent = data.title
+          }
+
+          if (data.excerpt) {
+            document.getElementById('reelExcerpt').textContent = data.excerpt
+          }
+
+          if (data.category) {
+            document.getElementById('reelCategory').textContent =
+              data.category.toUpperCase()
+          }
+
+          if (data.source) {
+            document.getElementById('reelSource').textContent = data.source
+          }
+
+          if (data.date) {
+            const formattedDate = formatReelDate(data.date)
+            document.getElementById('reelDate').textContent = formattedDate
+          }
+
+          // Update background
+          if (data.backgroundImage) {
+            const bgElement = document.getElementById('reelBackground')
+            bgElement.style.backgroundImage = `url('${data.backgroundImage}')`
+          }
+
+          // Update hashtags
+          if (data.hashtags && Array.isArray(data.hashtags)) {
+            updateReelHashtags(data.hashtags)
+          }
+
+          // Update duration
+          if (data.duration) {
+            document.getElementById('reelDuration').textContent = data.duration
+          }
+
+          // Update view count
+          if (data.viewCount) {
+            const viewCountElement = document.getElementById('reelViewCount')
+            const countSpan = viewCountElement.querySelector('span:last-child')
+            if (countSpan) {
+              countSpan.textContent = formatViewCount(data.viewCount)
+            }
+          }
+
+          // Show/hide breaking news
+          if (data.isBreaking) {
+            document.getElementById('reelBreaking').style.display = 'block'
+          }
+
+          console.log('✅ Instagram Reel content updated successfully')
+        } catch (error) {
+          console.error('❌ Error updating reel content:', error)
+        }
+      }
+
+      // Update hashtags
+      function updateReelHashtags(hashtags) {
+        const hashtagsContainer = document.getElementById('reelHashtags')
+        hashtagsContainer.innerHTML = ''
+
+        hashtags.slice(0, 5).forEach((tag) => {
+          const hashtagElement = document.createElement('span')
+          hashtagElement.className = 'reel-hashtag'
+          hashtagElement.textContent = tag.startsWith('#') ? tag : `#${tag}`
+          hashtagsContainer.appendChild(hashtagElement)
+        })
+      }
+
+      // Format view count
+      function formatViewCount(count) {
+        if (count >= 1000000) {
+          return (count / 1000000).toFixed(1) + 'M'
+        } else if (count >= 1000) {
+          return (count / 1000).toFixed(1) + 'K'
+        }
+        return count.toString()
+      }
+
+      // Format date for reel display
+      function formatReelDate(date) {
+        const now = new Date()
+        const inputDate = new Date(date)
+        const diffTime = Math.abs(now - inputDate)
+        const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+        if (diffHours < 24) {
+          return diffHours === 1 ? 'Hace 1h' : `Hace ${diffHours}h`
+        } else if (diffDays === 1) {
+          return 'Ayer'
+        } else if (diffDays <= 7) {
+          return `Hace ${diffDays}d`
+        } else {
+          return inputDate.toLocaleDateString('es-ES', {
+            day: 'numeric',
+            month: 'short',
+          })
+        }
+      }
+
+      // Apply theme colors
+      window.applyReelTheme = function (theme) {
+        const template = document.getElementById('reelTemplate')
+
+        // Remove existing theme classes
+        template.classList.remove('theme-default', 'theme-dark', 'theme-brand')
+
+        // Apply new theme
+        template.classList.add(`theme-${theme}`)
+        template.setAttribute('data-theme', theme)
+      }
+
+      // Apply custom colors
+      window.applyReelColors = function (colors) {
+        const template = document.getElementById('reelTemplate')
+
+        if (colors.primary) {
+          template.style.setProperty('--color-primary', colors.primary)
+        }
+
+        if (colors.secondary) {
+          template.style.setProperty('--color-secondary', colors.secondary)
+        }
+
+        if (colors.accent) {
+          template.style.setProperty('--color-accent', colors.accent)
+        }
+
+        if (colors.background) {
+          template.style.setProperty('--color-background', colors.background)
+        }
+
+        if (colors.text) {
+          template.style.setProperty('--color-text', colors.text)
+        }
+      }
+
+      // Apply pattern
+      window.applyReelPattern = function (patternUrl, opacity = 0.05) {
+        const patternElement = document.getElementById('reelPattern')
+        patternElement.style.backgroundImage = `url('${patternUrl}')`
+        patternElement.style.backgroundRepeat = 'repeat'
+        patternElement.style.backgroundSize = '250px 250px'
+        patternElement.style.opacity = opacity
+      }
+
+      // Add play button interaction
+      function setupPlayButtonListener() {
+        const playButton = document.getElementById('reelPlayButton')
+
+        playButton.addEventListener('click', function () {
+          // Add click animation
+          this.style.transform = 'translate(-50%, -50%) scale(1.2)'
+          this.style.background = 'rgba(255, 255, 255, 0.4)'
+
+          setTimeout(() => {
+            this.style.transform = 'translate(-50%, -50%) scale(1)'
+            this.style.background = 'rgba(255, 255, 255, 0.15)'
+          }, 200)
+
+          // Simulate play action
+          console.log('🎬 Reel play button clicked')
+        })
+
+        // Add hover effects
+        playButton.addEventListener('mouseenter', function () {
+          this.style.animationPlayState = 'paused'
+        })
+
+        playButton.addEventListener('mouseleave', function () {
+          this.style.animationPlayState = 'running'
+        })
+      }
+
+      // Initialize play button listener when DOM is ready
+      window.addEventListener('load', function () {
+        setupPlayButtonListener()
+      })
+
+      // Export functions for external use
+      window.InstagramReelTemplate = {
+        updateContent: window.updateReelContent,
+        applyTheme: window.applyReelTheme,
+        applyColors: window.applyReelColors,
+        applyPattern: window.applyReelPattern,
+      }
+
+      console.log('🎬 Instagram Reel Cover template loaded successfully')
+    </script>
+  </body>
+</html>
