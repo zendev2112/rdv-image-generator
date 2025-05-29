@@ -12,6 +12,9 @@ const AIRTABLE_CONFIG = {
   TIMEOUT: 30000,
 }
 
+// CORS Proxy for external images
+const CORS_PROXY = 'https://api.allorigins.win/raw?url='
+
 // Field mapping for your Airtable structure
 const FIELD_MAP = {
   id: 'id',
@@ -288,32 +291,161 @@ function fillFormFromAirtable(fields) {
 }
 
 /**
- * Load background image into canvas
+ * Check if URL needs CORS proxy
+ */
+function needsCorsProxy(url) {
+  if (!url) return false
+
+  // Check if it's a data URL or blob URL
+  if (url.startsWith('data:') || url.startsWith('blob:')) {
+    return false
+  }
+
+  // Check if it's from the same origin
+  const currentOrigin = window.location.origin
+  try {
+    const urlOrigin = new URL(url).origin
+    return urlOrigin !== currentOrigin
+  } catch (e) {
+    return false
+  }
+}
+
+/**
+ * Get proxied URL for CORS issues
+ */
+function getProxiedUrl(originalUrl) {
+  if (!needsCorsProxy(originalUrl)) {
+    return originalUrl
+  }
+
+  console.log('Using CORS proxy for:', originalUrl)
+  return `${CORS_PROXY}${encodeURIComponent(originalUrl)}`
+}
+
+/**
+ * Load background image into canvas with CORS handling
  */
 function loadBackgroundImage(imageUrl) {
   try {
     const canvas = document.getElementById('canvas')
-    if (canvas && imageUrl) {
-      // Create background image element
-      const img = new Image()
-      img.crossOrigin = 'anonymous'
+    if (!canvas || !imageUrl) {
+      console.warn('Canvas or imageUrl not found')
+      return
+    }
 
-      img.onload = function () {
+    console.log('Loading background image:', imageUrl)
+    showToast('Cargando imagen de fondo...', 'info')
+
+    // Try multiple methods to load the image
+    loadImageWithFallback(imageUrl)
+      .then((finalUrl) => {
         // Apply image as background
-        canvas.style.backgroundImage = `url(${imageUrl})`
+        canvas.style.backgroundImage = `url("${finalUrl}")`
         canvas.style.backgroundSize = 'cover'
         canvas.style.backgroundPosition = 'center'
-        console.log('Background image loaded:', imageUrl)
-      }
+        canvas.style.backgroundRepeat = 'no-repeat'
 
-      img.onerror = function () {
-        console.error('Failed to load background image:', imageUrl)
-      }
+        console.log('Background image loaded successfully:', finalUrl)
+        showToast('✅ Imagen de fondo cargada', 'success')
 
-      img.src = imageUrl
-    }
+        // Trigger preview update
+        if (typeof updatePreview === 'function') {
+          setTimeout(updatePreview, 100)
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load background image:', error)
+        showToast('⚠️ Error cargando imagen, usando placeholder', 'warning')
+
+        // Use a placeholder gradient
+        canvas.style.backgroundImage =
+          'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+        canvas.style.backgroundSize = 'cover'
+        canvas.style.backgroundPosition = 'center'
+      })
   } catch (error) {
-    console.error('Error loading background image:', error)
+    console.error('Error in loadBackgroundImage:', error)
+    showToast('Error cargando imagen de fondo', 'error')
+  }
+}
+
+/**
+ * Load image with multiple fallback methods
+ */
+async function loadImageWithFallback(originalUrl) {
+  const methods = [
+    // Method 1: Try original URL first
+    () => testImageLoad(originalUrl),
+    // Method 2: Try with CORS proxy
+    () => testImageLoad(getProxiedUrl(originalUrl)),
+    // Method 3: Try converting to blob and creating object URL
+    () => fetchImageAsBlob(originalUrl),
+    // Method 4: Try alternative CORS proxy
+    () => testImageLoad(`https://cors-anywhere.herokuapp.com/${originalUrl}`),
+  ]
+
+  for (let i = 0; i < methods.length; i++) {
+    try {
+      console.log(`Trying image load method ${i + 1}...`)
+      const result = await methods[i]()
+      console.log(`Method ${i + 1} successful`)
+      return result
+    } catch (error) {
+      console.log(`Method ${i + 1} failed:`, error.message)
+      if (i === methods.length - 1) {
+        throw new Error('All image loading methods failed')
+      }
+    }
+  }
+}
+
+/**
+ * Test if an image URL can be loaded
+ */
+function testImageLoad(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+
+    img.onload = () => {
+      resolve(url)
+    }
+
+    img.onerror = () => {
+      reject(new Error(`Failed to load image: ${url}`))
+    }
+
+    // Set timeout
+    setTimeout(() => {
+      reject(new Error(`Timeout loading image: ${url}`))
+    }, 10000)
+
+    img.src = url
+  })
+}
+
+/**
+ * Fetch image as blob and create object URL
+ */
+async function fetchImageAsBlob(url) {
+  try {
+    const response = await fetch(getProxiedUrl(url))
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const blob = await response.blob()
+    const objectUrl = URL.createObjectURL(blob)
+
+    // Clean up object URL after some time
+    setTimeout(() => {
+      URL.revokeObjectURL(objectUrl)
+    }, 60000)
+
+    return objectUrl
+  } catch (error) {
+    throw new Error(`Fetch as blob failed: ${error.message}`)
   }
 }
 
@@ -346,6 +478,7 @@ async function generateCurrentImage() {
         scale: 2,
         useCORS: true,
         allowTaint: true,
+        proxy: CORS_PROXY,
       })
 
       return new Promise((resolve) => {
@@ -395,23 +528,26 @@ function showToast(message, type = 'info') {
   // Create a simple toast notification
   const toast = document.createElement('div')
   toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            background: ${
-              type === 'success'
-                ? '#4CAF50'
-                : type === 'error'
-                ? '#f44336'
-                : '#2196F3'
-            };
-            color: white;
-            border-radius: 4px;
-            z-index: 10000;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-        `
+              position: fixed;
+              top: 20px;
+              right: 20px;
+              padding: 12px 20px;
+              background: ${
+                type === 'success'
+                  ? '#4CAF50'
+                  : type === 'error'
+                  ? '#f44336'
+                  : type === 'warning'
+                  ? '#ff9800'
+                  : '#2196F3'
+              };
+              color: white;
+              border-radius: 4px;
+              z-index: 10000;
+              font-family: Arial, sans-serif;
+              font-size: 14px;
+              max-width: 300px;
+          `
   toast.textContent = message
   document.body.appendChild(toast)
 
@@ -419,7 +555,7 @@ function showToast(message, type = 'info') {
     if (toast.parentNode) {
       toast.parentNode.removeChild(toast)
     }
-  }, 3000)
+  }, 4000)
 }
 
 // Add this test function to check what tables are actually available
@@ -469,6 +605,9 @@ window.listAvailableTables = listAvailableTables
 window.generateCurrentImage = generateCurrentImage
 window.blobToBase64 = blobToBase64
 window.loadBackgroundImage = loadBackgroundImage
+window.getProxiedUrl = getProxiedUrl
+window.needsCorsProxy = needsCorsProxy
+window.loadImageWithFallback = loadImageWithFallback
 
 console.log('🚀 Airtable Integration loaded with predefined config')
 
