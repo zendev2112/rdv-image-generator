@@ -330,7 +330,7 @@ function getProxiedUrl(originalUrl, proxyIndex = 0) {
 }
 
 /**
- * Load background image into canvas with enhanced CORS handling and force display
+ * Load background image into canvas with enhanced CORS handling
  */
 function loadBackgroundImage(imageUrl) {
   try {
@@ -346,67 +346,19 @@ function loadBackgroundImage(imageUrl) {
     // Try multiple methods to load the image
     loadImageWithFallback(imageUrl)
       .then((finalUrl) => {
-        console.log('Applying background image to canvas:', finalUrl)
-        
-        // Ensure canvas has proper dimensions and styles
-        if (!canvas.style.width || canvas.style.width === '0px') {
-          canvas.style.width = '100%'
-          canvas.style.minWidth = '400px'
-        }
-        if (!canvas.style.height || canvas.style.height === '0px') {
-          canvas.style.height = '100%'
-          canvas.style.minHeight = '600px'
-        }
-        
-        // Remove any existing placeholder content
-        const placeholderContent = canvas.querySelector('.placeholder-content')
-        if (placeholderContent) {
-          placeholderContent.style.display = 'none'
-        }
-        
-        // Remove any existing placeholder text
-        const existing = canvas.querySelector('.placeholder-text')
-        if (existing) existing.remove()
-        
-        // Apply image as background with all necessary properties
+        // Apply image as background
         canvas.style.backgroundImage = `url("${finalUrl}")`
         canvas.style.backgroundSize = 'cover'
         canvas.style.backgroundPosition = 'center'
         canvas.style.backgroundRepeat = 'no-repeat'
-        canvas.style.backgroundColor = 'transparent'
-        canvas.style.display = 'block'
-        canvas.style.position = 'relative'
-        
-        // Force browser reflow and repaint
-        canvas.offsetHeight
-        canvas.style.transform = 'translateZ(0)'
-        setTimeout(() => {
-          canvas.style.transform = ''
-        }, 10)
-        
-        // Add a visible indicator that image is loaded
-        canvas.classList.add('image-loaded')
-        canvas.setAttribute('data-bg-loaded', 'true')
-        
-        console.log('Canvas background styles applied:', {
-          backgroundImage: canvas.style.backgroundImage,
-          backgroundSize: canvas.style.backgroundSize,
-          backgroundPosition: canvas.style.backgroundPosition,
-          width: canvas.style.width,
-          height: canvas.style.height,
-          display: canvas.style.display
-        })
 
         console.log('Background image loaded successfully:', finalUrl)
         showToast('✅ Imagen de fondo cargada', 'success')
 
-        // Trigger preview update with delay
+        // Trigger preview update
         if (typeof updatePreview === 'function') {
-          setTimeout(updatePreview, 200)
+          setTimeout(updatePreview, 100)
         }
-        
-        // Debug canvas visibility
-        debugCanvasVisibility()
       })
       .catch((error) => {
         console.error('Failed to load background image:', error)
@@ -424,37 +376,6 @@ function loadBackgroundImage(imageUrl) {
   } catch (error) {
     console.error('Error in loadBackgroundImage:', error)
     showToast('Error cargando imagen de fondo', 'error')
-  }
-}
-
-/**
- * Debug canvas visibility and styles
- */
-function debugCanvasVisibility() {
-  const canvas = document.getElementById('canvas')
-  if (canvas) {
-    const computedStyles = window.getComputedStyle(canvas)
-    console.log('Canvas visibility debug:', {
-      display: computedStyles.display,
-      visibility: computedStyles.visibility,
-      opacity: computedStyles.opacity,
-      width: computedStyles.width,
-      height: computedStyles.height,
-      backgroundImage: computedStyles.backgroundImage,
-      position: computedStyles.position,
-      zIndex: computedStyles.zIndex,
-      overflow: computedStyles.overflow
-    })
-    
-    // Check if canvas is actually visible in viewport
-    const rect = canvas.getBoundingClientRect()
-    console.log('Canvas position:', {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-      visible: rect.width > 0 && rect.height > 0
-    })
   }
 }
 
@@ -732,7 +653,6 @@ window.getProxiedUrl = getProxiedUrl
 window.needsCorsProxy = needsCorsProxy
 window.loadImageWithFallback = loadImageWithFallback
 window.addPlaceholderText = addPlaceholderText
-window.debugCanvasVisibility = debugCanvasVisibility
 
 console.log('🚀 Airtable Integration loaded with predefined config')
 
