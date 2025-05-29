@@ -809,32 +809,226 @@ async function listAvailableTables() {
   }
 }
 
+/**
+ * NEW: Render Instagram template with Airtable data
+ */
+function renderInstagramTemplateWithData(data) {
+  console.log('🎨 Rendering Instagram template with data:', data)
+  
+  // Get current platform and template selection
+  const currentPlatform = getCurrentPlatform()
+  const currentTemplate = getCurrentTemplate()
+  
+  console.log('Current platform:', currentPlatform, 'Template:', currentTemplate)
+  
+  if (currentPlatform === 'instagram') {
+    // Use your existing Instagram template functions
+    if (typeof window.InstagramTemplates?.generateContent === 'function') {
+      const instagramContent = window.InstagramTemplates.generateContent(data, currentTemplate)
+      console.log('Generated Instagram content:', instagramContent)
+      
+      // Apply the content to the canvas
+      applyInstagramContentToCanvas(instagramContent, currentTemplate)
+    } else {
+      console.warn('Instagram template functions not available, falling back to basic rendering')
+      // Fallback to basic template rendering
+      renderBasicInstagramTemplate(data, currentTemplate)
+    }
+  }
+}
+
+/**
+ * NEW: Get current platform selection
+ */
+function getCurrentPlatform() {
+  const activePlatform = document.querySelector('.platform-btn.active')
+  return activePlatform ? activePlatform.dataset.platform : 'instagram'
+}
+
+/**
+ * NEW: Get current template selection  
+ */
+function getCurrentTemplate() {
+  const activeTemplate = document.querySelector('.template-option.active')
+  return activeTemplate ? activeTemplate.dataset.template : 'story'
+}
+
+/**
+ * NEW: Apply Instagram content to canvas
+ */
+function applyInstagramContentToCanvas(content, templateType) {
+  console.log('📱 Applying Instagram content to canvas')
+  
+  const canvas = document.getElementById('canvas')
+  if (!canvas) return
+  
+  // Set canvas for Instagram dimensions
+  setCanvasForInstagram(canvas, templateType)
+  
+  // Generate the template HTML
+  const templateHTML = generateInstagramTemplateHTML(content, templateType)
+  
+  // Apply to canvas
+  canvas.innerHTML = templateHTML
+  
+  // Update UI info
+  updateTemplateInfo(content, templateType)
+}
+
+/**
+ * NEW: Set canvas dimensions for Instagram
+ */
+function setCanvasForInstagram(canvas, templateType) {
+  const dimensions = {
+    'story': { width: 1080, height: 1920, ratio: '9:16' },
+    'post': { width: 1080, height: 1080, ratio: '1:1' },
+    'reel-cover': { width: 1080, height: 1920, ratio: '9:16' }
+  }
+  
+  const dim = dimensions[templateType] || dimensions.story
+  
+  canvas.style.aspectRatio = dim.ratio
+  canvas.style.maxWidth = templateType === 'story' ? '300px' : '400px'
+  canvas.style.width = '100%'
+  canvas.style.borderRadius = '12px'
+  canvas.style.overflow = 'hidden'
+  canvas.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)'
+  
+  console.log(`📐 Canvas set for Instagram ${templateType}: ${dim.ratio}`)
+}
+
+/**
+ * NEW: Generate Instagram template HTML
+ */
+function generateInstagramTemplateHTML(content, templateType) {
+  switch (templateType) {
+    case 'story':
+      return generateInstagramStoryHTML(content)
+    case 'post':
+      return generateInstagramPostHTML(content)
+    case 'reel-cover':
+      return generateInstagramReelHTML(content)
+    default:
+      return generateInstagramStoryHTML(content)
+  }
+}
+
+/**
+ * NEW: Generate Instagram Story HTML
+ */
+function generateInstagramStoryHTML(content) {
+  return `
+    <div class="instagram-story-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 30px;
+      color: white;
+      font-family: 'Inter', sans-serif;
+    ">
+      <!-- Header -->
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #E4405F;
+            font-size: 18px;
+          ">RDV</div>
+          <span style="font-weight: 600; font-size: 16px;">${content.source}</span>
+        </div>
+        <div style="
+          background: #E4405F;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+        ">NOTICIA</div>
+      </div>
+
+      <!-- Content -->
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 20px;">
+        <!-- Category -->
+        <div style="
+          background: rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 14px;
+          font-weight: 500;
+          text-transform: uppercase;
+          align-self: flex-start;
+        ">${content.category}</div>
+
+        <!-- Title -->
+        <h1 style="
+          font-size: 28px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        ">${content.title}</h1>
+
+        <!-- Excerpt -->
+        <p style="
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0;
+          opacity: 0.9;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        ">${content.excerpt}</p>
+
+        <!-- Tags -->
+        ${content.hashtags && content.hashtags.length > 0 ? `
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${content.hashtags.slice(0, 5).map(tag => `
+              <span style="
+                background: rgba(255,255,255,0.15);
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: 500;
+              ">${tag}</span>
+            `).join('')}
+          </div>
+        ` : ''}
+
+        <!-- Footer -->
+        <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 16px;
+          border-top: 1px solid rgba(255,255,255,0.2);
+          font-size: 12px;
+          opacity: 0.8;
+        ">
+          <span>${content.author}</span>
+          <span>${content.date}</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
 // Make functions globally available
-window.loadFromAirtable = loadFromAirtable
-window.uploadToAirtable = uploadToAirtable
-window.testAirtableConnection = testAirtableConnection
-window.fillFormFromAirtable = fillFormFromAirtable
-window.getRecordIdFromUrl = getRecordIdFromUrl
-window.showToast = showToast
-window.listAvailableTables = listAvailableTables
-window.generateCurrentImage = generateCurrentImage
-window.blobToBase64 = blobToBase64
-window.loadBackgroundImage = loadBackgroundImage
-window.applyImageToCanvas = applyImageToCanvas
-window.applyImageToCanvasEnhanced = applyImageToCanvasEnhanced
-window.createImageOverlay = createImageOverlay
-window.loadImageWithCorsProxy = loadImageWithCorsProxy
-window.loadImageComprehensive = loadImageComprehensive
-window.testImageUrl = testImageUrl
-window.getProxiedUrl = getProxiedUrl
-window.needsCorsProxy = needsCorsProxy
-window.loadImageWithFallback = loadImageWithFallback
-window.createEnhancedPlaceholder = createEnhancedPlaceholder
-window.fetchAsDataUrl = fetchAsDataUrl
-
-console.log('🚀 Airtable Integration loaded with ENHANCED image loading (24 methods)')
-
-setTimeout(() => {
-  console.log('Auto-testing Airtable connection...')
-  testAirtableConnection()
-}, 1000)
+window.renderInstagramTemplateWithData = renderInstagramTemplateWithData
+window.getCurrentPlatform = getCurrentPlatform  
+window.getCurrentTemplate = getCurrentTemplate
+window.applyInstagramContentToCanvas = applyInstagramContentToCanvas
+window.setCanvasForInstagram = setCanvasForInstagram
+window.generateInstagramTemplateHTML = generateInstagramTemplateHTML
+window.generateInstagramStoryHTML = generateInstagramStoryHTML
