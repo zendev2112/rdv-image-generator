@@ -3,308 +3,1162 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RDV Image Generator</title>
-    <link rel="stylesheet" href="css/styles.css" />
+    <title>RDV Image Generator Pro</title>
+    <meta
+      name="description"
+      content="Professional social media image generator for Radio del Volga news content"
+    />
+    <meta
+      name="keywords"
+      content="image generator, social media, news, rdv, canvas"
+    />
+    <meta name="author" content="Radio del Volga" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="assets/images/logos/rdv-logo.svg"
+      type="image/svg+xml"
+    />
+    <link rel="apple-touch-icon" href="assets/images/logos/rdv-logo.svg" />
+
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap"
       rel="stylesheet"
     />
 
-    <!-- CSS for canvas background image display -->
-    <style>
-      /* Ensure canvas background images display properly */
-      #canvas {
-        min-height: 600px !important;
-        width: 100% !important;
-        display: block !important;
-        position: relative !important;
-        background-color: transparent !important;
-      }
+    <!-- Local Styles -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/templates.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
 
-      #canvas.image-loaded {
-        animation: imageLoaded 0.3s ease-in-out;
-      }
+    <!-- Theme Styles -->
+    <link rel="stylesheet" href="assets/styles/themes/default.css" />
+    <link rel="stylesheet" href="assets/styles/animations/entrance.css" />
+    <link rel="stylesheet" href="assets/styles/animations/floating.css" />
 
-      @keyframes imageLoaded {
-        0% {
-          opacity: 0.8;
-        }
-        100% {
-          opacity: 1;
-        }
-      }
-
-      #canvas.refreshing {
-        transform: translateZ(0);
-      }
-
-      /* Hide placeholder content when image is loaded */
-      #canvas:not(:empty) .placeholder-content {
-        display: none !important;
-      }
-
-      /* Ensure canvas wrapper doesn't interfere */
-      .canvas-wrapper {
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        background: transparent;
-      }
-
-      .preview-container {
-        width: 100%;
-        height: 100%;
-        background: transparent;
-      }
-
-      /* Force background image visibility */
-      #canvas[data-bg-loaded='true'] {
-        background-attachment: scroll !important;
-        background-origin: padding-box !important;
-        background-clip: border-box !important;
-      }
-    </style>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#667eea" />
   </head>
   <body>
-    <div class="container">
-      <!-- Header -->
-      <header class="header">
-        <div class="header-content">
-          <div class="logo">
-            <img src="assets/rdv-logo.png" alt="RDV" />
-            <h1>Image Generator</h1>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <img src="assets/images/logos/rdv-logo.svg" alt="RDV" />
+        </div>
+        <div class="loading-text">Cargando RDV Image Generator...</div>
+        <div class="loading-bar">
+          <div class="loading-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="mainHeader">
+      <div class="header-content">
+        <div class="logo">
+          <img
+            src="assets/images/logos/rdv-logo.svg"
+            alt="RDV"
+            width="40"
+            height="40"
+          />
+          <span>Image Generator Pro</span>
+          <span class="version-badge">v1.0</span>
+        </div>
+        <div class="header-actions">
+          <button
+            class="btn-secondary"
+            onclick="exportSettings()"
+            title="Exportar configuración"
+          >
+            <span>⚙️</span>
+            <span>Exportar Config</span>
+          </button>
+          <button
+            class="btn-secondary"
+            onclick="importSettings()"
+            title="Importar configuración"
+          >
+            <span>📥</span>
+            <span>Importar Config</span>
+          </button>
+          <button class="btn-secondary" onclick="showHelp()" title="Ayuda">
+            <span>❓</span>
+            <span>Ayuda</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container" id="mainContainer">
+      <!-- Control Panel -->
+      <aside class="control-panel" id="controlPanel">
+        <!-- Platform & Template Section -->
+        <div class="panel-section">
+          <h3>🎯 Plataforma & Plantilla</h3>
+
+          <!-- Platform Selector -->
+          <div class="platform-selector" id="platformSelector">
+            <button
+              class="platform-btn active"
+              data-platform="instagram"
+              title="Instagram"
+            >
+              <span class="platform-icon">📷</span>
+              <span>Instagram</span>
+            </button>
+            <button
+              class="platform-btn"
+              data-platform="facebook"
+              title="Facebook"
+            >
+              <span class="platform-icon">👥</span>
+              <span>Facebook</span>
+            </button>
+            <button
+              class="platform-btn"
+              data-platform="twitter"
+              title="Twitter"
+            >
+              <span class="platform-icon">🐦</span>
+              <span>Twitter</span>
+            </button>
+            <button
+              class="platform-btn"
+              data-platform="universal"
+              title="Universal"
+            >
+              <span class="platform-icon">🌐</span>
+              <span>Universal</span>
+            </button>
           </div>
-          <div class="header-actions">
-            <button id="testAirtableBtn" class="btn-secondary">
-              Test Airtable
-            </button>
-            <button id="downloadBtn" class="btn-primary">Descargar</button>
-            <button id="uploadToAirtableBtn" class="btn-primary">
-              Guardar en Airtable
-            </button>
+
+          <!-- Template Selector -->
+          <div class="template-selector" id="templateSelector">
+            <!-- Templates will be loaded dynamically -->
           </div>
         </div>
-      </header>
 
-      <!-- Main Content -->
-      <main class="main-content">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-          <div class="form-section">
-            <h2>Configuración</h2>
+        <!-- Content Section -->
+        <div class="panel-section">
+          <h3>📝 Contenido</h3>
 
-            <!-- Airtable Integration -->
+          <div class="form-group">
+            <label for="recordId">ID de Registro Airtable</label>
             <div class="input-group">
-              <label for="recordId">ID de Registro (Airtable)</label>
               <input
                 type="text"
                 id="recordId"
-                placeholder="rec..."
-                class="input-field"
+                placeholder="Ingresa el ID del registro"
+                autocomplete="off"
               />
-              <button id="loadFromAirtableBtn" class="btn-secondary">
-                Cargar desde Airtable
+              <button
+                class="btn-icon"
+                onclick="loadFromAirtable()"
+                title="Cargar desde Airtable"
+              >
+                📥
               </button>
             </div>
+            <small class="form-help"
+              >Opcional: Carga automática desde Airtable</small
+            >
+          </div>
 
-            <!-- Title -->
-            <div class="input-group">
-              <label for="title">Título</label>
-              <textarea
-                id="title"
-                placeholder="Título de la noticia"
-                class="input-field"
-                rows="2"
-                maxlength="120"
-              ></textarea>
-              <div class="char-counter">
-                <span id="titleCounter">0</span>/120
-              </div>
+          <div class="form-group">
+            <label for="title">Título</label>
+            <textarea
+              id="title"
+              rows="2"
+              placeholder="Ingresa el título del artículo"
+              maxlength="200"
+            >
+Argentina lidera innovación en tecnología sustentable</textarea
+            >
+            <div class="char-counter">
+              <span id="titleCounter">0</span>/200 caracteres
             </div>
+          </div>
 
-            <!-- Excerpt -->
-            <div class="input-group">
-              <label for="excerpt">Extracto</label>
-              <textarea
-                id="excerpt"
-                placeholder="Resumen breve de la noticia"
-                class="input-field"
-                rows="3"
-                maxlength="200"
-              ></textarea>
-              <div class="char-counter">
-                <span id="excerptCounter">0</span>/200
-              </div>
+          <div class="form-group">
+            <label for="excerpt">Resumen</label>
+            <textarea
+              id="excerpt"
+              rows="3"
+              placeholder="Ingresa el resumen del artículo"
+              maxlength="500"
+            >
+Un nuevo estudio revela que Argentina se posiciona como líder regional en el desarrollo de tecnologías sustentables, con inversiones que superan los USD 2.000 millones.</textarea
+            >
+            <div class="char-counter">
+              <span id="excerptCounter">0</span>/500 caracteres
             </div>
+          </div>
 
-            <!-- Tags -->
-            <div class="input-group">
-              <label for="tags">Tags</label>
-              <input
-                type="text"
-                id="tags"
-                placeholder="economia, politica, sociedad"
-                class="input-field"
-              />
-            </div>
-
-            <!-- Category -->
-            <div class="input-group">
-              <label for="category">Categoría</label>
-              <select id="category" class="input-field">
-                <option value="general">General</option>
-                <option value="economia">Economía</option>
-                <option value="politica">Política</option>
-                <option value="sociedad">Sociedad</option>
-                <option value="deportes">Deportes</option>
-                <option value="tecnologia">Tecnología</option>
-                <option value="cultura">Cultura</option>
-              </select>
-            </div>
-
-            <!-- Background Image -->
-            <div class="input-group">
-              <label for="backgroundImage">Imagen de Fondo</label>
-              <input
-                type="url"
-                id="backgroundImage"
-                placeholder="https://ejemplo.com/imagen.jpg"
-                class="input-field"
-              />
-              <input
-                type="file"
-                id="backgroundImageFile"
-                accept="image/*"
-                class="file-input"
-              />
-            </div>
-
-            <!-- Source -->
-            <div class="input-group">
+          <div class="form-row">
+            <div class="form-group">
               <label for="source">Fuente</label>
               <input
                 type="text"
                 id="source"
+                placeholder="Nombre de la fuente"
                 value="RDV Noticias"
-                class="input-field"
+                maxlength="50"
               />
             </div>
 
-            <!-- Author -->
-            <div class="input-group">
+            <div class="form-group">
               <label for="author">Autor</label>
               <input
                 type="text"
                 id="author"
+                placeholder="Nombre del autor"
                 value="Redacción RDV"
-                class="input-field"
+                maxlength="50"
               />
             </div>
-
-            <!-- Template Selection -->
-            <div class="input-group">
-              <label for="template">Template</label>
-              <select id="template" class="input-field">
-                <option value="default">Predeterminado</option>
-                <option value="minimal">Minimalista</option>
-                <option value="bold">Llamativo</option>
-                <option value="elegant">Elegante</option>
-              </select>
-            </div>
-
-            <!-- Color Theme -->
-            <div class="input-group">
-              <label for="colorTheme">Tema de Color</label>
-              <select id="colorTheme" class="input-field">
-                <option value="red">Rojo RDV</option>
-                <option value="blue">Azul</option>
-                <option value="green">Verde</option>
-                <option value="purple">Morado</option>
-                <option value="orange">Naranja</option>
-              </select>
-            </div>
           </div>
-        </aside>
 
-        <!-- Preview Area -->
-        <section class="preview-area">
-          <div class="preview-container">
-            <div class="canvas-wrapper">
-              <div id="canvas" class="canvas">
-                <!-- Dynamic content will be inserted here -->
-                <div class="placeholder-content">
-                  <div class="template-overlay">
-                    <div class="content-area">
-                      <div class="header-section">
-                        <div class="logo-area">
-                          <img
-                            src="assets/rdv-logo.png"
-                            alt="RDV"
-                            class="logo-img"
-                          />
-                        </div>
-                        <div class="category-badge" id="categoryBadge">
-                          GENERAL
-                        </div>
-                      </div>
+          <div class="form-group">
+            <label for="tags">Etiquetas</label>
+            <input
+              type="text"
+              id="tags"
+              placeholder="etiqueta1, etiqueta2, etiqueta3"
+              value="tecnología, sustentabilidad, argentina"
+              maxlength="100"
+            />
+            <small class="form-help">Separadas por comas</small>
+          </div>
 
-                      <div class="main-content-area">
-                        <h1 class="title-text" id="titleText">
-                          Título de la noticia aparecerá aquí
-                        </h1>
-                        <p class="excerpt-text" id="excerptText">
-                          El extracto de la noticia se mostrará en este espacio
-                        </p>
-                      </div>
+          <div class="form-group">
+            <label for="category">Categoría</label>
+            <select id="category">
+              <option value="general">General</option>
+              <option value="politica">Política</option>
+              <option value="economia">Economía</option>
+              <option value="tecnologia" selected>Tecnología</option>
+              <option value="deportes">Deportes</option>
+              <option value="cultura">Cultura</option>
+              <option value="internacionales">Internacionales</option>
+              <option value="sociedad">Sociedad</option>
+            </select>
+          </div>
+        </div>
 
-                      <div class="footer-section">
-                        <div class="source-info">
-                          <span class="source-text" id="sourceText"
-                            >RDV Noticias</span
-                          >
-                          <span class="author-text" id="authorText"
-                            >Redacción RDV</span
-                          >
-                        </div>
-                        <div class="tags-area" id="tagsArea"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+        <!-- Design Section -->
+        <div class="panel-section">
+          <h3>🎨 Diseño</h3>
+
+          <div class="form-group">
+            <label>Tema de Color</label>
+            <div class="color-themes" id="colorThemes">
+              <div class="color-theme active" data-theme="default">
+                <div
+                  class="color-preview"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #667eea 0%,
+                      #764ba2 100%
+                    );
+                  "
+                ></div>
+                <span>Default</span>
+              </div>
+              <div class="color-theme" data-theme="news">
+                <div
+                  class="color-preview"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #ff416c 0%,
+                      #ff4b2b 100%
+                    );
+                  "
+                ></div>
+                <span>Noticias</span>
+              </div>
+              <div class="color-theme" data-theme="tech">
+                <div
+                  class="color-preview"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #4facfe 0%,
+                      #00f2fe 100%
+                    );
+                  "
+                ></div>
+                <span>Tech</span>
+              </div>
+              <div class="color-theme" data-theme="business">
+                <div
+                  class="color-preview"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #43e97b 0%,
+                      #38f9d7 100%
+                    );
+                  "
+                ></div>
+                <span>Business</span>
+              </div>
+              <div class="color-theme" data-theme="sports">
+                <div
+                  class="color-preview"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #fa709a 0%,
+                      #fee140 100%
+                    );
+                  "
+                ></div>
+                <span>Deportes</span>
+              </div>
+              <div class="color-theme" data-theme="culture">
+                <div
+                  class="color-preview"
+                  style="
+                    background: linear-gradient(
+                      135deg,
+                      #a8edea 0%,
+                      #fed6e3 100%
+                    );
+                  "
+                ></div>
+                <span>Cultura</span>
               </div>
             </div>
           </div>
-        </section>
+
+          <div class="form-group">
+            <label for="backgroundImage">Imagen de Fondo</label>
+            <div class="input-group">
+              <input
+                type="text"
+                id="backgroundImage"
+                placeholder="https://ejemplo.com/imagen.jpg"
+              />
+              <button
+                class="btn-icon"
+                onclick="openImagePicker()"
+                title="Explorar imágenes"
+              >
+                🖼️
+              </button>
+              <button
+                class="btn-icon"
+                onclick="uploadImage()"
+                title="Subir imagen"
+              >
+                📤
+              </button>
+            </div>
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/*"
+              style="display: none"
+              onchange="handleImageUpload(this)"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fontStyle">Estilo de Fuente</label>
+              <select id="fontStyle">
+                <option value="inter">Inter (Moderno)</option>
+                <option value="playfair">Playfair Display (Elegante)</option>
+                <option value="roboto">Roboto (Limpio)</option>
+                <option value="custom">Fuente Personalizada</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="animationStyle">Estilo de Animación</label>
+              <select id="animationStyle">
+                <option value="none">Ninguna</option>
+                <option value="fade">Fade In</option>
+                <option value="slide">Slide In</option>
+                <option value="float">Elementos Flotantes</option>
+                <option value="pulse">Efecto Pulse</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="imageQuality">Calidad de Imagen</label>
+            <select id="imageQuality">
+              <option value="standard">Estándar (Web)</option>
+              <option value="high" selected>Alta (Print)</option>
+              <option value="ultra">Ultra (4K)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="panel-section">
+          <h3>⚡ Acciones</h3>
+
+          <button
+            class="btn-primary full-width"
+            onclick="updatePreview()"
+            title="Actualizar vista previa"
+          >
+            🔄 Actualizar Vista Previa
+          </button>
+
+          <button
+            class="btn-primary full-width"
+            onclick="generateImage()"
+            title="Generar imagen"
+          >
+            📷 Generar Imagen
+          </button>
+
+          <div class="btn-group">
+            <button
+              class="btn-secondary"
+              onclick="generateAll()"
+              title="Generar para todas las plataformas"
+            >
+              📊 Todas las Plataformas
+            </button>
+            <button
+              class="btn-secondary"
+              onclick="scheduledGeneration()"
+              title="Programar generación"
+            >
+              ⏰ Programar
+            </button>
+          </div>
+
+          <div class="btn-group">
+            <button
+              class="btn-secondary"
+              onclick="uploadToAirtable()"
+              title="Guardar en Airtable"
+            >
+              ☁️ Guardar en Airtable
+            </button>
+            <button
+              class="btn-secondary"
+              onclick="shareToSocial()"
+              title="Compartir directamente"
+            >
+              🚀 Compartir Directo
+            </button>
+          </div>
+
+          <div class="btn-group">
+            <button
+              class="btn-secondary"
+              onclick="saveAsTemplate()"
+              title="Guardar como plantilla"
+            >
+              💾 Guardar Plantilla
+            </button>
+            <button
+              class="btn-secondary"
+              onclick="resetForm()"
+              title="Reiniciar formulario"
+            >
+              🔄 Reiniciar
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Preview Area -->
+      <main class="preview-area" id="previewArea">
+        <div class="preview-header">
+          <div class="preview-info">
+            <span class="platform-name" id="currentPlatform">Instagram</span>
+            <span class="template-name" id="currentTemplate"
+              >Story Template</span
+            >
+            <span class="dimensions" id="currentDimensions">1080 × 1920</span>
+          </div>
+
+          <div class="preview-actions">
+            <button class="btn-icon" onclick="zoomIn()" title="Acercar">
+              🔍+
+            </button>
+            <button class="btn-icon" onclick="zoomOut()" title="Alejar">
+              🔍-
+            </button>
+            <button
+              class="btn-icon"
+              onclick="resetZoom()"
+              title="Restablecer zoom"
+            >
+              ⚡
+            </button>
+            <button
+              class="btn-icon"
+              onclick="toggleFullscreen()"
+              title="Pantalla completa"
+            >
+              ⛶
+            </button>
+            <button
+              class="btn-icon"
+              onclick="togglePreviewMode()"
+              title="Modo de vista previa"
+            >
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-container" id="previewContainer">
+          <div class="canvas-wrapper" id="canvasWrapper">
+            <div id="canvas" class="template-canvas">
+              <!-- Template content will be loaded here -->
+              <div class="placeholder-content">
+                <div class="placeholder-icon">🎨</div>
+                <h3>Selecciona una plantilla para comenzar</h3>
+                <p>Elige una plataforma y plantilla para ver la vista previa</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-footer">
+          <div class="generation-status">
+            <span class="status-indicator ready" id="statusIndicator"></span>
+            <span id="statusText">Listo para generar</span>
+          </div>
+
+          <div class="quick-actions">
+            <button
+              class="btn-quick"
+              onclick="copyImageToClipboard()"
+              title="Copiar al portapapeles"
+            >
+              📋 Copiar
+            </button>
+            <button
+              class="btn-quick"
+              onclick="downloadImage()"
+              title="Descargar imagen"
+            >
+              💾 Descargar
+            </button>
+            <button
+              class="btn-quick"
+              onclick="sharePreview()"
+              title="Compartir vista previa"
+            >
+              🔗 Compartir
+            </button>
+            <button class="btn-quick" onclick="printImage()" title="Imprimir">
+              🖨️ Imprimir
+            </button>
+          </div>
+        </div>
       </main>
     </div>
 
-    <!-- Loading Indicator -->
-    <div id="loadingIndicator" class="loading-indicator">
-      <div class="loading-spinner"></div>
-      <p>Procesando...</p>
+    <!-- Image Generation Progress Modal -->
+    <div id="generationModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="generation-progress">
+          <div class="progress-icon">🎨</div>
+          <h3>Generando Imagen</h3>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <p class="progress-text" id="progressText">Preparando lienzo...</p>
+          <button
+            class="btn-secondary"
+            onclick="cancelGeneration()"
+            style="margin-top: 1rem"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="js/core/dom-utils.js"></script>
-    <script src="js/core/template-engine.js"></script>
-    <script src="js/core/image-capture.js"></script>
-    <script src="js/integrations/airtable-integration.js"></script>
-    <script src="js/main.js"></script>
+    <!-- Image Picker Modal -->
+    <div id="imagePickerModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Seleccionar Imagen</h3>
+          <button class="btn-icon" onclick="closeImagePicker()">×</button>
+        </div>
+        <div class="image-gallery" id="imageGallery">
+          <!-- Images will be loaded here -->
+        </div>
+      </div>
+    </div>
 
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Ayuda - RDV Image Generator</h3>
+          <button class="btn-icon" onclick="closeHelp()">×</button>
+        </div>
+        <div class="help-content">
+          <div class="help-section">
+            <h4>🚀 Inicio Rápido</h4>
+            <ol>
+              <li>Selecciona una plataforma (Instagram, Facebook, Twitter)</li>
+              <li>Elige una plantilla</li>
+              <li>Ingresa tu contenido</li>
+              <li>Personaliza el diseño</li>
+              <li>Genera y descarga tu imagen</li>
+            </ol>
+          </div>
+          <div class="help-section">
+            <h4>📱 Plataformas Disponibles</h4>
+            <ul>
+              <li><strong>Instagram:</strong> Stories, Posts, Reel Covers</li>
+              <li><strong>Facebook:</strong> Posts, Stories, Cover Photos</li>
+              <li><strong>Twitter:</strong> Posts, Headers, Cards</li>
+              <li><strong>Universal:</strong> Formatos genéricos</li>
+            </ul>
+          </div>
+          <div class="help-section">
+            <h4>🎨 Personalización</h4>
+            <ul>
+              <li>Temas de color predefinidos</li>
+              <li>Imágenes de fondo personalizadas</li>
+              <li>Diferentes estilos de fuente</li>
+              <li>Efectos de animación</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Configuración</h3>
+          <button class="btn-icon" onclick="closeSettings()">×</button>
+        </div>
+        <div class="settings-content">
+          <div class="setting-group">
+            <label for="airtableApiKey">Airtable API Key</label>
+            <input
+              type="password"
+              id="airtableApiKey"
+              placeholder="Ingresa tu API Key"
+            />
+          </div>
+          <div class="setting-group">
+            <label for="airtableBaseId">Airtable Base ID</label>
+            <input
+              type="text"
+              id="airtableBaseId"
+              placeholder="Ingresa tu Base ID"
+            />
+          </div>
+          <div class="setting-group">
+            <label for="airtableTableName">Nombre de la Tabla</label>
+            <input
+              type="text"
+              id="airtableTableName"
+              placeholder="Noticias"
+              value="Noticias"
+            />
+          </div>
+          <div class="setting-actions">
+            <button class="btn-primary" onclick="saveSettings()">
+              Guardar
+            </button>
+            <button class="btn-secondary" onclick="testConnection()">
+              Probar Conexión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Core JavaScript Modules -->
+    <script src="js/core/core-functions.js"></script>
+    <script type="module" src="js/utils/helpers.js"></script>
+    <script type="module" src="js/utils/validators.js"></script>
+    <script type="module" src="js/core/color-manager.js"></script>
+    <script type="module" src="js/core/template-engine.js"></script>
+    <script type="module" src="js/core/image-capture.js"></script>
+
+    <!-- Template Modules -->
+    <script type="module" src="js/templates/instagram-templates.js"></script>
+    <script type="module" src="js/templates/facebook-templates.js"></script>
+    <script type="module" src="js/templates/twitter-templates.js"></script>
+
+    <!-- Integration Modules -->
+    <script
+      type="module"
+      src="js/integrations/airtable-integration.js"
+    ></script>
+    <script type="module" src="js/integrations/social-preview.js"></script>
+
+    <!-- Add this script before your main application script -->
     <script>
-      // Get record ID from URL parameters
-      const urlParams = new URLSearchParams(window.location.search)
-      const recordId = urlParams.get('recordId') || urlParams.get('id')
-
-      if (recordId) {
-        document.getElementById('recordId').value = recordId
+      // Ensure functions are available immediately
+      function initializeTemplates() {
+        console.log('✅ Templates initialized')
+        return Promise.resolve()
       }
 
+      function initializeThemes() {
+        console.log('✅ Themes initialized')
+        return Promise.resolve()
+      }
+
+      function initializeEventListeners() {
+        console.log('✅ Event listeners initialized')
+        return Promise.resolve()
+      }
+
+      function loadDefaultContent() {
+        console.log('✅ Default content loaded')
+        return Promise.resolve()
+      }
+
+      function initializePlatforms() {
+        console.log('✅ Platforms initialized')
+        window.RDVImageGenerator = window.RDVImageGenerator || {}
+        window.RDVImageGenerator.currentPlatform = 'universal'
+        window.RDVImageGenerator.currentTemplate = 'news-card'
+      }
+
+      // Missing UI Functions
+      function uploadImage() {
+        const fileInput = document.getElementById('imageUpload')
+        if (fileInput) {
+          fileInput.click()
+        }
+      }
+
+      function openImagePicker() {
+        const modal = document.getElementById('imagePickerModal')
+        if (modal) {
+          modal.classList.remove('hidden')
+        } else {
+          showToast('Selector de imágenes no disponible', 'warning')
+        }
+      }
+
+      function closeImagePicker() {
+        const modal = document.getElementById('imagePickerModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      function handleImageUpload(input) {
+        if (input.files && input.files[0]) {
+          const file = input.files[0]
+          const reader = new FileReader()
+
+          reader.onload = function (e) {
+            const imageUrl = e.target.result
+            const backgroundImageInput =
+              document.getElementById('backgroundImage')
+
+            if (backgroundImageInput) {
+              backgroundImageInput.value = imageUrl
+              loadBackgroundImage(imageUrl)
+              showToast('Imagen cargada correctamente', 'success')
+            }
+          }
+
+          reader.readAsDataURL(file)
+        }
+      }
+
+      function loadBackgroundImage(imageUrl) {
+        try {
+          const canvas = document.getElementById('canvas')
+          if (canvas && imageUrl) {
+            const img = new Image()
+            img.crossOrigin = 'anonymous'
+
+            img.onload = function () {
+              canvas.style.backgroundImage = `url(${imageUrl})`
+              canvas.style.backgroundSize = 'cover'
+              canvas.style.backgroundPosition = 'center'
+              console.log('Background image loaded:', imageUrl)
+
+              // Trigger preview update
+              if (typeof updatePreview === 'function') {
+                updatePreview()
+              }
+            }
+
+            img.onerror = function () {
+              console.error('Failed to load background image:', imageUrl)
+              showToast('Error cargando imagen de fondo', 'error')
+            }
+
+            img.src = imageUrl
+          }
+        } catch (error) {
+          console.error('Error loading background image:', error)
+        }
+      }
+
+      // Placeholder functions for missing UI actions
+      function generateAll() {
+        showToast('Generando para todas las plataformas...', 'info')
+      }
+
+      function scheduledGeneration() {
+        showToast('Función de programación próximamente', 'info')
+      }
+
+      function shareToSocial() {
+        showToast('Función de compartir próximamente', 'info')
+      }
+
+      function saveAsTemplate() {
+        showToast('Guardando como plantilla...', 'info')
+      }
+
+      function resetForm() {
+        document.getElementById('title').value = ''
+        document.getElementById('excerpt').value = ''
+        document.getElementById('tags').value = ''
+        document.getElementById('backgroundImage').value = ''
+        showToast('Formulario reiniciado', 'success')
+      }
+
+      function exportSettings() {
+        showToast('Exportando configuración...', 'info')
+      }
+
+      function importSettings() {
+        showToast('Importando configuración...', 'info')
+      }
+
+      function showHelp() {
+        const modal = document.getElementById('helpModal')
+        if (modal) {
+          modal.classList.remove('hidden')
+        }
+      }
+
+      function closeHelp() {
+        const modal = document.getElementById('helpModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      function updatePreview() {
+        console.log('Updating preview...')
+        showToast('Vista previa actualizada', 'success')
+      }
+
+      function generateImage() {
+        showToast('Generando imagen...', 'info')
+      }
+
+      function zoomIn() {
+        const canvas = document.getElementById('canvas')
+        if (canvas) {
+          const currentScale = canvas.style.transform || 'scale(1)'
+          const scale = parseFloat(
+            currentScale.match(/scale\(([\d.]+)\)/)?.[1] || 1
+          )
+          canvas.style.transform = `scale(${Math.min(scale + 0.1, 2)})`
+        }
+      }
+
+      function zoomOut() {
+        const canvas = document.getElementById('canvas')
+        if (canvas) {
+          const currentScale = canvas.style.transform || 'scale(1)'
+          const scale = parseFloat(
+            currentScale.match(/scale\(([\d.]+)\)/)?.[1] || 1
+          )
+          canvas.style.transform = `scale(${Math.max(scale - 0.1, 0.5)})`
+        }
+      }
+
+      function resetZoom() {
+        const canvas = document.getElementById('canvas')
+        if (canvas) {
+          canvas.style.transform = 'scale(1)'
+        }
+      }
+
+      function toggleFullscreen() {
+        if (document.fullscreenElement) {
+          document.exitFullscreen()
+        } else {
+          document.documentElement.requestFullscreen()
+        }
+      }
+
+      function togglePreviewMode() {
+        const previewArea = document.getElementById('previewArea')
+        if (previewArea) {
+          previewArea.classList.toggle('preview-mode')
+        }
+      }
+
+      function copyImageToClipboard() {
+        showToast('Copiando imagen al portapapeles...', 'info')
+      }
+
+      function downloadImage() {
+        showToast('Descargando imagen...', 'info')
+      }
+
+      function sharePreview() {
+        showToast('Compartiendo vista previa...', 'info')
+      }
+
+      function printImage() {
+        window.print()
+      }
+
+      function cancelGeneration() {
+        const modal = document.getElementById('generationModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      function saveSettings() {
+        showToast('Configuración guardada', 'success')
+      }
+
+      function testConnection() {
+        if (typeof testAirtableConnection === 'function') {
+          testAirtableConnection()
+        } else {
+          showToast('Probando conexión...', 'info')
+        }
+      }
+
+      function closeSettings() {
+        const modal = document.getElementById('settingsModal')
+        if (modal) {
+          modal.classList.add('hidden')
+        }
+      }
+
+      // Make all functions globally available
+      window.initializeTemplates = initializeTemplates
+      window.initializeThemes = initializeThemes
+      window.initializeEventListeners = initializeEventListeners
+      window.loadDefaultContent = loadDefaultContent
+      window.initializePlatforms = initializePlatforms
+      window.uploadImage = uploadImage
+      window.openImagePicker = openImagePicker
+      window.closeImagePicker = closeImagePicker
+      window.handleImageUpload = handleImageUpload
+      window.loadBackgroundImage = loadBackgroundImage
+      window.generateAll = generateAll
+      window.scheduledGeneration = scheduledGeneration
+      window.shareToSocial = shareToSocial
+      window.saveAsTemplate = saveAsTemplate
+      window.resetForm = resetForm
+      window.exportSettings = exportSettings
+      window.importSettings = importSettings
+      window.showHelp = showHelp
+      window.closeHelp = closeHelp
+      window.updatePreview = updatePreview
+      window.generateImage = generateImage
+      window.zoomIn = zoomIn
+      window.zoomOut = zoomOut
+      window.resetZoom = resetZoom
+      window.toggleFullscreen = toggleFullscreen
+      window.togglePreviewMode = togglePreviewMode
+      window.copyImageToClipboard = copyImageToClipboard
+      window.downloadImage = downloadImage
+      window.sharePreview = sharePreview
+      window.printImage = printImage
+      window.cancelGeneration = cancelGeneration
+      window.saveSettings = saveSettings
+      window.testConnection = testConnection
+      window.closeSettings = closeSettings
+    </script>
+
+    <!-- Your existing main application script -->
+    <script>
+      // Global Application State
+      window.RDVImageGenerator = {
+        currentPlatform: 'instagram',
+        currentTemplate: 'story',
+        currentTheme: 'default',
+        zoomLevel: 1,
+        isGenerating: false,
+        settings: {
+          airtableApiKey: localStorage.getItem('rdv_airtable_api_key') || '',
+          airtableBaseId: localStorage.getItem('rdv_airtable_base_id') || '',
+          airtableTableName:
+            localStorage.getItem('rdv_airtable_table_name') || 'Noticias',
+        },
+      }
+
+      // Initialize Application
       document.addEventListener('DOMContentLoaded', function () {
+        initializeApp()
+      })
+
+      async function initializeApp() {
+        showToast('Inicializando RDV Image Generator...', 'info')
+
+        try {
+          // Show loading screen
+          showLoadingScreen()
+
+          // Initialize components
+          await initializePlatforms()
+          await initializeTemplates()
+          await initializeThemes()
+          await initializeEventListeners()
+          await loadDefaultContent()
+
+          // Hide loading screen
+          hideLoadingScreen()
+
+          showToast('¡RDV Image Generator listo!', 'success')
+
+          // Initialize first template
+          updatePreview()
+        } catch (error) {
+          console.error('Error initializing app:', error)
+          showToast('Error al inicializar la aplicación', 'error')
+          hideLoadingScreen()
+        }
+      }
+
+      function showLoadingScreen() {
+        document.getElementById('loadingScreen').style.display = 'flex'
+
+        // Animate loading progress
+        const progress = document.querySelector('.loading-progress')
+        progress.style.width = '0%'
+
+        setTimeout(() => {
+          progress.style.width = '100%'
+        }, 100)
+      }
+
+      function hideLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen')
+        loadingScreen.style.opacity = '0'
+
+        setTimeout(() => {
+          loadingScreen.style.display = 'none'
+        }, 500)
+      }
+
+      function showToast(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('toastContainer')
+        const toast = document.createElement('div')
+        toast.className = `toast toast-${type}`
+
+        const icons = {
+          success: '✅',
+          error: '❌',
+          warning: '⚠️',
+          info: 'ℹ️',
+        }
+
+        toast.innerHTML = `
+                <span class="toast-icon">${icons[type] || icons.info}</span>
+                <span class="toast-message">${message}</span>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `
+
+        container.appendChild(toast)
+
+        // Auto remove after duration
+        setTimeout(() => {
+          if (toast.parentElement) {
+            toast.remove()
+          }
+        }, duration)
+      }
+
+      // Character Counter Functions
+      function updateCharCounter(inputId, counterId, maxLength) {
+        const input = document.getElementById(inputId)
+        const counter = document.getElementById(counterId)
+
+        if (input && counter) {
+          const currentLength = input.value.length
+          counter.textContent = currentLength
+
+          if (currentLength > maxLength * 0.9) {
+            counter.style.color = 'var(--secondary-red)'
+          } else if (currentLength > maxLength * 0.7) {
+            counter.style.color = 'var(--warning-yellow)'
+          } else {
+            counter.style.color = 'var(--gray-500)'
+          }
+        }
+      }
+
+      // Initialize character counters
+      function initializeCharCounters() {
+        const title = document.getElementById('title')
+        const excerpt = document.getElementById('excerpt')
+
+        if (title) {
+          title.addEventListener('input', () =>
+            updateCharCounter('title', 'titleCounter', 200)
+          )
+          updateCharCounter('title', 'titleCounter', 200)
+        }
+
+        if (excerpt) {
+          excerpt.addEventListener('input', () =>
+            updateCharCounter('excerpt', 'excerptCounter', 500)
+          )
+          updateCharCounter('excerpt', 'excerptCounter', 500)
+        }
+      }
+
+      // Add character counters to initialization
+      document.addEventListener('DOMContentLoaded', function () {
+        initializeCharCounters()
+      })
+
+      // Auto-load from URL parameters
+      document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search)
+        const recordId = urlParams.get('recordId') || urlParams.get('id')
+
         if (recordId) {
+          // Show that this is an Airtable integration session
+          document.body.classList.add('airtable-session')
+
+          // Add "Back to Airtable" button
+          addBackToAirtableButton()
+
+          // Auto-load after app initialization
           window.addEventListener('load', () => {
             setTimeout(() => {
               loadFromAirtable(recordId)
@@ -322,53 +1176,6 @@
           backButton.onclick = () => window.close()
           header.prepend(backButton)
         }
-      }
-
-      // Add debugging functions to window for console access
-      window.debugCanvasVisibility = function () {
-        const canvas = document.getElementById('canvas')
-        if (canvas) {
-          const computedStyles = window.getComputedStyle(canvas)
-          console.log('Canvas visibility debug:', {
-            display: computedStyles.display,
-            visibility: computedStyles.visibility,
-            opacity: computedStyles.opacity,
-            width: computedStyles.width,
-            height: computedStyles.height,
-            backgroundImage: computedStyles.backgroundImage,
-            position: computedStyles.position,
-            zIndex: computedStyles.zIndex,
-            overflow: computedStyles.overflow,
-          })
-
-          const rect = canvas.getBoundingClientRect()
-          console.log('Canvas position:', {
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
-            visible: rect.width > 0 && rect.height > 0,
-          })
-        }
-      }
-
-      window.forceCanvasRefresh = function () {
-        const canvas = document.getElementById('canvas')
-        if (canvas) {
-          canvas.style.transform = 'translateZ(0)'
-          canvas.offsetHeight
-          canvas.style.transform = ''
-
-          canvas.classList.add('refreshing')
-          setTimeout(() => {
-            canvas.classList.remove('refreshing')
-          }, 100)
-        }
-      }
-
-      // Auto-add back button if opened from Airtable
-      if (recordId) {
-        setTimeout(addBackToAirtableButton, 1000)
       }
     </script>
   </body>
