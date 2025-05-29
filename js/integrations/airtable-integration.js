@@ -12,12 +12,23 @@ const AIRTABLE_CONFIG = {
   TIMEOUT: 30000,
 }
 
-// Multiple CORS Proxies for fallback
+// Enhanced CORS Proxies with more options and dedicated image proxies
 const CORS_PROXIES = [
   'https://api.allorigins.win/raw?url=',
-  'https://proxy.cors.sh/',
   'https://corsproxy.io/?',
-  'https://crossorigin.me/',
+  'https://cors-anywhere.herokuapp.com/',
+  'https://thingproxy.freeboard.io/fetch/',
+  'https://api.codetabs.com/v1/proxy?quest=',
+  'https://yacdn.org/proxy/',
+  'https://cors.eu.org/',
+  'https://cors-proxy.htmldriven.com/?url=',
+]
+
+// Specific image proxy services
+const IMAGE_PROXIES = [
+  'https://images.weserv.nl/?url=',
+  'https://imageproxy.pimg.tw/resize?url=',
+  'https://wsrv.nl/?url=',
 ]
 
 // Field mapping for your Airtable structure
@@ -277,9 +288,9 @@ function fillFormFromAirtable(fields) {
         // Trigger image load event
         element.dispatchEvent(new Event('change'))
 
-        // Apply image directly to the canvas element
+        // Apply image directly to the canvas element with enhanced loading
         setTimeout(() => {
-          applyImageToCanvas(formData[fieldId])
+          applyImageToCanvasEnhanced(formData[fieldId])
         }, 500)
       }
     } else if (!element) {
@@ -296,10 +307,10 @@ function fillFormFromAirtable(fields) {
 }
 
 /**
- * FIXED: Apply image directly to canvas element
+ * ENHANCED: Apply image to canvas with all possible methods
  */
-function applyImageToCanvas(imageUrl) {
-  console.log('🎯 Applying image to canvas:', imageUrl)
+function applyImageToCanvasEnhanced(imageUrl) {
+  console.log('🎯 Enhanced image loading for:', imageUrl)
   
   // Find the canvas element - try multiple selectors
   const canvasSelectors = [
@@ -321,67 +332,213 @@ function applyImageToCanvas(imageUrl) {
   
   if (!canvas) {
     console.error('❌ No canvas element found')
-    console.log('Available elements:', document.querySelectorAll('*[id], *[class*="canvas"]'))
     return
   }
 
-  showToast('Cargando imagen de fondo...', 'info')
+  showToast('🔄 Cargando imagen con métodos avanzados...', 'info')
 
-  // Try to load image with CORS proxy
-  loadImageWithCorsProxy(imageUrl)
+  // Try comprehensive image loading
+  loadImageComprehensive(imageUrl)
     .then((finalUrl) => {
-      console.log('✅ Image loaded successfully, applying to canvas')
+      console.log('✅ Image loaded with enhanced method:', finalUrl)
       
-      // FORCE canvas to be visible and properly sized
-      canvas.style.display = 'block'
-      canvas.style.position = 'relative'
-      canvas.style.width = '100%'
-      canvas.style.height = '100%'
-      canvas.style.minHeight = '600px'
+      // Apply image with multiple fallback methods
+      applyImageToCanvasMultiple(canvas, finalUrl)
       
-      // Remove any existing background
-      canvas.style.background = 'none'
-      
-      // Apply background image with maximum priority
-      canvas.style.setProperty('background-image', `url("${finalUrl}")`, 'important')
-      canvas.style.setProperty('background-size', 'cover', 'important')
-      canvas.style.setProperty('background-position', 'center', 'important')
-      canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
-      
-      // Add visual indicator that image is loaded
-      canvas.setAttribute('data-bg-loaded', 'true')
-      canvas.classList.add('has-background-image')
-      
-      // Hide placeholder content
-      const placeholder = canvas.querySelector('.placeholder-content')
-      if (placeholder) {
-        placeholder.style.opacity = '0.3'
-        placeholder.style.pointerEvents = 'none'
-      }
-      
-      // Force browser repaint
-      canvas.offsetHeight
-      
-      // Check if image actually applied
-      setTimeout(() => {
-        const computedStyle = window.getComputedStyle(canvas)
-        console.log('🔍 Applied background-image:', computedStyle.backgroundImage)
-        
-        if (computedStyle.backgroundImage === 'none') {
-          console.warn('⚠️ Background image not applied, using alternative method')
-          createImageOverlay(canvas, finalUrl)
-        } else {
-          showToast('✅ Imagen de fondo aplicada', 'success')
-        }
-      }, 100)
+      showToast('✅ Imagen cargada exitosamente', 'success')
     })
     .catch((error) => {
-      console.error('❌ Failed to load image:', error)
-      showToast('Error cargando imagen, usando placeholder', 'warning')
+      console.error('❌ All enhanced methods failed:', error)
+      showToast('⚠️ No se pudo cargar la imagen, usando placeholder', 'warning')
       
-      // Use gradient fallback
-      canvas.style.setProperty('background-image', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important')
+      // Enhanced placeholder with image info
+      createEnhancedPlaceholder(canvas, imageUrl)
     })
+}
+
+/**
+ * Comprehensive image loading with ALL methods
+ */
+async function loadImageComprehensive(originalUrl) {
+  console.log('🔄 Starting comprehensive image loading for:', originalUrl)
+  
+  const allMethods = [
+    // Method 1: Original URL
+    () => testImageUrl(originalUrl),
+    
+    // Method 2-9: CORS Proxies
+    ...CORS_PROXIES.map((proxy, index) => 
+      () => testImageUrl(proxy + encodeURIComponent(originalUrl))
+    ),
+    
+    // Method 10-12: Image-specific proxies
+    ...IMAGE_PROXIES.map((proxy, index) => 
+      () => testImageUrl(proxy + encodeURIComponent(originalUrl))
+    ),
+    
+    // Method 13: Fetch as blob with original
+    () => fetchAsDataUrl(originalUrl),
+    
+    // Method 14-21: Fetch as blob with CORS proxies
+    ...CORS_PROXIES.map((proxy, index) => 
+      () => fetchAsDataUrl(proxy + encodeURIComponent(originalUrl))
+    ),
+    
+    // Method 22: Try without https (if https fails)
+    () => {
+      if (originalUrl.startsWith('https://')) {
+        const httpUrl = originalUrl.replace('https://', 'http://')
+        return testImageUrl(httpUrl)
+      }
+      throw new Error('Not HTTPS URL')
+    },
+    
+    // Method 23: Try adding cache buster
+    () => {
+      const separator = originalUrl.includes('?') ? '&' : '?'
+      const cacheBustedUrl = originalUrl + separator + 'cb=' + Date.now()
+      return testImageUrl(cacheBustedUrl)
+    },
+    
+    // Method 24: Try Google proxy (for public images)
+    () => testImageUrl(`https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=${encodeURIComponent(originalUrl)}`),
+  ]
+
+  for (let i = 0; i < allMethods.length; i++) {
+    try {
+      console.log(`🔄 Trying method ${i + 1}/${allMethods.length}...`)
+      const result = await allMethods[i]()
+      console.log(`✅ Method ${i + 1} SUCCESS:`, result)
+      return result
+    } catch (error) {
+      console.log(`❌ Method ${i + 1} failed:`, error.message)
+      
+      // Add small delay between attempts to avoid rate limiting
+      if (i < allMethods.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 100))
+      }
+    }
+  }
+  
+  throw new Error(`All ${allMethods.length} methods failed for: ${originalUrl}`)
+}
+
+/**
+ * Apply image to canvas with multiple rendering methods
+ */
+function applyImageToCanvasMultiple(canvas, imageUrl) {
+  console.log('🎨 Applying image with multiple methods')
+  
+  // Prepare canvas
+  canvas.style.display = 'block'
+  canvas.style.position = 'relative'
+  canvas.style.width = '100%'
+  canvas.style.minHeight = '600px'
+  
+  // Method 1: CSS Background
+  try {
+    canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important')
+    canvas.style.setProperty('background-size', 'cover', 'important')
+    canvas.style.setProperty('background-position', 'center', 'important')
+    canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
+    canvas.setAttribute('data-bg-loaded', 'true')
+    
+    // Check if CSS background worked
+    setTimeout(() => {
+      const computedStyle = window.getComputedStyle(canvas)
+      if (computedStyle.backgroundImage === 'none' || computedStyle.backgroundImage === '') {
+        console.warn('CSS background failed, trying overlay method')
+        createImageOverlay(canvas, imageUrl)
+      } else {
+        console.log('✅ CSS background applied successfully')
+        hideCanvasPlaceholder(canvas)
+      }
+    }, 200)
+    
+  } catch (error) {
+    console.warn('CSS background method failed:', error)
+    createImageOverlay(canvas, imageUrl)
+  }
+}
+
+/**
+ * Hide canvas placeholder content
+ */
+function hideCanvasPlaceholder(canvas) {
+  const placeholder = canvas.querySelector('.placeholder-content')
+  if (placeholder) {
+    placeholder.style.opacity = '0.2'
+    placeholder.style.pointerEvents = 'none'
+    placeholder.style.zIndex = '1'
+  }
+}
+
+/**
+ * Create enhanced placeholder with image information
+ */
+function createEnhancedPlaceholder(canvas, failedUrl) {
+  console.log('🎨 Creating enhanced placeholder')
+  
+  // Extract domain from failed URL for display
+  let domain = 'Unknown source'
+  try {
+    domain = new URL(failedUrl).hostname
+  } catch (e) {}
+  
+  canvas.style.setProperty('background-image', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important')
+  canvas.style.setProperty('background-size', 'cover', 'important')
+  
+  // Create info overlay
+  const infoOverlay = document.createElement('div')
+  infoOverlay.className = 'image-failed-overlay'
+  infoOverlay.style.cssText = `
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 5;
+    max-width: 200px;
+    word-wrap: break-word;
+  `
+  infoOverlay.innerHTML = `
+    <div>❌ Image failed to load</div>
+    <div style="font-size: 10px; opacity: 0.8;">Source: ${domain}</div>
+    <div style="font-size: 10px; margin-top: 4px;">
+      <a href="${failedUrl}" target="_blank" style="color: #87CEEB;">View original</a>
+    </div>
+  `
+  
+  // Remove existing overlay
+  const existing = canvas.querySelector('.image-failed-overlay')
+  if (existing) existing.remove()
+  
+  canvas.style.position = 'relative'
+  canvas.appendChild(infoOverlay)
+}
+
+/**
+ * Fetch image as data URL
+ */
+async function fetchAsDataUrl(url) {
+  console.log('🔄 Fetching as data URL:', url)
+  
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}`)
+  }
+  
+  const blob = await response.blob()
+  
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(blob)
+  })
 }
 
 /**
@@ -425,40 +582,8 @@ function createImageOverlay(canvas, imageUrl) {
     }
   })
   
+  hideCanvasPlaceholder(canvas)
   console.log('✅ Image overlay created successfully')
-  showToast('✅ Imagen aplicada mediante overlay', 'success')
-}
-
-/**
- * Load image with CORS proxy handling
- */
-async function loadImageWithCorsProxy(originalUrl) {
-  console.log('🔄 Loading image with CORS proxy:', originalUrl)
-  
-  // Method 1: Try original URL first
-  try {
-    await testImageUrl(originalUrl)
-    console.log('✅ Original URL works')
-    return originalUrl
-  } catch (error) {
-    console.log('❌ Original URL failed, trying proxies')
-  }
-  
-  // Method 2: Try CORS proxies
-  for (let i = 0; i < CORS_PROXIES.length; i++) {
-    try {
-      const proxyUrl = CORS_PROXIES[i] + encodeURIComponent(originalUrl)
-      console.log(`🔄 Trying proxy ${i + 1}:`, proxyUrl)
-      
-      await testImageUrl(proxyUrl)
-      console.log(`✅ Proxy ${i + 1} works`)
-      return proxyUrl
-    } catch (error) {
-      console.log(`❌ Proxy ${i + 1} failed:`, error.message)
-    }
-  }
-  
-  throw new Error('All image loading methods failed')
 }
 
 /**
@@ -469,28 +594,46 @@ function testImageUrl(url) {
     const img = new Image()
     img.crossOrigin = 'anonymous'
     
-    img.onload = () => resolve(url)
-    img.onerror = () => reject(new Error(`Failed to load: ${url}`))
+    img.onload = () => {
+      console.log('✅ Image loaded:', url)
+      resolve(url)
+    }
     
-    // Timeout after 5 seconds
-    setTimeout(() => reject(new Error(`Timeout: ${url}`)), 5000)
+    img.onerror = () => {
+      reject(new Error(`Failed to load: ${url}`))
+    }
+    
+    // Reduced timeout for faster fallback
+    setTimeout(() => {
+      reject(new Error(`Timeout: ${url}`))
+    }, 3000)
     
     img.src = url
   })
 }
 
 /**
- * Check if URL needs CORS proxy
+ * Load image with CORS proxy handling (LEGACY)
  */
+async function loadImageWithCorsProxy(originalUrl) {
+  return loadImageComprehensive(originalUrl)
+}
+
+/**
+ * LEGACY FUNCTIONS FOR COMPATIBILITY
+ */
+function applyImageToCanvas(imageUrl) {
+  applyImageToCanvasEnhanced(imageUrl)
+}
+
+function loadBackgroundImage(imageUrl) {
+  applyImageToCanvasEnhanced(imageUrl)
+}
+
 function needsCorsProxy(url) {
   if (!url) return false
-
-  // Check if it's a data URL or blob URL
-  if (url.startsWith('data:') || url.startsWith('blob:')) {
-    return false
-  }
-
-  // Check if it's from the same origin
+  if (url.startsWith('data:') || url.startsWith('blob:')) return false
+  
   const currentOrigin = window.location.origin
   try {
     const urlOrigin = new URL(url).origin
@@ -500,43 +643,21 @@ function needsCorsProxy(url) {
   }
 }
 
-/**
- * Get proxied URL for CORS issues (with multiple fallbacks)
- */
 function getProxiedUrl(originalUrl, proxyIndex = 0) {
-  if (!needsCorsProxy(originalUrl)) {
-    return originalUrl
-  }
-
+  if (!needsCorsProxy(originalUrl)) return originalUrl
+  
   const proxy = CORS_PROXIES[proxyIndex] || CORS_PROXIES[0]
-  console.log(`Using CORS proxy ${proxyIndex + 1} for:`, originalUrl)
   return `${proxy}${encodeURIComponent(originalUrl)}`
 }
 
-/**
- * LEGACY: Load background image function for compatibility
- */
-function loadBackgroundImage(imageUrl) {
-  applyImageToCanvas(imageUrl)
-}
-
-/**
- * Enhanced image loading with multiple fallback methods
- */
 async function loadImageWithFallback(originalUrl) {
-  return loadImageWithCorsProxy(originalUrl)
+  return loadImageComprehensive(originalUrl)
 }
 
-/**
- * Test if an image URL can be loaded
- */
 function testImageLoad(url) {
   return testImageUrl(url)
 }
 
-/**
- * Fetch image as blob and create object URL (with proxy selection)
- */
 async function fetchImageAsBlob(url, proxyIndex = 0) {
   try {
     const proxiedUrl = getProxiedUrl(url, proxyIndex)
@@ -548,7 +669,6 @@ async function fetchImageAsBlob(url, proxyIndex = 0) {
     const blob = await response.blob()
     const objectUrl = URL.createObjectURL(blob)
 
-    // Clean up object URL after some time
     setTimeout(() => {
       URL.revokeObjectURL(objectUrl)
     }, 60000)
@@ -559,9 +679,6 @@ async function fetchImageAsBlob(url, proxyIndex = 0) {
   }
 }
 
-/**
- * Get record ID from URL parameters
- */
 function getRecordIdFromUrl() {
   const urlParams = new URLSearchParams(window.location.search)
   const recordId = urlParams.get('recordId') || urlParams.get('id')
@@ -569,20 +686,14 @@ function getRecordIdFromUrl() {
   return recordId
 }
 
-/**
- * Helper functions for image generation and upload
- */
 async function generateCurrentImage() {
   try {
-    // Try to use the existing generateImage function from image-capture module
     if (typeof window.generateImage === 'function') {
       return await window.generateImage()
     }
 
-    // Fallback: capture the canvas element directly
     const canvas = document.getElementById('canvas')
     if (canvas) {
-      // Use html2canvas to capture the template
       const canvasElement = await html2canvas(canvas, {
         backgroundColor: '#ffffff',
         scale: 2,
@@ -596,7 +707,6 @@ async function generateCurrentImage() {
       })
     }
 
-    // Last resort: create a placeholder
     const placeholderCanvas = document.createElement('canvas')
     placeholderCanvas.width = 1200
     placeholderCanvas.height = 630
@@ -630,12 +740,8 @@ async function blobToBase64(blob) {
   })
 }
 
-/**
- * Simple placeholder functions for missing dependencies
- */
 function showToast(message, type = 'info') {
   console.log(`[${type.toUpperCase()}] ${message}`)
-  // Create a simple toast notification
   const toast = document.createElement('div')
   toast.style.cssText = `
               position: fixed;
@@ -668,7 +774,6 @@ function showToast(message, type = 'info') {
   }, 4000)
 }
 
-// Add this test function to check what tables are actually available
 async function listAvailableTables() {
   try {
     console.log('Checking available tables in base:', AIRTABLE_CONFIG.BASE_ID)
@@ -716,16 +821,19 @@ window.generateCurrentImage = generateCurrentImage
 window.blobToBase64 = blobToBase64
 window.loadBackgroundImage = loadBackgroundImage
 window.applyImageToCanvas = applyImageToCanvas
+window.applyImageToCanvasEnhanced = applyImageToCanvasEnhanced
 window.createImageOverlay = createImageOverlay
 window.loadImageWithCorsProxy = loadImageWithCorsProxy
+window.loadImageComprehensive = loadImageComprehensive
 window.testImageUrl = testImageUrl
 window.getProxiedUrl = getProxiedUrl
 window.needsCorsProxy = needsCorsProxy
 window.loadImageWithFallback = loadImageWithFallback
+window.createEnhancedPlaceholder = createEnhancedPlaceholder
+window.fetchAsDataUrl = fetchAsDataUrl
 
-console.log('🚀 Airtable Integration loaded with predefined config')
+console.log('🚀 Airtable Integration loaded with ENHANCED image loading (24 methods)')
 
-// Auto-test connection when loaded
 setTimeout(() => {
   console.log('Auto-testing Airtable connection...')
   testAirtableConnection()
