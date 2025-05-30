@@ -1173,10 +1173,7 @@ function generateInstagramTemplateHTML(content, templateType) {
 }
 
 /**
- * MISSING FUNCTION: Generate Instagram Post HTML
- */
-/**
- * UPDATED: Generate Instagram Post HTML with better transparency for Instagram images
+ * FIXED: Generate Instagram Post HTML with text at bottom and strategic gradient
  */
 function generateInstagramPostHTML(content) {
   return `
@@ -1184,164 +1181,18 @@ function generateInstagramPostHTML(content) {
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.65) 100%);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 30px;
+      padding: 25px;
       color: #262626;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       aspect-ratio: 1/1;
       border-radius: 8px;
       overflow: hidden;
-      backdrop-filter: blur(2px);
     ">
-      <!-- Header with better background for readability -->
-      <div style="
-        display: flex; 
-        align-items: center; 
-        gap: 12px; 
-        z-index: 3; 
-        position: relative;
-        background: rgba(255,255,255,0.8);
-        backdrop-filter: blur(10px);
-        padding: 12px 16px;
-        border-radius: 16px;
-        margin: -15px -15px 0 -15px;
-      ">
-        <div style="
-          width: 40px;
-          height: 40px;
-          background: linear-gradient(45deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: white;
-          font-size: 16px;
-          box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        ">RDV</div>
-        <div>
-          <div style="font-weight: 600; font-size: 14px; color: #262626;">radiodelvolga</div>
-          <div style="font-size: 12px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
-        </div>
-        <div style="margin-left: auto; color: #833ab4; font-size: 20px;">📷</div>
-      </div>
-
-      <!-- Main Content with enhanced background -->
-      <div style="
-        flex: 1; 
-        display: flex; 
-        flex-direction: column; 
-        justify-content: center; 
-        text-align: center; 
-        z-index: 3; 
-        position: relative;
-      ">
-        <!-- Content Background -->
-        <div style="
-          background: rgba(255,255,255,0.85);
-          backdrop-filter: blur(15px);
-          border-radius: 20px;
-          padding: 25px 20px;
-          box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-          border: 1px solid rgba(255,255,255,0.2);
-        ">
-          <!-- Category Badge -->
-          <div style="
-            background: linear-gradient(45deg, #833ab4, #fd1d1d);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-            margin: 0 auto 20px auto;
-            box-shadow: 0 4px 16px rgba(131, 58, 180, 0.3);
-          ">${content.category || 'NOTICIAS'}</div>
-
-          <!-- Title -->
-          <h1 style="
-            font-size: 24px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 16px 0;
-            color: #262626;
-            text-shadow: 1px 1px 3px rgba(255,255,255,0.8);
-          ">${content.title || 'Título de la noticia'}</h1>
-
-          <!-- Excerpt -->
-          <p style="
-            font-size: 16px;
-            font-weight: 400;
-            line-height: 1.4;
-            margin: 0 0 20px 0;
-            color: #555;
-          ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
-
-          <!-- Hashtags -->
-          <div style="
-            font-size: 14px;
-            color: #385185;
-            line-height: 1.4;
-            font-weight: 600;
-          ">${(content.hashtags || ['#RDVNoticias']).slice(0, 5).join(' ')}</div>
-        </div>
-      </div>
-
-      <!-- Footer with better background -->
-      <div style="
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        z-index: 3; 
-        position: relative;
-        background: rgba(255,255,255,0.8);
-        backdrop-filter: blur(10px);
-        padding: 12px 16px;
-        border-radius: 16px;
-        margin: 0 -15px -15px -15px;
-      ">
-        <div style="
-          font-size: 12px;
-          color: #8e8e8e;
-        ">${content.source || 'RDV Noticias'}</div>
-        <div style="
-          background: rgba(131, 58, 180, 0.1);
-          border: 1px solid rgba(131, 58, 180, 0.3);
-          padding: 6px 12px;
-          border-radius: 12px;
-          font-size: 11px;
-          font-weight: 600;
-          color: #833ab4;
-        ">Instagram Post</div>
-      </div>
-    </div>
-  `
-}
-/**
- * UPDATED: Generate Instagram Story HTML with image priority and gradient overlays
- */
-function generateInstagramStoryHTML(content) {
-  return `
-    <div class="instagram-story-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(131, 58, 180, 0.2) 0%, rgba(253, 29, 29, 0.2) 50%, rgba(252, 176, 64, 0.2) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 30px;
-      color: white;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      aspect-ratio: 9/16;
-      border-radius: 8px;
-      overflow: hidden;
-    ">
-      <!-- Gradient overlay for text readability -->
+      <!-- Strategic gradient overlay - only top and bottom for posts -->
       <div style="
         position: absolute;
         top: 0;
@@ -1350,32 +1201,35 @@ function generateInstagramStoryHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(0,0,0,0.4) 0%, 
-          rgba(0,0,0,0.1) 30%, 
-          rgba(0,0,0,0.1) 70%, 
-          rgba(0,0,0,0.5) 100%
+          rgba(255,255,255,0.8) 0%, 
+          rgba(255,255,255,0.4) 15%, 
+          transparent 25%, 
+          transparent 75%, 
+          rgba(255,255,255,0.4) 85%, 
+          rgba(255,255,255,0.9) 100%
         );
         z-index: 1;
         pointer-events: none;
       "></div>
 
-      <!-- Story Header -->
+      <!-- Header - compact -->
       <div style="
         display: flex; 
         align-items: center; 
-        gap: 12px; 
+        gap: 10px; 
         z-index: 3; 
         position: relative;
-        background: rgba(0,0,0,0.5);
+        background: rgba(255,255,255,0.85);
         backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 10px 15px;
+        padding: 12px 16px;
+        border-radius: 16px;
+        align-self: flex-start;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       ">
         <div style="
           width: 32px;
           height: 32px;
-          background: linear-gradient(45deg, #833ab4, #fd1d1d);
-          border: 2px solid white;
+          background: linear-gradient(45deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -1385,75 +1239,239 @@ function generateInstagramStoryHTML(content) {
           font-size: 14px;
         ">RDV</div>
         <div>
-          <div style="font-weight: 700; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">radiodelvolga</div>
-          <div style="font-size: 12px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">Hace 2h</div>
+          <div style="font-weight: 600; font-size: 13px; color: #262626;">radiodelvolga</div>
+          <div style="font-size: 11px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
         </div>
+        <div style="margin-left: auto; color: #833ab4; font-size: 18px;">📷</div>
       </div>
 
-      <!-- Story Content -->
-      <div style="text-align: center; z-index: 3; position: relative;">
+      <!-- Empty space for image to show -->
+      <div style="flex: 1;"></div>
+
+      <!-- Main Content - moved to bottom -->
+      <div style="
+        z-index: 3; 
+        position: relative;
+      ">
+        <!-- Content Background -->
         <div style="
-          background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(131, 58, 180, 0.5));
+          background: rgba(255,255,255,0.9);
           backdrop-filter: blur(15px);
           border-radius: 20px;
-          padding: 30px 20px;
-          margin: 20px 0;
-          border: 1px solid rgba(255,255,255,0.2);
+          padding: 20px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          border: 1px solid rgba(255,255,255,0.3);
         ">
+          <!-- Category Badge -->
+          <div style="
+            background: linear-gradient(45deg, #833ab4, #fd1d1d);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+          ">${content.category || 'NOTICIAS'}</div>
+
           <!-- Title -->
           <h1 style="
-            font-size: 26px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin: 0 0 18px 0;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
-            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 10px 0;
+            color: #262626;
           ">${content.title || 'Título de la noticia'}</h1>
 
           <!-- Excerpt -->
           <p style="
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 400;
-            line-height: 1.4;
-            margin: 0 0 25px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            color: rgba(255,255,255,0.95);
-          ">${(content.excerpt || 'Descripción').length > 75 ? content.excerpt.substring(0, 75) + '...' : content.excerpt}</p>
+            line-height: 1.3;
+            margin: 0 0 12px 0;
+            color: #555;
+          ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
 
-          <!-- CTA -->
+          <!-- Footer with hashtags and source -->
           <div style="
-            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 700;
-            display: inline-block;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-          ">👆 Desliza hacia arriba</div>
-        </div>
-      </div>
-
-      <!-- Story Footer -->
-      <div style="text-align: center; z-index: 3; position: relative;">
-        <div style="
-          background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(131, 58, 180, 0.5));
-          backdrop-filter: blur(15px);
-          border-radius: 15px;
-          padding: 15px;
-          border: 1px solid rgba(255,255,255,0.15);
-        ">
-          <div style="font-size: 12px; opacity: 0.9; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-weight: 600;">${content.source || 'RDV Noticias'}</div>
-          <div style="display: flex; justify-content: center; gap: 15px; font-size: 12px; opacity: 0.8; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
-            <span>${(content.hashtags || ['#RDV']).slice(0, 3).join(' ')}</span>
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+          ">
+            <div style="
+              font-size: 11px;
+              color: #385185;
+              font-weight: 600;
+            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
+            
+            <div style="
+              background: rgba(131, 58, 180, 0.1);
+              border: 1px solid rgba(131, 58, 180, 0.3);
+              padding: 4px 8px;
+              border-radius: 8px;
+              font-size: 10px;
+              font-weight: 600;
+              color: #833ab4;
+            ">${content.source || 'RDV'}</div>
           </div>
         </div>
       </div>
     </div>
   `
 }
+/**
+ * FIXED: Generate Instagram Story HTML with text at bottom and strategic gradient
+ */
+function generateInstagramStoryHTML(content) {
+  return `
+    <div class="instagram-story-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(131, 58, 180, 0.1) 0%, rgba(253, 29, 29, 0.1) 50%, rgba(252, 176, 64, 0.1) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 25px;
+      color: white;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 9/16;
+      border-radius: 8px;
+      overflow: hidden;
+    ">
+      <!-- Strategic gradient overlay - only top and bottom -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg, 
+          rgba(0,0,0,0.5) 0%, 
+          rgba(0,0,0,0.2) 15%, 
+          transparent 25%, 
+          transparent 75%, 
+          rgba(0,0,0,0.2) 85%, 
+          rgba(0,0,0,0.7) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      "></div>
 
+      <!-- Story Header - compact -->
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        z-index: 3; 
+        position: relative;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 8px 12px;
+        align-self: flex-start;
+      ">
+        <div style="
+          width: 28px;
+          height: 28px;
+          background: linear-gradient(45deg, #833ab4, #fd1d1d);
+          border: 2px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 12px;
+        ">RDV</div>
+        <div>
+          <div style="font-weight: 700; font-size: 13px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">radiodelvolga</div>
+          <div style="font-size: 11px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">Hace 2h</div>
+        </div>
+      </div>
+
+      <!-- Empty space for image to show -->
+      <div style="flex: 1;"></div>
+
+      <!-- Story Content - moved to bottom -->
+      <div style="text-align: left; z-index: 3; position: relative;">
+        <div style="
+          background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(131, 58, 180, 0.6));
+          backdrop-filter: blur(15px);
+          border-radius: 20px;
+          padding: 25px 20px;
+          border: 1px solid rgba(255,255,255,0.2);
+        ">
+          <!-- Category Badge -->
+          <div style="
+            background: linear-gradient(45deg, #fd1d1d, #fcb045);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+          ">${content.category || 'NOTICIAS'}</div>
+
+          <!-- Title -->
+          <h1 style="
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 12px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            color: white;
+          ">${content.title || 'Título de la noticia'}</h1>
+
+          <!-- Excerpt -->
+          <p style="
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.3;
+            margin: 0 0 15px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            color: rgba(255,255,255,0.95);
+          ">${(content.excerpt || 'Descripción').length > 80 ? content.excerpt.substring(0, 80) + '...' : content.excerpt}</p>
+
+          <!-- Footer with hashtags and CTA -->
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+          ">
+            <div style="
+              font-size: 11px;
+              color: rgba(255,255,255,0.8);
+              text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            ">${(content.hashtags || ['#RDV']).slice(0, 2).join(' ')}</div>
+            
+            <div style="
+              background: rgba(255,255,255,0.2);
+              backdrop-filter: blur(10px);
+              border: 1px solid rgba(255,255,255,0.3);
+              padding: 8px 16px;
+              border-radius: 20px;
+              font-size: 12px;
+              font-weight: 600;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+            ">
+              <span>👆</span>
+              <span>Ver más</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}
 /**
  * MISSING FUNCTION: Generate Instagram Reel Cover HTML
  */
