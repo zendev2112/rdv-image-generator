@@ -2649,17 +2649,18 @@ function generateFacebookCoverHTML(content) {
 }
 
 /**
- * NEW: Enable platform switching including Facebook
+ * FIXED: Enable platform switching with correct selectors
  */
 function switchPlatform(platform) {
   console.log('🔄 Switching to platform:', platform)
   
-  // Update active platform button
-  const platformButtons = document.querySelectorAll('.platform-tab')
+  // Update active platform button - use correct class name
+  const platformButtons = document.querySelectorAll('.platform-btn')
   platformButtons.forEach(btn => {
     btn.classList.remove('active')
     if (btn.dataset.platform === platform) {
       btn.classList.add('active')
+      console.log('✅ Activated platform button:', platform)
     }
   })
   
@@ -2679,6 +2680,9 @@ function switchPlatform(platform) {
   const selectedSection = templateSections[platform]
   if (selectedSection) {
     selectedSection.style.display = 'block'
+    console.log('✅ Showed template section for:', platform)
+  } else {
+    console.warn('❌ Template section not found for:', platform)
   }
   
   // Update global state
@@ -2712,17 +2716,22 @@ function switchPlatform(platform) {
 /**
  * NEW: Initialize platform switching
  */
+/**
+ * FIXED: Initialize platform switching with correct selectors
+ */
 function initializePlatformSwitching() {
-  const platformButtons = document.querySelectorAll('.platform-tab')
+  // Use the correct class name from HTML: .platform-btn not .platform-tab
+  const platformButtons = document.querySelectorAll('.platform-btn')
   
   platformButtons.forEach(button => {
     button.addEventListener('click', () => {
       const platform = button.dataset.platform
+      console.log('🔄 Platform button clicked:', platform)
       switchPlatform(platform)
     })
   })
   
-  console.log('✅ Platform switching initialized')
+  console.log('✅ Platform switching initialized with', platformButtons.length, 'buttons')
 }
 
 // Initialize when DOM is ready
@@ -2750,7 +2759,7 @@ function getCurrentTemplate() {
 }
 
 /**
- * NEW: Get current platform
+ * FIXED: Get current platform with correct selector
  */
 function getCurrentPlatform() {
   // Try to get from global state
@@ -2758,22 +2767,14 @@ function getCurrentPlatform() {
     return window.RDVImageGenerator.currentPlatform
   }
   
-  // Try to get from active platform button
-  const activeButton = document.querySelector('.platform-tab.active')
+  // Try to get from active platform button - use correct class name
+  const activeButton = document.querySelector('.platform-btn.active')
   if (activeButton) {
     return activeButton.dataset.platform
   }
   
   // Default fallback
   return 'instagram'
-}
-
-// Update the switchPlatform function to include Twitter
-// Add this to the existing switchPlatform function:
-const templateSections = {
-  'instagram': document.getElementById('instagramTemplates'),
-  'facebook': document.getElementById('facebookTemplates'),
-  'twitter': document.getElementById('twitterTemplates')
 }
 
 // Add to window exports
