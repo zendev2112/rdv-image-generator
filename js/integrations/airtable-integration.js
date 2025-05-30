@@ -2648,6 +2648,126 @@ function generateFacebookCoverHTML(content) {
   `
 }
 
+/**
+ * NEW: Enable platform switching including Facebook
+ */
+function switchPlatform(platform) {
+  console.log('🔄 Switching to platform:', platform)
+  
+  // Update active platform button
+  const platformButtons = document.querySelectorAll('.platform-tab')
+  platformButtons.forEach(btn => {
+    btn.classList.remove('active')
+    if (btn.dataset.platform === platform) {
+      btn.classList.add('active')
+    }
+  })
+  
+  // Show/hide template sections
+  const templateSections = {
+    'instagram': document.getElementById('instagramTemplates'),
+    'facebook': document.getElementById('facebookTemplates'), 
+    'twitter': document.getElementById('twitterTemplates')
+  }
+  
+  // Hide all template sections
+  Object.values(templateSections).forEach(section => {
+    if (section) section.style.display = 'none'
+  })
+  
+  // Show selected platform templates
+  const selectedSection = templateSections[platform]
+  if (selectedSection) {
+    selectedSection.style.display = 'block'
+  }
+  
+  // Update global state
+  if (window.RDVImageGenerator) {
+    window.RDVImageGenerator.currentPlatform = platform
+  }
+  
+  // Auto-select first template of the platform
+  setTimeout(() => {
+    const firstTemplate = selectedSection?.querySelector('.template-btn')
+    if (firstTemplate) {
+      const templateType = firstTemplate.dataset.template
+      
+      switch(platform) {
+        case 'instagram':
+          selectInstagramTemplate(templateType)
+          break
+        case 'facebook':
+          selectFacebookTemplate(templateType)
+          break
+        case 'twitter':
+          selectTwitterTemplate(templateType)
+          break
+      }
+    }
+  }, 100)
+  
+  showToast(`Platform cambiado a ${platform}`, 'success')
+}
+
+/**
+ * NEW: Initialize platform switching
+ */
+function initializePlatformSwitching() {
+  const platformButtons = document.querySelectorAll('.platform-tab')
+  
+  platformButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const platform = button.dataset.platform
+      switchPlatform(platform)
+    })
+  })
+  
+  console.log('✅ Platform switching initialized')
+}
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  initializePlatformSwitching()
+})
+
+/**
+ * NEW: Get current template type
+ */
+function getCurrentTemplate() {
+  // Try to get from global state
+  if (window.RDVImageGenerator?.currentTemplate) {
+    return window.RDVImageGenerator.currentTemplate
+  }
+  
+  // Try to get from active button
+  const activeButton = document.querySelector('.template-btn.active')
+  if (activeButton) {
+    return activeButton.dataset.template
+  }
+  
+  // Default fallback
+  return 'post'
+}
+
+/**
+ * NEW: Get current platform
+ */
+function getCurrentPlatform() {
+  // Try to get from global state
+  if (window.RDVImageGenerator?.currentPlatform) {
+    return window.RDVImageGenerator.currentPlatform
+  }
+  
+  // Try to get from active platform button
+  const activeButton = document.querySelector('.platform-tab.active')
+  if (activeButton) {
+    return activeButton.dataset.platform
+  }
+  
+  // Default fallback
+  return 'instagram'
+}
+
 // Update the switchPlatform function to include Twitter
 // Add this to the existing switchPlatform function:
 const templateSections = {
@@ -2685,3 +2805,14 @@ window.setCanvasForFacebook = setCanvasForFacebook
 window.generateFacebookTemplateHTML = generateFacebookTemplateHTML
 window.generateFacebookPostHTML = generateFacebookPostHTML
 window.generateFacebookCoverHTML = generateFacebookCoverHTML
+// Add platform switching functions to global scope
+window.switchPlatform = switchPlatform
+window.initializePlatformSwitching = initializePlatformSwitching
+window.getCurrentTemplate = getCurrentTemplate
+window.getCurrentPlatform = getCurrentPlatform
+
+// Also add Facebook selection functions
+window.selectFacebookTemplate = selectFacebookTemplate
+window.updateFacebookTemplateInfoDisplay = updateFacebookTemplateInfoDisplay
+window.renderFacebookTemplateWithData = renderFacebookTemplateWithData
+window.generateFacebookOptimizedContent = generateFacebookOptimizedContent

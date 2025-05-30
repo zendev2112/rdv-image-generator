@@ -168,61 +168,32 @@
             </button>
           </div>
 
-          <!-- Template Selector for Facebook -->
-          <div class="facebook-templates" id="facebookTemplates" style="display: none">
-            <button class="template-btn active" data-template="post" data-platform="facebook"
-              onclick="selectFacebookTemplate('post')">
-              <div class="template-preview">
-                <div class="template-ratio" style="
-                      aspect-ratio: 1.91/1;
-                      background: linear-gradient(
-                        135deg,
-                        #1877f2 0%,
-                        #42a5f5 100%
-                      );
-                    "></div>
-              </div>
-              <div class="template-info">
-                <h4>📄 Post</h4>
-                <span>1200×630 • 1.91:1</span>
-              </div>
-            </button>
+          <!-- Facebook Templates Section -->
+          <div id="facebookTemplates" class="template-section" style="display: none;">
+            <h3>📘 Facebook Templates</h3>
+            <div class="template-grid">
+              <button class="template-btn" data-platform="facebook" data-template="post"
+                onclick="selectFacebookTemplate('post')">
+                <div class="template-preview">
+                  <div class="template-icon">📘</div>
+                  <div class="template-info">
+                    <div class="template-name">Facebook Post</div>
+                    <div class="template-size">1200 × 630</div>
+                  </div>
+                </div>
+              </button>
 
-            <button class="template-btn" data-template="story" data-platform="facebook"
-              onclick="selectFacebookTemplate('story')">
-              <div class="template-preview">
-                <div class="template-ratio" style="
-                      aspect-ratio: 9/16;
-                      background: linear-gradient(
-                        135deg,
-                        #4267b2 0%,
-                        #1877f2 100%
-                      );
-                    "></div>
-              </div>
-              <div class="template-info">
-                <h4>📱 Story</h4>
-                <span>1080×1920 • 9:16</span>
-              </div>
-            </button>
-
-            <button class="template-btn" data-template="cover" data-platform="facebook"
-              onclick="selectFacebookTemplate('cover')">
-              <div class="template-preview">
-                <div class="template-ratio" style="
-                      aspect-ratio: 1.91/1;
-                      background: linear-gradient(
-                        135deg,
-                        #667eea 0%,
-                        #764ba2 100%
-                      );
-                    "></div>
-              </div>
-              <div class="template-info">
-                <h4>📰 Cover</h4>
-                <span>1640×859 • 1.91:1</span>
-              </div>
-            </button>
+              <button class="template-btn" data-platform="facebook" data-template="cover"
+                onclick="selectFacebookTemplate('cover')">
+                <div class="template-preview">
+                  <div class="template-icon">🎯</div>
+                  <div class="template-info">
+                    <div class="template-name">Facebook Cover</div>
+                    <div class="template-size">1640 × 859</div>
+                  </div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
