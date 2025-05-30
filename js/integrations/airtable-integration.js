@@ -2293,6 +2293,361 @@ function generateTwitterCardHTML(content) {
   `
 }
 
+/**
+ * NEW: Apply Facebook content to canvas
+ */
+function applyFacebookContentToCanvas(content, templateType) {
+  console.log('📘 Applying Facebook content to canvas')
+  
+  const canvas = document.getElementById('canvas')
+  if (!canvas) return
+  
+  // Set canvas for Facebook dimensions
+  setCanvasForFacebook(canvas, templateType)
+  
+  // Generate the template HTML
+  const templateHTML = generateFacebookTemplateHTML(content, templateType)
+  
+  // Apply to canvas
+  canvas.innerHTML = templateHTML
+  
+  // Apply background image if available
+  if (content.backgroundImage) {
+    console.log('🖼️ Applying Facebook background image:', content.backgroundImage)
+    setTimeout(() => {
+      applyImageToCanvasEnhanced(content.backgroundImage)
+    }, 100)
+  }
+  
+  // Update UI info
+  updateTemplateInfo(content, templateType)
+}
+
+/**
+ * NEW: Set canvas dimensions for Facebook
+ */
+function setCanvasForFacebook(canvas, templateType) {
+  const dimensions = {
+    'post': { width: 1200, height: 630, ratio: '1.91/1', maxWidth: '500px' },
+    'cover': { width: 1640, height: 859, ratio: '1.91/1', maxWidth: '600px' }
+  }
+  
+  const dim = dimensions[templateType] || dimensions.post
+  
+  canvas.style.aspectRatio = dim.ratio
+  canvas.style.maxWidth = dim.maxWidth
+  canvas.style.width = '100%'
+  canvas.style.borderRadius = '8px'
+  canvas.style.overflow = 'hidden'
+  canvas.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'
+  canvas.style.transition = 'all 0.3s ease'
+  
+  console.log(`📐 Canvas set for Facebook ${templateType}: ${dim.ratio}`)
+}
+
+/**
+ * NEW: Generate Facebook template HTML
+ */
+function generateFacebookTemplateHTML(content, templateType) {
+  switch (templateType) {
+    case 'post':
+      return generateFacebookPostHTML(content)
+    case 'cover':
+      return generateFacebookCoverHTML(content)
+    default:
+      return generateFacebookPostHTML(content)
+  }
+}
+
+/**
+ * NEW: Generate Facebook Post HTML - Simple and clean design
+ */
+function generateFacebookPostHTML(content) {
+  return `
+    <div class="facebook-post-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(66, 103, 178, 0.1) 0%, rgba(66, 103, 178, 0.2) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px;
+      color: #1C1E21;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 1.91/1;
+      border-radius: 8px;
+      overflow: hidden;
+    ">
+      <!-- Strategic gradient overlay - only top and bottom -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg, 
+          rgba(255,255,255,0.85) 0%, 
+          rgba(255,255,255,0.4) 15%, 
+          transparent 25%, 
+          transparent 75%, 
+          rgba(255,255,255,0.4) 85%, 
+          rgba(255,255,255,0.9) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      "></div>
+
+      <!-- Facebook Header - compact -->
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        z-index: 3; 
+        position: relative;
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(10px);
+        padding: 15px 20px;
+        border-radius: 12px;
+        align-self: flex-start;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      ">
+        <div style="
+          width: 40px;
+          height: 40px;
+          background: linear-gradient(45deg, #4267B2 0%, #365899 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 16px;
+        ">RDV</div>
+        <div>
+          <div style="font-weight: 600; font-size: 15px; color: #1C1E21;">Radio del Volga</div>
+          <div style="font-size: 13px; color: #65676B; display: flex; align-items: center; gap: 4px;">
+            <span>${content.date || 'Hoy'}</span>
+            <span>•</span>
+            <span>🌐</span>
+          </div>
+        </div>
+        <div style="margin-left: auto; color: #4267B2; font-size: 20px;">📘</div>
+      </div>
+
+      <!-- Empty space for image to show -->
+      <div style="flex: 1;"></div>
+
+      <!-- Main Content - moved to bottom -->
+      <div style="
+        z-index: 3; 
+        position: relative;
+      ">
+        <!-- Content Background -->
+        <div style="
+          background: rgba(255,255,255,0.95);
+          backdrop-filter: blur(15px);
+          border-radius: 16px;
+          padding: 25px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          border: 1px solid rgba(255,255,255,0.5);
+        ">
+          <!-- Category Badge -->
+          <div style="
+            background: linear-gradient(45deg, #4267B2, #365899);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+          ">${content.category || 'NOTICIAS'}</div>
+
+          <!-- Title -->
+          <h1 style="
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin: 0 0 12px 0;
+            color: #1C1E21;
+          ">${content.title || 'Título de la noticia'}</h1>
+
+          <!-- Excerpt -->
+          <p style="
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0 0 16px 0;
+            color: #65676B;
+          ">${(content.excerpt || 'Descripción de la noticia').length > 120 ? content.excerpt.substring(0, 120) + '...' : content.excerpt}</p>
+
+          <!-- Footer with hashtags, source and engagement -->
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+          ">
+            <!-- Left: Hashtags -->
+            <div style="
+              font-size: 14px;
+              color: #4267B2;
+              font-weight: 600;
+            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
+            
+            <!-- Right: Source and engagement -->
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div style="
+                background: rgba(66, 103, 178, 0.1);
+                border: 1px solid rgba(66, 103, 178, 0.3);
+                padding: 6px 12px;
+                border-radius: 12px;
+                font-size: 11px;
+                font-weight: 600;
+                color: #4267B2;
+              ">${content.source || 'RDV'}</div>
+              
+              <!-- Facebook engagement indicators -->
+              <div style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 12px;
+                color: #65676B;
+              ">
+                <span style="display: flex; align-items: center; gap: 3px;">👍 24</span>
+                <span style="display: flex; align-items: center; gap: 3px;">💬 8</span>
+                <span style="display: flex; align-items: center; gap: 3px;">📤 12</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Generate Facebook Cover HTML (optional)
+ */
+function generateFacebookCoverHTML(content) {
+  return `
+    <div class="facebook-cover-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #4267B2 0%, #365899 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      aspect-ratio: 1.91/1;
+      overflow: hidden;
+    ">
+      <!-- Background Pattern -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        opacity: 0.1;
+        background-image: repeating-linear-gradient(
+          45deg,
+          transparent,
+          transparent 30px,
+          rgba(255,255,255,0.1) 30px,
+          rgba(255,255,255,0.1) 60px
+        );
+      "></div>
+
+      <!-- Main Content -->
+      <div style="position: relative; z-index: 2; max-width: 70%;">
+        <!-- Logo Section -->
+        <div style="margin-bottom: 25px;">
+          <div style="
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4267B2;
+            font-size: 40px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            margin: 0 auto 25px auto;
+          ">RDV</div>
+        </div>
+
+        <!-- Main Title -->
+        <h1 style="
+          font-size: 42px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0 0 20px 0;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        ">Radio del Volga</h1>
+
+        <!-- Subtitle -->
+        <p style="
+          font-size: 20px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 25px 0;
+          opacity: 0.9;
+          text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        ">📘 Tu fuente de noticias y entretenimiento</p>
+
+        <!-- Features -->
+        <div style="
+          display: flex;
+          justify-content: center;
+          gap: 40px;
+          font-size: 16px;
+          font-weight: 600;
+          opacity: 0.9;
+          flex-wrap: wrap;
+        ">
+          <span>📻 Radio en vivo</span>
+          <span>📰 Noticias</span>
+          <span>🎙️ Programas</span>
+          <span>🌐 Actualidad</span>
+        </div>
+      </div>
+
+      <!-- Facebook Icons -->
+      <div style="
+        position: absolute;
+        top: 30px;
+        right: 30px;
+        font-size: 80px;
+        opacity: 0.15;
+        color: white;
+      ">📘</div>
+      
+      <div style="
+        position: absolute;
+        bottom: 30px;
+        left: 30px;
+        font-size: 50px;
+        opacity: 0.15;
+        color: white;
+      ">📘</div>
+    </div>
+  `
+}
+
 // Update the switchPlatform function to include Twitter
 // Add this to the existing switchPlatform function:
 const templateSections = {
@@ -2324,3 +2679,9 @@ window.generateInstagramReelCoverHTML = generateInstagramReelCoverHTML
 window.isInstagramImage = isInstagramImage
 window.applyInstagramImageDirect = applyInstagramImageDirect
 window.createInstagramImageInfo = createInstagramImageInfo
+// Add Facebook functions to global scope
+window.applyFacebookContentToCanvas = applyFacebookContentToCanvas
+window.setCanvasForFacebook = setCanvasForFacebook
+window.generateFacebookTemplateHTML = generateFacebookTemplateHTML
+window.generateFacebookPostHTML = generateFacebookPostHTML
+window.generateFacebookCoverHTML = generateFacebookCoverHTML
