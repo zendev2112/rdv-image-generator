@@ -1322,7 +1322,7 @@ function generateInstagramPostHTML(content) {
   `
 }
 /**
- * MISSING FUNCTION: Generate Instagram Story HTML
+ * UPDATED: Generate Instagram Story HTML with image priority and gradient overlays
  */
 function generateInstagramStoryHTML(content) {
   return `
@@ -1330,7 +1330,7 @@ function generateInstagramStoryHTML(content) {
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+      background: linear-gradient(135deg, rgba(131, 58, 180, 0.2) 0%, rgba(253, 29, 29, 0.2) 50%, rgba(252, 176, 64, 0.2) 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1341,12 +1341,40 @@ function generateInstagramStoryHTML(content) {
       border-radius: 8px;
       overflow: hidden;
     ">
+      <!-- Gradient overlay for text readability -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg, 
+          rgba(0,0,0,0.4) 0%, 
+          rgba(0,0,0,0.1) 30%, 
+          rgba(0,0,0,0.1) 70%, 
+          rgba(0,0,0,0.5) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      "></div>
+
       <!-- Story Header -->
-      <div style="display: flex; align-items: center; gap: 12px; z-index: 2; position: relative;">
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        z-index: 3; 
+        position: relative;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 10px 15px;
+      ">
         <div style="
           width: 32px;
           height: 32px;
-          background: rgba(255,255,255,0.2);
+          background: linear-gradient(45deg, #833ab4, #fd1d1d);
           border: 2px solid white;
           border-radius: 50%;
           display: flex;
@@ -1357,55 +1385,69 @@ function generateInstagramStoryHTML(content) {
           font-size: 14px;
         ">RDV</div>
         <div>
-          <div style="font-weight: 600; font-size: 14px;">radiodelvolga</div>
-          <div style="font-size: 12px; opacity: 0.8;">Hace 2h</div>
+          <div style="font-weight: 700; font-size: 14px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">radiodelvolga</div>
+          <div style="font-size: 12px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">Hace 2h</div>
         </div>
       </div>
 
       <!-- Story Content -->
-      <div style="text-align: center; z-index: 2; position: relative;">
-        <!-- Title -->
-        <h1 style="
-          font-size: 28px;
-          font-weight: 800;
-          line-height: 1.1;
-          margin: 0 0 20px 0;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        ">${content.title || 'Título de la noticia'}</h1>
-
-        <!-- Excerpt -->
-        <p style="
-          font-size: 18px;
-          font-weight: 400;
-          line-height: 1.3;
-          margin: 0 0 30px 0;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        ">${(content.excerpt || 'Descripción').length > 80 ? content.excerpt.substring(0, 80) + '...' : content.excerpt}</p>
-
-        <!-- CTA -->
+      <div style="text-align: center; z-index: 3; position: relative;">
         <div style="
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255,255,255,0.3);
-          padding: 12px 24px;
-          border-radius: 25px;
-          font-size: 14px;
-          font-weight: 600;
-          display: inline-block;
-        ">👆 Desliza hacia arriba</div>
+          background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(131, 58, 180, 0.5));
+          backdrop-filter: blur(15px);
+          border-radius: 20px;
+          padding: 30px 20px;
+          margin: 20px 0;
+          border: 1px solid rgba(255,255,255,0.2);
+        ">
+          <!-- Title -->
+          <h1 style="
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin: 0 0 18px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+            color: white;
+          ">${content.title || 'Título de la noticia'}</h1>
+
+          <!-- Excerpt -->
+          <p style="
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0 0 25px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            color: rgba(255,255,255,0.95);
+          ">${(content.excerpt || 'Descripción').length > 75 ? content.excerpt.substring(0, 75) + '...' : content.excerpt}</p>
+
+          <!-- CTA -->
+          <div style="
+            background: linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.15));
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-block;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+          ">👆 Desliza hacia arriba</div>
+        </div>
       </div>
 
       <!-- Story Footer -->
-      <div style="text-align: center; z-index: 2; position: relative;">
-        <div style="font-size: 12px; opacity: 0.8; margin-bottom: 8px;">${content.source || 'RDV Noticias'}</div>
+      <div style="text-align: center; z-index: 3; position: relative;">
         <div style="
-          display: flex;
-          justify-content: center;
-          gap: 15px;
-          font-size: 12px;
-          opacity: 0.7;
+          background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(131, 58, 180, 0.5));
+          backdrop-filter: blur(15px);
+          border-radius: 15px;
+          padding: 15px;
+          border: 1px solid rgba(255,255,255,0.15);
         ">
-          <span>${(content.hashtags || ['#RDV']).slice(0, 3).join(' ')}</span>
+          <div style="font-size: 12px; opacity: 0.9; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); font-weight: 600;">${content.source || 'RDV Noticias'}</div>
+          <div style="display: flex; justify-content: center; gap: 15px; font-size: 12px; opacity: 0.8; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">
+            <span>${(content.hashtags || ['#RDV']).slice(0, 3).join(' ')}</span>
+          </div>
         </div>
       </div>
     </div>
