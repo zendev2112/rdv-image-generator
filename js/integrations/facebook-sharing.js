@@ -701,3 +701,32 @@ function shareViaSimpleFacebookShare(facebookPost) {
   showToast('🚀 Facebook Share abierto', 'success')
   showFacebookSharingInstructions(facebookPost)
 }
+
+// ADD THIS AT THE VERY END OF THE FILE (after all function definitions)
+
+// Make sure all functions are available globally
+window.shareToFacebook = shareToFacebook;
+window.generateFacebookPostText = generateFacebookPostText;
+window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods;
+window.shareViaFacebookShareDialog = shareViaFacebookShareDialog;
+window.shareViaFacebookWebIntent = shareViaFacebookWebIntent;
+window.downloadImageForManualSharing = downloadImageForManualSharing;
+window.showFacebookSharingInstructions = showFacebookSharingInstructions;
+window.addFacebookShareButton = addFacebookShareButton;
+window.initializeFacebookSharing = initializeFacebookSharing;
+window.shareViaSecureAPI = shareViaSecureAPI;
+window.showEnhancedSharingModal = showEnhancedSharingModal;
+window.blobToBase64 = blobToBase64;
+window.showGraphAPISuccessModal = showGraphAPISuccessModal;
+window.testAPIConnection = testAPIConnection;
+window.generateCurrentImage = generateCurrentImage;
+window.getCurrentFormData = getCurrentFormData;
+window.getCurrentPlatform = getCurrentPlatform;
+window.getCurrentTemplate = getCurrentTemplate;
+window.shareViaSimpleFacebookShare = shareViaSimpleFacebookShare;
+
+console.log('✅ Facebook sharing functions loaded and available globally');
+console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function');
+
+// Auto-initialize
+initializeFacebookSharing();
