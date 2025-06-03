@@ -53,49 +53,58 @@ async function testAPIConnection() {
 }
 
 /**
- * Enhanced main Facebook sharing function with Graph API option
+ * Enhanced main Facebook sharing function with Graph API option - DEBUG VERSION
  */
 async function shareToFacebook() {
   console.log('📘 Sharing to Facebook...')
 
   try {
+    console.log('🔍 Step 1: Showing toast...')
     showToast('🔄 Preparando para compartir en Facebook...', 'info')
 
-    // Get current content from form
+    console.log('🔍 Step 2: Getting form data...')
     const content = getCurrentFormData()
+    console.log('📝 Content:', content)
+
+    console.log('🔍 Step 3: Getting platform...')
     const platform = getCurrentPlatform()
+    console.log('🎯 Platform:', platform)
+
+    console.log('🔍 Step 4: Getting template...')
     const template = getCurrentTemplate()
+    console.log('📋 Template:', template)
 
-    // Validate platform selection
-    if (platform !== 'facebook') {
-      showToast('⚠️ Selecciona un template de Facebook primero', 'warning')
-      return
-    }
-
-    // Generate the image
+    // SKIP platform validation for now to test
+    console.log('🔍 Step 5: Skipping platform validation for testing...')
+    
+    console.log('🔍 Step 6: Generating image...')
     const imageBlob = await generateCurrentImage()
+    console.log('🖼️ Image generated:', imageBlob.size, 'bytes')
 
-    // Show enhanced sharing options modal
-    const method = await showEnhancedSharingModal()
-
-    if (method === 'graph-api') {
-      // NEW: Use Graph API via secure backend
-      await shareViaSecureAPI(content, imageBlob)
-    } else if (method === 'manual') {
-      // EXISTING: Use current multi-method approach
-      const facebookPost = {
-        message: generateFacebookPostText(content),
-        image: imageBlob,
-        link: content.url || 'https://radiodelvolga.com',
-        name: content.title,
-        description: content.excerpt,
-        caption: 'Radio del Volga',
-      }
-
-      await shareToFacebookMultipleMethods(facebookPost)
+    console.log('🔍 Step 7: Showing sharing modal...')
+    
+    // SIMPLIFY: Skip the enhanced modal and go straight to manual methods
+    console.log('🔍 Going directly to manual methods for testing...')
+    
+    const facebookPost = {
+      message: generateFacebookPostText(content),
+      image: imageBlob,
+      link: content.url || 'https://radiodelvolga.com',
+      name: content.title,
+      description: content.excerpt,
+      caption: 'Radio del Volga',
     }
+
+    console.log('📝 Facebook post object:', facebookPost)
+    
+    console.log('🔍 Step 8: Calling manual sharing methods...')
+    await shareToFacebookMultipleMethods(facebookPost)
+    
+    console.log('✅ Facebook sharing completed successfully!')
+
   } catch (error) {
     console.error('❌ Error sharing to Facebook:', error)
+    console.error('❌ Error stack:', error.stack)
     showToast(`❌ Error compartiendo: ${error.message}`, 'error')
   }
 }
@@ -933,7 +942,6 @@ async function generateCurrentImage() {
             reject(new Error('Direct canvas capture failed'));
           }
         }, 'image/png', 0.95);
-      });
     }
     
     // Last resort: Create a simple test image
