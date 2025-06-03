@@ -1014,6 +1014,7 @@ function showToast(message, type = 'info') {
 initializeFacebookSharing()
 
 // Make sure all functions are available globally
+// Make sure all functions are available globally - ADD THIS AT THE VERY END
 window.shareToFacebook = shareToFacebook;
 window.generateFacebookPostText = generateFacebookPostText;
 window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods;
@@ -1023,13 +1024,18 @@ window.downloadImageForManualSharing = downloadImageForManualSharing;
 window.showFacebookSharingInstructions = showFacebookSharingInstructions;
 window.addFacebookShareButton = addFacebookShareButton;
 window.initializeFacebookSharing = initializeFacebookSharing;
-
-// NEW Graph API functions
 window.shareViaSecureAPI = shareViaSecureAPI;
 window.showEnhancedSharingModal = showEnhancedSharingModal;
 window.blobToBase64 = blobToBase64;
 window.showGraphAPISuccessModal = showGraphAPISuccessModal;
 window.testAPIConnection = testAPIConnection;
+window.generateCurrentImage = generateCurrentImage;
+window.getCurrentFormData = getCurrentFormData;
+window.getCurrentPlatform = getCurrentPlatform;
+window.getCurrentTemplate = getCurrentTemplate;
+
+
+console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function');
 
 console.log('✅ Facebook sharing functions loaded and available globally');
 
