@@ -5,15 +5,15 @@
  * Last Updated: 2024
  */
 
-// Configuration for secure API integration
+// SECURE configuration - NO KEYS EXPOSED
 const RDV_API_CONFIG = {
-  baseUrl: 'https://your-api-domain.com', // Replace with your actual API URL
-  apiKey: 'your-rdv-api-key', // This should be stored securely or provided by user
+  baseUrl: 'https://rdv-news-api.vercel.app',
+  apiKey: null, // NO API KEY NEEDED
   endpoints: {
-    quickPublish: '/api/social-publishing/quick-publish',
-    testConnection: '/api/social-publishing/test/facebook',
-    pageInfo: '/api/social-publishing/facebook/page-info',
-    platforms: '/api/social-publishing/platforms',
+    quickPublish: '/api/social-media-publishing/quick-publish',
+    testConnection: '/api/social-media-publishing/test/facebook',
+    pageInfo: '/api/social-media-publishing/facebook/page-info',
+    platforms: '/api/social-media-publishing/platforms',
   },
 }
 
@@ -28,27 +28,32 @@ function initializeFacebookSharing() {
 }
 
 /**
- * Test API connection
+ * Test API connection - NO AUTH REQUIRED
  */
 async function testAPIConnection() {
   try {
+    console.log('🔍 Testing API connection to your backend...')
+    
     const response = await fetch(
       `${RDV_API_CONFIG.baseUrl}${RDV_API_CONFIG.endpoints.platforms}`,
       {
         headers: {
-          'x-api-key': RDV_API_CONFIG.apiKey,
+          'Content-Type': 'application/json',
         },
       }
     )
 
     if (response.ok) {
       const data = await response.json()
-      console.log('✅ API connection successful:', data)
+      console.log('✅ Backend API connection successful:', data)
+      return true
     } else {
-      console.warn('⚠️ API connection failed, using manual mode only')
+      console.warn('⚠️ Backend API connection failed:', response.status)
+      return false
     }
   } catch (error) {
-    console.warn('⚠️ API not available, using manual mode only:', error.message)
+    console.warn('⚠️ Backend API not available:', error.message)
+    return false
   }
 }
 
@@ -76,16 +81,16 @@ async function shareToFacebook() {
 
     // SKIP platform validation for now to test
     console.log('🔍 Step 5: Skipping platform validation for testing...')
-    
+
     console.log('🔍 Step 6: Generating image...')
     const imageBlob = await generateCurrentImage()
     console.log('🖼️ Image generated:', imageBlob.size, 'bytes')
 
     console.log('🔍 Step 7: Showing sharing modal...')
-    
+
     // SIMPLIFY: Skip the enhanced modal and go straight to manual methods
     console.log('🔍 Going directly to manual methods for testing...')
-    
+
     const facebookPost = {
       message: generateFacebookPostText(content),
       image: imageBlob,
@@ -96,12 +101,11 @@ async function shareToFacebook() {
     }
 
     console.log('📝 Facebook post object:', facebookPost)
-    
+
     console.log('🔍 Step 8: Calling manual sharing methods...')
     await shareToFacebookMultipleMethods(facebookPost)
-    
-    console.log('✅ Facebook sharing completed successfully!')
 
+    console.log('✅ Facebook sharing completed successfully!')
   } catch (error) {
     console.error('❌ Error sharing to Facebook:', error)
     console.error('❌ Error stack:', error.stack)
@@ -244,17 +248,17 @@ function showEnhancedSharingModal() {
 }
 
 /**
- * NEW: Share via secure Graph API backend
+ * NEW: Share via secure Graph API backend - NO FRONTEND KEYS
  */
 async function shareViaSecureAPI(content, imageBlob) {
   try {
-    console.log('🤖 Using secure Graph API backend...')
-    showToast('🤖 Publicando automáticamente...', 'info')
+    console.log('🤖 Using your secure backend API...')
+    showToast('🤖 Publicando automáticamente via backend...', 'info')
 
     // Convert blob to base64
     const base64Image = await blobToBase64(imageBlob)
 
-    // Prepare post data
+    // Prepare post data - NO API KEY NEEDED
     const postData = {
       platform: 'facebook',
       imageBlob: base64Image,
@@ -264,18 +268,20 @@ async function shareViaSecureAPI(content, imageBlob) {
         excerpt: content.excerpt,
         url: content.url || 'https://radiodelvolga.com',
         timestamp: new Date().toISOString(),
+        source: 'rdv-image-generator',
       },
     }
 
-    // Call secure API
-    showToast('📤 Enviando a API segura...', 'info')
+    console.log('📤 Sending to your backend API...')
+    
+    // Call your existing quick-publish endpoint WITHOUT API KEY
     const response = await fetch(
       `${RDV_API_CONFIG.baseUrl}${RDV_API_CONFIG.endpoints.quickPublish}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': RDV_API_CONFIG.apiKey,
+          // NO API KEY HEADER
         },
         body: JSON.stringify(postData),
       }
@@ -284,18 +290,19 @@ async function shareViaSecureAPI(content, imageBlob) {
     const result = await response.json()
 
     if (!response.ok) {
-      throw new Error(result.error || 'API request failed')
+      throw new Error(result.error || `API request failed: ${response.status}`)
     }
 
     if (result.success) {
-      showToast('✅ ¡Publicado automáticamente!', 'success')
+      showToast('✅ ¡Publicado automáticamente via backend!', 'success')
       showGraphAPISuccessModal(result)
+      return result
     } else {
       throw new Error(result.error || 'Publishing failed')
     }
   } catch (error) {
-    console.error('❌ Secure API failed:', error)
-    showToast(`❌ API Error: ${error.message}`, 'error')
+    console.error('❌ Backend API failed:', error)
+    showToast(`❌ Backend Error: ${error.message}`, 'error')
 
     // Fallback to manual methods
     showToast('🔄 Usando método manual como respaldo...', 'warning')
@@ -503,28 +510,14 @@ async function shareToFacebookMultipleMethods(facebookPost) {
       font-family: 'Inter', sans-serif;
     `
 
+    // Update the modal in shareToFacebookMultipleMethods function
     modal.innerHTML = `
-      <div style="
-        background: white;
-        padding: 30px;
-        border-radius: 16px;
-        max-width: 500px;
-        width: 90%;
-        text-align: center;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        border: 3px solid #42b883;
-      ">
-        <div style="
-          width: 70px;
-          height: 70px;
-          background: linear-gradient(45deg, #42b883, #36d975);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 35px;
-          margin: 0 auto 20px auto;
-        ">📱</div>
+      <div style="background: white; padding: 30px; border-radius: 16px; max-width: 500px; width: 90%;
+                  text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 3px solid #42b883;">
+        
+        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, #42b883, #36d975);
+                    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                    font-size: 35px; margin: 0 auto 20px auto;">📱</div>
         
         <h3 style="color: #42b883; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
           Método Manual - Facebook
@@ -535,59 +528,29 @@ async function shareToFacebookMultipleMethods(facebookPost) {
         </p>
         
         <div style="display: flex; flex-direction: column; gap: 12px;">
-          <button onclick="shareViaDialog()" style="
-            background: #4267B2;
-            color: white;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          ">
+          <button onclick="shareViaSimpleDialog()" style="background: #4267B2; color: white; border: none;
+                       padding: 16px 20px; border-radius: 10px; font-weight: 600; cursor: pointer;
+                       font-size: 15px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <span style="font-size: 20px;">🚀</span>
-              <span>Abrir Facebook Share Dialog</span>
+              <span>Facebook Share (Método Simple)</span>
             </div>
             <span>→</span>
           </button>
           
-          <button onclick="shareViaWebIntent()" style="
-            background: #4267B2;
-            color: white;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          ">
+          <button onclick="shareViaWebIntent()" style="background: #4267B2; color: white; border: none;
+                       padding: 16px 20px; border-radius: 10px; font-weight: 600; cursor: pointer;
+                       font-size: 15px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <span style="font-size: 20px;">🌐</span>
-              <span>Abrir Facebook en nueva pestaña</span>
+              <span>Abrir Facebook Directamente</span>
             </div>
             <span>→</span>
           </button>
           
-          <button onclick="downloadAndCopy()" style="
-            background: #1da1f2;
-            color: white;
-            border: none;
-            padding: 16px 20px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-          ">
+          <button onclick="downloadAndCopy()" style="background: #1da1f2; color: white; border: none;
+                       padding: 16px 20px; border-radius: 10px; font-weight: 600; cursor: pointer;
+                       font-size: 15px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 10px;">
               <span style="font-size: 20px;">📥</span>
               <span>Descargar imagen + copiar texto</span>
@@ -596,25 +559,19 @@ async function shareToFacebookMultipleMethods(facebookPost) {
           </button>
         </div>
         
-        <button onclick="closeModal()" style="
-          background: #f0f0f0;
-          color: #666;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          font-weight: 600;
-          cursor: pointer;
-          margin-top: 20px;
-        ">Cerrar</button>
+        <button onclick="closeModal()" style="background: #f0f0f0; color: #666; border: none;
+                     padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 20px;">
+          Cerrar
+        </button>
       </div>
     `
 
     document.body.appendChild(modal)
 
-    // Define modal functions
-    window.shareViaDialog = function () {
+    // Update the modal functions
+    window.shareViaSimpleDialog = function () {
       document.body.removeChild(modal)
-      shareViaFacebookShareDialog(facebookPost)
+      shareViaSimpleFacebookShare(facebookPost) // Use the improved simple method
       cleanupModalFunctions()
     }
 
@@ -636,7 +593,7 @@ async function shareToFacebookMultipleMethods(facebookPost) {
     }
 
     function cleanupModalFunctions() {
-      delete window.shareViaDialog
+      delete window.shareViaSimpleDialog
       delete window.shareViaWebIntent
       delete window.downloadAndCopy
       delete window.closeModal
@@ -648,420 +605,99 @@ async function shareToFacebookMultipleMethods(facebookPost) {
 }
 
 /**
- * Share via Facebook Share Dialog (EXISTING FUNCTION)
+ * Share via Facebook Share Dialog - IMPROVED VERSION
  */
 function shareViaFacebookShareDialog(facebookPost) {
   try {
     console.log('🚀 Opening Facebook Share Dialog...')
 
-    const shareUrl = encodeURIComponent(
-      facebookPost.link || 'https://radiodelvolga.com'
-    )
-    const shareText = encodeURIComponent(facebookPost.message)
+    // Method 1: Try the simple Facebook share URL first
+    const shareUrl = encodeURIComponent(facebookPost.link || 'https://radiodelvolga.com')
+    
+    // Use the simpler Facebook share URL that's more reliable
+    const facebookShareUrl = `https://www.facebook.com/share.php?u=${shareUrl}`
 
-    const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`
-
-    window.open(
+    // Open in a popup window with better specs
+    const popup = window.open(
       facebookShareUrl,
       'facebook-share',
-      'width=600,height=400,scrollbars=yes,resizable=yes'
+      'width=600,height=500,scrollbars=yes,resizable=yes,location=yes,menubar=no,toolbar=no'
     )
 
-    showToast('🚀 Facebook Share Dialog abierto', 'success')
+    // Check if popup was blocked
+    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+      console.warn('⚠️ Popup blocked, trying alternative method...')
+      
+      // Fallback: Open in new tab
+      window.open(facebookShareUrl, '_blank')
+      showToast('🌐 Facebook Share abierto en nueva pestaña', 'info')
+    } else {
+      showToast('🚀 Facebook Share Dialog abierto', 'success')
+    }
+
+    // Show instructions with the text to copy
     showFacebookSharingInstructions(facebookPost)
+    
   } catch (error) {
     console.error('❌ Error opening Facebook Share Dialog:', error)
-    showToast(`❌ Error: ${error.message}`, 'error')
+    
+    // Ultimate fallback: Just open Facebook and copy text
+    console.log('🔄 Falling back to manual sharing...')
+    shareViaFacebookWebIntent(facebookPost)
   }
 }
 
 /**
- * Share via Facebook web intent (EXISTING FUNCTION)
+ * ALTERNATIVE: Advanced Facebook Share Dialog with multiple fallbacks
  */
-function shareViaFacebookWebIntent(facebookPost) {
+function shareViaAdvancedFacebookDialog(facebookPost) {
   try {
-    console.log('🌐 Opening Facebook web intent...')
+    console.log('🚀 Trying advanced Facebook share methods...')
 
-    const facebookUrl = 'https://www.facebook.com/'
+    // Method 1: FB Share API (if available)
+    if (typeof FB !== 'undefined' && FB.ui) {
+      console.log('📱 Using Facebook SDK...')
+      
+      FB.ui({
+        method: 'share',
+        href: facebookPost.link || 'https://radiodelvolga.com',
+        quote: facebookPost.message,
+      }, function(response) {
+        if (response && !response.error_message) {
+          showToast('✅ Compartido via Facebook SDK', 'success')
+        } else {
+          console.warn('FB SDK failed, falling back...')
+          shareViaSimpleFacebookShare(facebookPost)
+        }
+      })
+      return
+    }
+
+    // Method 2: Simple share URL
+    shareViaSimpleFacebookShare(facebookPost)
+    
+  } catch (error) {
+    console.error('❌ Advanced dialog failed:', error)
+    shareViaSimpleFacebookShare(facebookPost)
+  }
+}
+
+/**
+ * Simple Facebook share that always works
+ */
+function shareViaSimpleFacebookShare(facebookPost) {
+  console.log('🌐 Using simple Facebook share...')
+  
+  const shareUrl = encodeURIComponent(facebookPost.link || 'https://radiodelvolga.com')
+  const facebookUrl = `https://www.facebook.com/share.php?u=${shareUrl}`
+  
+  // Try popup first, then fallback to new tab
+  const popup = window.open(facebookUrl, 'facebook-share', 'width=600,height=500')
+  
+  if (!popup) {
     window.open(facebookUrl, '_blank')
-
-    showToast('🌐 Facebook abierto en nueva pestaña', 'success')
-    showFacebookSharingInstructions(facebookPost)
-  } catch (error) {
-    console.error('❌ Error opening Facebook web intent:', error)
-    showToast(`❌ Error: ${error.message}`, 'error')
-  }
-}
-
-/**
- * Download image for manual sharing (EXISTING FUNCTION - ENHANCED)
- */
-async function downloadImageForManualSharing(facebookPost) {
-  try {
-    console.log('📥 Downloading image for manual sharing...')
-
-    // Download the image
-    const imageUrl = URL.createObjectURL(facebookPost.image)
-    const link = document.createElement('a')
-    link.href = imageUrl
-    link.download = `facebook-post-${Date.now()}.png`
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(imageUrl)
-
-    // Copy text to clipboard
-    await navigator.clipboard.writeText(facebookPost.message)
-
-    showToast('📥 Imagen descargada y texto copiado', 'success')
-    showFacebookSharingInstructions(facebookPost)
-  } catch (error) {
-    console.error('❌ Error downloading for manual sharing:', error)
-    showToast(`❌ Error: ${error.message}`, 'error')
-  }
-}
-
-/**
- * Show Facebook sharing instructions (EXISTING FUNCTION - ENHANCED)
- */
-function showFacebookSharingInstructions(facebookPost) {
-  const modal = document.createElement('div')
-  modal.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    z-index: 10000;
-    max-width: 450px;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    border: 3px solid #4267B2;
-  `
-
-  modal.innerHTML = `
-    <div style="
-      width: 70px;
-      height: 70px;
-      background: linear-gradient(45deg, #4267B2, #365899);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 35px;
-      margin: 0 auto 20px auto;
-    ">📘</div>
-    
-    <h3 style="color: #4267B2; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
-      Instrucciones para Facebook
-    </h3>
-    
-    <div style="text-align: left; margin-bottom: 20px; line-height: 1.5; color: #333;">
-      <p><strong>Pasos para publicar:</strong></p>
-      <ol style="padding-left: 20px; font-size: 14px;">
-        <li>Sube la imagen descargada</li>
-        <li>Pega el texto copiado al portapapeles</li>
-        <li>Ajusta si es necesario</li>
-        <li>¡Publica!</li>
-      </ol>
-    </div>
-    
-    <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 12px; max-height: 120px; overflow-y: auto; text-align: left;">
-      <strong>Texto copiado:</strong><br>
-      ${facebookPost.message.replace(/\n/g, '<br>')}
-    </div>
-    
-    <div style="display: flex; gap: 12px;">
-      <button onclick="window.open('https://facebook.com', '_blank')" style="
-        flex: 1;
-        background: #4267B2;
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-      ">Ir a Facebook</button>
-      
-      <button onclick="this.parentElement.parentElement.remove()" style="
-        flex: 1;
-        background: #f0f0f0;
-        color: #666;
-        border: none;
-        padding: 12px;
-        border-radius: 8px;
-        font-weight: 600;
-        cursor: pointer;
-      ">Cerrar</button>
-    </div>
-  `
-
-  document.body.appendChild(modal)
-
-  setTimeout(() => {
-    if (modal.parentNode) {
-      modal.parentNode.removeChild(modal)
-    }
-  }, 30000)
-}
-
-/**
- * Add Facebook share button to page (EXISTING FUNCTION)
- */
-function addFacebookShareButton(containerId) {
-  const container = document.getElementById(containerId)
-  if (!container) {
-    console.error(`Container ${containerId} not found`)
-    return
-  }
-
-  const button = document.createElement('button')
-  button.innerHTML = `
-    <span style="font-size: 20px; margin-right: 8px;">📘</span>
-    Compartir en Facebook
-  `
-  button.style.cssText = `
-    background: linear-gradient(45deg, #4267B2, #365899);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(66, 103, 178, 0.3);
-  `
-
-  button.addEventListener('click', shareToFacebook)
-
-  button.addEventListener('mouseenter', () => {
-    button.style.transform = 'translateY(-2px)'
-    button.style.boxShadow = '0 6px 16px rgba(66, 103, 178, 0.4)'
-  })
-
-  button.addEventListener('mouseleave', () => {
-    button.style.transform = 'translateY(0)'
-    button.style.boxShadow = '0 4px 12px rgba(66, 103, 178, 0.3)'
-  })
-
-  container.appendChild(button)
-  console.log('✅ Facebook share button added to', containerId)
-}
-
-// Helper functions for getting current form data (these should exist in your main app)
-function getCurrentFormData() {
-  return {
-    title: document.getElementById('title')?.value || 'Título de prueba',
-    excerpt:
-      document.getElementById('excerpt')?.value || 'Descripción de prueba',
-    tags: document.getElementById('tags')?.value || 'facebook,test,rdv',
-    source: document.getElementById('source')?.value || 'RDV Noticias',
-    author: document.getElementById('author')?.value || 'Redacción RDV',
-    category: document.getElementById('category')?.value || 'general',
-    url: 'https://radiodelvolga.com',
-  }
-}
-
-function getCurrentPlatform() {
-  return window.RDVImageGenerator?.currentPlatform || 'facebook'
-}
-
-function getCurrentTemplate() {
-  return window.RDVImageGenerator?.currentTemplate || 'post'
-}
-
-/**
- * Generate current image using the existing image-capture module
- * @returns {Promise<Blob>} Generated image blob
- */
-async function generateCurrentImage() {
-  try {
-    console.log('🎨 Generating current image for Facebook sharing...');
-    
-    // First, try to use your existing generateImage function
-    if (typeof window.generateImage === 'function') {
-      console.log('📷 Using existing generateImage function...');
-      
-      // Call your existing generateImage function without auto-download
-      const imageBlob = await window.generateImage(false); // false = don't auto-download
-      
-      if (imageBlob && imageBlob instanceof Blob) {
-        console.log('✅ Image generated successfully:', imageBlob.size, 'bytes');
-        return imageBlob;
-      }
-    }
-    
-    // Second, try to use html2canvas on the main canvas
-    if (window.html2canvas) {
-      console.log('📷 Using html2canvas fallback...');
-      
-      const canvas = document.getElementById('canvas');
-      if (canvas) {
-        const capturedCanvas = await window.html2canvas(canvas, {
-          allowTaint: true,
-          useCORS: true,
-          scale: 1,
-          backgroundColor: '#ffffff',
-          logging: false,
-          width: canvas.offsetWidth,
-          height: canvas.offsetHeight
-        });
-        
-        return new Promise((resolve, reject) => {
-          capturedCanvas.toBlob((blob) => {
-            if (blob) {
-              console.log('✅ html2canvas generated image:', blob.size, 'bytes');
-              resolve(blob);
-            } else {
-              reject(new Error('html2canvas failed to generate blob'));
-            }
-          }, 'image/png', 0.95);
-        });
-      }
-    }
-    
-    // Third, try direct canvas capture
-    const canvas = document.getElementById('canvas');
-    if (canvas && typeof canvas.toBlob === 'function') {
-      console.log('📷 Using direct canvas capture...');
-      
-      return new Promise((resolve, reject) => {
-        canvas.toBlob((blob) => {
-          if (blob) {
-            console.log('✅ Direct canvas captured:', blob.size, 'bytes');
-            resolve(blob);
-          } else {
-            reject(new Error('Direct canvas capture failed'));
-          }
-        }, 'image/png', 0.95);
-    }
-    
-    // Last resort: Create a simple test image
-    console.warn('⚠️ No image generation method available, creating test image...');
-    return createTestImage();
-    
-  } catch (error) {
-    console.error('❌ Error generating image:', error);
-    console.log('🔄 Falling back to test image...');
-    return createTestImage();
-  }
-}
-
-/**
- * Create a test image as fallback
- * @returns {Promise<Blob>} Test image blob
- */
-function createTestImage() {
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 1200;
-    canvas.height = 630;
-    const ctx = canvas.getContext('2d');
-    
-    // Create a gradient background
-    const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
-    gradient.addColorStop(0, '#4267B2');
-    gradient.addColorStop(1, '#365899');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 1200, 630);
-    
-    // Add text
-    ctx.fillStyle = 'white';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Test Facebook Post', 600, 280);
-    
-    ctx.font = '24px Arial';
-    ctx.fillText('Radio del Volga - Imagen de Prueba', 600, 350);
-    
-    ctx.font = '18px Arial';
-    ctx.fillText(new Date().toLocaleString(), 600, 400);
-    
-    canvas.toBlob((blob) => {
-      console.log('📝 Test image created:', blob.size, 'bytes');
-      resolve(blob);
-    }, 'image/png');
-  });
-}
-
-/**
- * Connect with your existing toast system
- */
-function showToast(message, type = 'info') {
-  // Try to use your existing toast function
-  if (typeof window.showToast === 'function') {
-    window.showToast(message, type);
-    return;
   }
   
-  // Try alternative toast function names
-  if (typeof window.showNotification === 'function') {
-    window.showNotification(message, type);
-    return;
-  }
-  
-  // Fallback to console
-  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
-  console.log(`${icon} TOAST [${type.toUpperCase()}]: ${message}`);
-  
-  // Also show a simple alert for important messages
-  if (type === 'error') {
-    alert(`Error: ${message}`);
-  }
-}
-
-// Auto-initialize when module is loaded
-initializeFacebookSharing()
-
-// Make sure all functions are available globally
-// Make sure all functions are available globally - ADD THIS AT THE VERY END
-window.shareToFacebook = shareToFacebook;
-window.generateFacebookPostText = generateFacebookPostText;
-window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods;
-window.shareViaFacebookShareDialog = shareViaFacebookShareDialog;
-window.shareViaFacebookWebIntent = shareViaFacebookWebIntent;
-window.downloadImageForManualSharing = downloadImageForManualSharing;
-window.showFacebookSharingInstructions = showFacebookSharingInstructions;
-window.addFacebookShareButton = addFacebookShareButton;
-window.initializeFacebookSharing = initializeFacebookSharing;
-window.shareViaSecureAPI = shareViaSecureAPI;
-window.showEnhancedSharingModal = showEnhancedSharingModal;
-window.blobToBase64 = blobToBase64;
-window.showGraphAPISuccessModal = showGraphAPISuccessModal;
-window.testAPIConnection = testAPIConnection;
-window.generateCurrentImage = generateCurrentImage;
-window.getCurrentFormData = getCurrentFormData;
-window.getCurrentPlatform = getCurrentPlatform;
-window.getCurrentTemplate = getCurrentTemplate;
-
-
-console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function');
-
-console.log('✅ Facebook sharing functions loaded and available globally');
-
-// Export functions for ES6 modules (if needed)
-export {
-  shareToFacebook,
-  generateFacebookPostText,
-  shareToFacebookMultipleMethods,
-  shareViaFacebookShareDialog,
-  shareViaFacebookWebIntent,
-  downloadImageForManualSharing,
-  showFacebookSharingInstructions,
-  addFacebookShareButton,
-  initializeFacebookSharing,
-  // NEW Graph API functions
-  shareViaSecureAPI,
-  showEnhancedSharingModal,
-  blobToBase64,
-  showGraphAPISuccessModal,
-  testAPIConnection,
+  showToast('🚀 Facebook Share abierto', 'success')
+  showFacebookSharingInstructions(facebookPost)
 }
