@@ -1013,12 +1013,25 @@ function showToast(message, type = 'info') {
 // Auto-initialize when module is loaded
 initializeFacebookSharing()
 
-// Add new functions to global scope for debugging
-window.shareViaSecureAPI = shareViaSecureAPI
-window.showEnhancedSharingModal = showEnhancedSharingModal
-window.blobToBase64 = blobToBase64
-window.showGraphAPISuccessModal = showGraphAPISuccessModal
-window.testAPIConnection = testAPIConnection
+// Make sure all functions are available globally
+window.shareToFacebook = shareToFacebook;
+window.generateFacebookPostText = generateFacebookPostText;
+window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods;
+window.shareViaFacebookShareDialog = shareViaFacebookShareDialog;
+window.shareViaFacebookWebIntent = shareViaFacebookWebIntent;
+window.downloadImageForManualSharing = downloadImageForManualSharing;
+window.showFacebookSharingInstructions = showFacebookSharingInstructions;
+window.addFacebookShareButton = addFacebookShareButton;
+window.initializeFacebookSharing = initializeFacebookSharing;
+
+// NEW Graph API functions
+window.shareViaSecureAPI = shareViaSecureAPI;
+window.showEnhancedSharingModal = showEnhancedSharingModal;
+window.blobToBase64 = blobToBase64;
+window.showGraphAPISuccessModal = showGraphAPISuccessModal;
+window.testAPIConnection = testAPIConnection;
+
+console.log('✅ Facebook sharing functions loaded and available globally');
 
 // Export functions for ES6 modules (if needed)
 export {
