@@ -509,59 +509,86 @@ async function shareToFacebookMultipleMethods(facebookPost) {
       font-family: 'Inter', sans-serif;
     `
 
-    // SIMPLIFIED MODAL - Only useful options
+    // In the shareToFacebookMultipleMethods function, replace the modal.innerHTML with:
     modal.innerHTML = `
-      <div style="background: white; padding: 30px; border-radius: 16px; max-width: 500px; width: 90%;
-                  text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 3px solid #4267B2;">
-        
-        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, #4267B2, #365899);
-                    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-                    font-size: 35px; margin: 0 auto 20px auto;">📘</div>
-        
-        <h3 style="color: #4267B2; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
-          Compartir en Facebook
-        </h3>
-        
-        <p style="color: #666; margin-bottom: 25px; line-height: 1.5; font-size: 15px;">
-          Elige el método que prefieras:
-        </p>
-        
-        <div style="display: flex; flex-direction: column; gap: 15px;">
-          
-          <button onclick="downloadAndCopy()" style="background: #4267B2; color: white; border: none;
-                       padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
-                       font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <span style="font-size: 22px;">📥</span>
-              <div style="text-align: left;">
-                <div style="font-size: 16px;">Descargar imagen + copiar texto</div>
-                <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Método recomendado</div>
-              </div>
-            </div>
-            <span style="font-size: 18px;">→</span>
-          </button>
-          
-          <button onclick="copyTextOnly()" style="background: #42b883; color: white; border: none;
-                       padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
-                       font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <span style="font-size: 22px;">📋</span>
-              <div style="text-align: left;">
-                <div style="font-size: 16px;">Solo copiar texto</div>
-                <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Sin imagen</div>
-              </div>
-            </div>
-            <span style="font-size: 18px;">→</span>
-          </button>
+  <div style="background: white; padding: 30px; border-radius: 16px; max-width: 500px; width: 90%;
+              text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 3px solid #4267B2;">
+    
+    <div style="width: 70px; height: 70px; background: linear-gradient(45deg, #4267B2, #365899);
+                border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                font-size: 35px; margin: 0 auto 20px auto;">📘</div>
+    
+    <h3 style="color: #4267B2; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
+      Compartir en Facebook
+    </h3>
+    
+    <p style="color: #666; margin-bottom: 25px; line-height: 1.5; font-size: 15px;">
+      Elige el método que prefieras:
+    </p>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+      
+      <button onclick="downloadAndCopy()" style="background: #4267B2; color: white; border: none;
+                   padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
+                   font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 22px;">📥</span>
+          <div style="text-align: left;">
+            <div style="font-size: 16px;">Descargar imagen + copiar texto</div>
+            <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Método recomendado</div>
+          </div>
         </div>
-        
-        <button onclick="closeModal()" style="background: #f0f0f0; color: #666; border: none;
-                     padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; 
-                     margin-top: 20px; font-size: 14px;">
-          Cancelar
-        </button>
-      </div>
-    `
+        <span style="font-size: 18px;">→</span>
+      </button>
+      
+      <button onclick="copyTextOnly()" style="background: #42b883; color: white; border: none;
+                   padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
+                   font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 22px;">📋</span>
+          <div style="text-align: left;">
+            <div style="font-size: 16px;">Solo copiar texto</div>
+            <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Sin imagen</div>
+          </div>
+        </div>
+        <span style="font-size: 18px;">→</span>
+      </button>
+    </div>
+    
+    <button onclick="closeModal()" style="background: #f0f0f0; color: #666; border: none;
+                 padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; 
+                 margin-top: 20px; font-size: 14px;">
+      Cancelar
+    </button>
+  </div>
+`
+
+    // And make sure these functions are defined right after:
+    document.body.appendChild(modal)
+
+    // SIMPLIFIED MODAL FUNCTIONS
+    window.downloadAndCopy = function () {
+      document.body.removeChild(modal)
+      downloadImageForManualSharing(facebookPost)
+      cleanupModalFunctions()
+    }
+
+    window.copyTextOnly = function () {
+      document.body.removeChild(modal)
+      copyTextAndOpenFacebook(facebookPost)
+      cleanupModalFunctions()
+    }
+
+    window.closeModal = function () {
+      document.body.removeChild(modal)
+      cleanupModalFunctions()
+    }
+
+    function cleanupModalFunctions() {
+      delete window.downloadAndCopy
+      delete window.copyTextOnly
+      delete window.closeModal
+    }
 
     document.body.appendChild(modal)
 
