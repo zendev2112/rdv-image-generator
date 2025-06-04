@@ -831,29 +831,218 @@ function showFacebookSharingInstructions(facebookPost) {
   }, 45000)
 }
 
-// Make sure all functions are available globally
-window.shareToFacebook = shareToFacebook;
-window.generateFacebookPostText = generateFacebookPostText;
-window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods;
-window.shareViaFacebookShareDialog = shareViaFacebookShareDialog;
-window.shareViaFacebookWebIntent = shareViaFacebookWebIntent;
-window.downloadImageForManualSharing = downloadImageForManualSharing;
-window.showFacebookSharingInstructions = showFacebookSharingInstructions;
-window.addFacebookShareButton = addFacebookShareButton;
-window.initializeFacebookSharing = initializeFacebookSharing;
-window.shareViaSecureAPI = shareViaSecureAPI;
-window.showEnhancedSharingModal = showEnhancedSharingModal;
-window.blobToBase64 = blobToBase64;
-window.showGraphAPISuccessModal = showGraphAPISuccessModal;
-window.testAPIConnection = testAPIConnection;
-window.generateCurrentImage = generateCurrentImage;
-window.getCurrentFormData = getCurrentFormData;
-window.getCurrentPlatform = getCurrentPlatform;
-window.getCurrentTemplate = getCurrentTemplate;
-window.shareViaSimpleFacebookShare = shareViaSimpleFacebookShare;
+// Add these missing functions at the end of your file, before the window assignments:
 
-console.log('✅ Facebook sharing functions loaded and available globally');
-console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function');
+/**
+ * Helper functions for getting current form data
+ */
+function getCurrentFormData() {
+  try {
+    return {
+      title: document.getElementById('title')?.value || 'Título de prueba',
+      excerpt: document.getElementById('excerpt')?.value || 'Descripción de prueba',
+      tags: document.getElementById('tags')?.value || 'facebook,test,rdv',
+      source: document.getElementById('source')?.value || 'RDV Noticias',
+      author: document.getElementById('author')?.value || 'Redacción RDV',
+      category: document.getElementById('category')?.value || 'general',
+      url: 'https://radiodelvolga.com',
+    }
+  } catch (error) {
+    console.warn('Error getting form data, using defaults:', error)
+    return {
+      title: 'Test Post',
+      excerpt: 'This is a test post from RDV Image Generator',
+      tags: 'facebook,test,rdv',
+      source: 'RDV Noticias',
+      url: 'https://radiodelvolga.com',
+    }
+  }
+}
+
+function getCurrentPlatform() {
+  return window.RDVImageGenerator?.currentPlatform || 'facebook'
+}
+
+function getCurrentTemplate() {
+  return window.RDVImageGenerator?.currentTemplate || 'post'
+}
+
+/**
+ * Generate current image using the existing image-capture module
+ */
+async function generateCurrentImage() {
+  try {
+    console.log('🎨 Generating current image for Facebook sharing...')
+    
+    // First, try to use your existing generateImage function
+    if (typeof window.generateImage === 'function') {
+      console.log('📷 Using existing generateImage function...')
+      
+      // Call your existing generateImage function without auto-download
+      const imageBlob = await window.generateImage(false) // false = don't auto-download
+      
+      if (imageBlob && imageBlob instanceof Blob) {
+        console.log('✅ Image generated successfully:', imageBlob.size, 'bytes')
+        return imageBlob
+      }
+    }
+    
+    // Fallback: Create a simple test image
+    console.warn('⚠️ No image generation method available, creating test image...')
+    return createTestImage()
+    
+  } catch (error) {
+    console.error('❌ Error generating image:', error)
+    console.log('🔄 Falling back to test image...')
+    return createTestImage()
+  }
+}
+
+/**
+ * Create a test image as fallback
+ */
+function createTestImage() {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = 1200
+    canvas.height = 630
+    const ctx = canvas.getContext('2d')
+    
+    // Create a gradient background
+    const gradient = ctx.createLinearGradient(0, 0, 1200, 630)
+    gradient.addColorStop(0, '#4267B2')
+    gradient.addColorStop(1, '#365899')
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, 1200, 630)
+    
+    // Add text
+    ctx.fillStyle = 'white'
+    ctx.font = 'bold 48px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('Test Facebook Post', 600, 280)
+    
+    ctx.font = '24px Arial'
+    ctx.fillText('Radio del Volga - Imagen de Prueba', 600, 350)
+    
+    ctx.font = '18px Arial'
+    ctx.fillText(new Date().toLocaleString(), 600, 400)
+    
+    canvas.toBlob((blob) => {
+      console.log('📝 Test image created:', blob.size, 'bytes')
+      resolve(blob)
+    }, 'image/png')
+  })
+}
+
+/**
+ * Connect with your existing toast system
+ */
+function showToast(message, type = 'info') {
+  // Try to use your existing toast function
+  if (typeof window.showToast === 'function') {
+    window.showToast(message, type)
+    return
+  }
+  
+  // Fallback to console
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'
+  console.log(`${icon} TOAST [${type.toUpperCase()}]: ${message}`)
+  
+  // Simple visual fallback
+  const toast = document.createElement('div')
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : type === 'warning' ? '#ff9800' : '#2196f3'};
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    z-index: 10000;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  `
+  toast.textContent = message
+  document.body.appendChild(toast)
+  
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.parentNode.removeChild(toast)
+    }
+  }, 3000)
+}
+
+/**
+ * Add Facebook share button to page
+ */
+function addFacebookShareButton(containerId) {
+  const container = document.getElementById(containerId)
+  if (!container) {
+    console.error(`Container ${containerId} not found`)
+    return
+  }
+
+  const button = document.createElement('button')
+  button.innerHTML = `
+    <span style="font-size: 20px; margin-right: 8px;">📘</span>
+    Compartir en Facebook
+  `
+  button.style.cssText = `
+    background: linear-gradient(45deg, #4267B2, #365899);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(66, 103, 178, 0.3);
+  `
+
+  button.addEventListener('click', shareToFacebook)
+  container.appendChild(button)
+  console.log('✅ Facebook share button added to', containerId)
+}
+
+// Add this missing function that's being called
+function shareViaFacebookShareDialog(facebookPost) {
+  // Since the share dialog is problematic, redirect to simple share
+  console.log('🔄 Share dialog requested, using simple share instead...')
+  shareViaSimpleFacebookShare(facebookPost)
+}
+
+// Make sure all functions are available globally
+window.shareToFacebook = shareToFacebook
+window.generateFacebookPostText = generateFacebookPostText
+window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods
+window.shareViaFacebookShareDialog = shareViaFacebookShareDialog
+window.shareViaFacebookWebIntent = shareViaFacebookWebIntent
+window.downloadImageForManualSharing = downloadImageForManualSharing
+window.showFacebookSharingInstructions = showFacebookSharingInstructions
+window.addFacebookShareButton = addFacebookShareButton
+window.initializeFacebookSharing = initializeFacebookSharing
+window.shareViaSecureAPI = shareViaSecureAPI
+window.showEnhancedSharingModal = showEnhancedSharingModal
+window.blobToBase64 = blobToBase64
+window.showGraphAPISuccessModal = showGraphAPISuccessModal
+window.testAPIConnection = testAPIConnection
+window.generateCurrentImage = generateCurrentImage
+window.getCurrentFormData = getCurrentFormData
+window.getCurrentPlatform = getCurrentPlatform
+window.getCurrentTemplate = getCurrentTemplate
+window.shareViaSimpleFacebookShare = shareViaSimpleFacebookShare
+window.showToast = showToast
+
+console.log('✅ Facebook sharing functions loaded and available globally')
+console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function')
 
 // Auto-initialize
-initializeFacebookSharing();
+if (typeof initializeFacebookSharing === 'function') {
+  initializeFacebookSharing()
+}
