@@ -563,33 +563,6 @@ async function shareToFacebookMultipleMethods(facebookPost) {
   </div>
 `
 
-    // And make sure these functions are defined right after:
-    document.body.appendChild(modal)
-
-    // SIMPLIFIED MODAL FUNCTIONS
-    window.downloadAndCopy = function () {
-      document.body.removeChild(modal)
-      downloadImageForManualSharing(facebookPost)
-      cleanupModalFunctions()
-    }
-
-    window.copyTextOnly = function () {
-      document.body.removeChild(modal)
-      copyTextAndOpenFacebook(facebookPost)
-      cleanupModalFunctions()
-    }
-
-    window.closeModal = function () {
-      document.body.removeChild(modal)
-      cleanupModalFunctions()
-    }
-
-    function cleanupModalFunctions() {
-      delete window.downloadAndCopy
-      delete window.copyTextOnly
-      delete window.closeModal
-    }
-
     document.body.appendChild(modal)
 
     // SIMPLIFIED MODAL FUNCTIONS
@@ -746,3 +719,30 @@ function shareViaFacebookWebIntent(facebookPost) {
   console.log('🔄 Using copy text method instead...')
   copyTextAndOpenFacebook(facebookPost)
 }
+
+// GLOBAL ASSIGNMENTS - ADD AT THE VERY END
+window.shareToFacebook = shareToFacebook
+window.generateFacebookPostText = generateFacebookPostText
+window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods
+window.shareViaFacebookShareDialog = shareViaFacebookShareDialog
+window.shareViaFacebookWebIntent = shareViaFacebookWebIntent
+window.downloadImageForManualSharing = downloadImageForManualSharing
+window.showFacebookSharingInstructions = showFacebookSharingInstructions
+window.addFacebookShareButton = addFacebookShareButton
+window.initializeFacebookSharing = initializeFacebookSharing
+window.shareViaSecureAPI = shareViaSecureAPI
+window.showEnhancedSharingModal = showEnhancedSharingModal
+window.blobToBase64 = blobToBase64
+window.showGraphAPISuccessModal = showGraphAPISuccessModal
+window.testAPIConnection = testAPIConnection
+window.generateCurrentImage = generateCurrentImage
+window.getCurrentFormData = getCurrentFormData
+window.getCurrentPlatform = getCurrentPlatform
+window.getCurrentTemplate = getCurrentTemplate
+window.shareViaSimpleFacebookShare = shareViaSimpleFacebookShare
+window.copyTextAndOpenFacebook = copyTextAndOpenFacebook
+window.showSimpleFacebookInstructions = showSimpleFacebookInstructions
+window.showToast = showToast
+
+console.log('✅ Facebook sharing functions loaded and available globally')
+console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function')
