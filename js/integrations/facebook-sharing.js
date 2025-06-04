@@ -841,23 +841,24 @@ async function generateCurrentImage() {
 }
 
 function showToast(message, type = 'info') {
-  if (typeof window.showToast === 'function') {
-    window.showToast(message, type)
-    return
-  }
-  
   console.log(`TOAST: ${message}`)
-  
+
   const toast = document.createElement('div')
   toast.style.cssText = `
     position: fixed; top: 20px; right: 20px; z-index: 10000;
-    background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
+    background: ${
+      type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'
+    };
     color: white; padding: 12px 24px; border-radius: 8px;
   `
   toast.textContent = message
   document.body.appendChild(toast)
-  
-  setTimeout(() => toast.remove(), 3000)
+
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.parentNode.removeChild(toast)
+    }
+  }, 3000)
 }
 
 function addFacebookShareButton(containerId) {
