@@ -247,6 +247,41 @@ function showEnhancedSharingModal() {
   })
 }
 
+async function compressImageBlob(blob, maxSizeMB = 5) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+
+    img.onload = () => {
+      // Calculate new dimensions (max 1920x1080)
+      let { width, height } = img
+      const maxWidth = 1920
+      const maxHeight = 1080
+
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width
+        width = maxWidth
+      }
+      if (height > maxHeight) {
+        width = (width * maxHeight) / height
+        height = maxHeight
+      }
+
+      canvas.width = width
+      canvas.height = height
+
+      // Draw compressed image
+      ctx.drawImage(img, 0, 0, width, height)
+
+      // Convert to blob with compression
+      canvas.toBlob(resolve, 'image/jpeg', 0.8) // 80% quality
+    }
+
+    img.src = URL.createObjectURL(blob)
+  })
+}
+
 /**
  * NEW: Share via secure Graph API backend - NO FRONTEND KEYS
  */
@@ -255,8 +290,14 @@ async function shareViaSecureAPI(content, imageBlob) {
     console.log('🤖 Using your secure backend API...')
     showToast('🤖 Publicando automáticamente via backend...', 'info')
 
-    // Convert blob to base64
-    const base64Image = await blobToBase64(imageBlob)
+    // Compress image before sending
+    console.log('📦 Compressing image...')
+    const compressedBlob = await compressImageBlob(imageBlob)
+    const base64Image = await blobToBase64(compressedBlob)
+
+    console.log(
+      `📏 Image size: ${(base64Image.length / 1024 / 1024).toFixed(2)}MB`
+    )
 
     // Prepare post data - NO API KEY NEEDED
     const postData = {
@@ -273,7 +314,7 @@ async function shareViaSecureAPI(content, imageBlob) {
     }
 
     console.log('📤 Sending to your backend API...')
-    
+
     // Call your existing quick-publish endpoint WITHOUT API KEY
     const response = await fetch(
       `${RDV_API_CONFIG.baseUrl}${RDV_API_CONFIG.endpoints.quickPublish}`,
