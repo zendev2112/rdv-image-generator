@@ -708,31 +708,220 @@ function shareViaSimpleFacebookShare(facebookPost) {
   showFacebookSharingInstructions(facebookPost)
 }
 
-// ADD THIS AT THE VERY END OF THE FILE (after all function definitions)
+/**
+ * MISSING FUNCTIONS - ADD THESE NOW
+ */
+function shareViaFacebookWebIntent(facebookPost) {
+  try {
+    console.log('🌐 Opening Facebook web intent...')
 
-// Make sure all functions are available globally
-window.shareToFacebook = shareToFacebook;
-window.generateFacebookPostText = generateFacebookPostText;
-window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods;
-window.shareViaFacebookShareDialog = shareViaFacebookShareDialog;
-window.shareViaFacebookWebIntent = shareViaFacebookWebIntent;
-window.downloadImageForManualSharing = downloadImageForManualSharing;
-window.showFacebookSharingInstructions = showFacebookSharingInstructions;
-window.addFacebookShareButton = addFacebookShareButton;
-window.initializeFacebookSharing = initializeFacebookSharing;
-window.shareViaSecureAPI = shareViaSecureAPI;
-window.showEnhancedSharingModal = showEnhancedSharingModal;
-window.blobToBase64 = blobToBase64;
-window.showGraphAPISuccessModal = showGraphAPISuccessModal;
-window.testAPIConnection = testAPIConnection;
-window.generateCurrentImage = generateCurrentImage;
-window.getCurrentFormData = getCurrentFormData;
-window.getCurrentPlatform = getCurrentPlatform;
-window.getCurrentTemplate = getCurrentTemplate;
-window.shareViaSimpleFacebookShare = shareViaSimpleFacebookShare;
+    const facebookUrl = 'https://www.facebook.com/'
+    window.open(facebookUrl, '_blank')
 
-console.log('✅ Facebook sharing functions loaded and available globally');
-console.log('shareToFacebook available:', typeof window.shareToFacebook === 'function');
+    // Copy text to clipboard
+    navigator.clipboard.writeText(facebookPost.message).then(() => {
+      showToast('📋 Texto copiado - pégalo en Facebook', 'success')
+    }).catch(() => {
+      console.log('Clipboard API failed, showing text to copy')
+    })
 
-// Auto-initialize
-initializeFacebookSharing();
+    showToast('🌐 Facebook abierto en nueva pestaña', 'success')
+    showFacebookSharingInstructions(facebookPost)
+  } catch (error) {
+    console.error('❌ Error opening Facebook web intent:', error)
+    showToast(`❌ Error: ${error.message}`, 'error')
+  }
+}
+
+async function downloadImageForManualSharing(facebookPost) {
+  try {
+    console.log('📥 Downloading image for manual sharing...')
+
+    // Download the image
+    const imageUrl = URL.createObjectURL(facebookPost.image)
+    const link = document.createElement('a')
+    link.href = imageUrl
+    link.download = `facebook-post-${Date.now()}.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(imageUrl)
+
+    // Copy text to clipboard
+    await navigator.clipboard.writeText(facebookPost.message)
+
+    showToast('📥 Imagen descargada y texto copiado', 'success')
+    showFacebookSharingInstructions(facebookPost)
+  } catch (error) {
+    console.error('❌ Error downloading for manual sharing:', error)
+    showToast(`❌ Error: ${error.message}`, 'error')
+  }
+}
+
+function showFacebookSharingInstructions(facebookPost) {
+  const modal = document.createElement('div')
+  modal.style.cssText = `
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    z-index: 10000;
+    max-width: 450px;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    border: 3px solid #4267B2;
+  `
+
+  modal.innerHTML = `
+    <h3 style="color: #4267B2; margin-bottom: 20px;">📘 Instrucciones para Facebook</h3>
+    <p>Pasos para publicar:</p>
+    <ol style="text-align: left; padding-left: 20px;">
+      <li>Sube la imagen descargada</li>
+      <li>Pega el texto copiado</li>
+      <li>¡Publica!</li>
+    </ol>
+    <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; font-size: 12px; max-height: 120px; overflow-y: auto;">
+      <strong>Texto:</strong><br>
+      ${facebookPost.message.replace(/\n/g, '<br>')}
+    </div>
+    <button onclick="this.parentElement.remove()" style="background: #4267B2; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer;">
+      Cerrar
+    </button>
+  `
+
+  document.body.appendChild(modal)
+}
+
+function getCurrentFormData() {
+  return {
+    title: document.getElementById('title')?.value || 'Test Post',
+    excerpt: document.getElementById('excerpt')?.value || 'Test Description',
+    tags: document.getElementById('tags')?.value || 'test,rdv',
+    source: 'RDV Noticias',
+    url: 'https://radiodelvolga.com',
+  }
+}
+
+function getCurrentPlatform() {
+  return 'facebook'
+}
+
+function getCurrentTemplate() {
+  return 'post'
+}
+
+async function generateCurrentImage() {
+  try {
+    if (typeof window.generateImage === 'function') {
+      const imageBlob = await window.generateImage(false)
+      if (imageBlob && imageBlob instanceof Blob) {
+        return imageBlob
+      }
+    }
+    
+    // Create test image
+    const canvas = document.createElement('canvas')
+    canvas.width = 1200
+    canvas.height = 630
+    const ctx = canvas.getContext('2d')
+    
+    ctx.fillStyle = '#4267B2'
+    ctx.fillRect(0, 0, 1200, 630)
+    
+    ctx.fillStyle = 'white'
+    ctx.font = 'bold 48px Arial'
+    ctx.textAlign = 'center'
+    ctx.fillText('Test Facebook Post', 600, 300)
+    
+    return new Promise(resolve => {
+      canvas.toBlob(resolve, 'image/png')
+    })
+  } catch (error) {
+    console.error('Error generating image:', error)
+    throw error
+  }
+}
+
+function showToast(message, type = 'info') {
+  if (typeof window.showToast === 'function') {
+    window.showToast(message, type)
+    return
+  }
+  
+  console.log(`TOAST: ${message}`)
+  
+  const toast = document.createElement('div')
+  toast.style.cssText = `
+    position: fixed; top: 20px; right: 20px; z-index: 10000;
+    background: ${type === 'success' ? '#4caf50' : type === 'error' ? '#f44336' : '#2196f3'};
+    color: white; padding: 12px 24px; border-radius: 8px;
+  `
+  toast.textContent = message
+  document.body.appendChild(toast)
+  
+  setTimeout(() => toast.remove(), 3000)
+}
+
+function addFacebookShareButton(containerId) {
+  const container = document.getElementById(containerId)
+  if (!container) return
+
+  const button = document.createElement('button')
+  button.innerHTML = '📘 Compartir en Facebook'
+  button.style.cssText = `
+    background: #4267B2; color: white; border: none;
+    padding: 12px 24px; border-radius: 8px; cursor: pointer;
+  `
+  button.addEventListener('click', shareToFacebook)
+  container.appendChild(button)
+}
+
+// FORCE GLOBAL ASSIGNMENT - THIS WILL WORK
+setTimeout(() => {
+  console.log('🔧 FORCING global function assignment...')
+  
+  // Force assign ALL functions to window
+  window.shareToFacebook = shareToFacebook
+  window.generateFacebookPostText = generateFacebookPostText
+  window.shareToFacebookMultipleMethods = shareToFacebookMultipleMethods
+  window.shareViaFacebookShareDialog = shareViaFacebookShareDialog
+  window.shareViaFacebookWebIntent = shareViaFacebookWebIntent
+  window.downloadImageForManualSharing = downloadImageForManualSharing
+  window.showFacebookSharingInstructions = showFacebookSharingInstructions
+  window.addFacebookShareButton = addFacebookShareButton
+  window.initializeFacebookSharing = initializeFacebookSharing
+  window.shareViaSecureAPI = shareViaSecureAPI
+  window.showEnhancedSharingModal = showEnhancedSharingModal
+  window.blobToBase64 = blobToBase64
+  window.showGraphAPISuccessModal = showGraphAPISuccessModal
+  window.testAPIConnection = testAPIConnection
+  window.generateCurrentImage = generateCurrentImage
+  window.getCurrentFormData = getCurrentFormData
+  window.getCurrentPlatform = getCurrentPlatform
+  window.getCurrentTemplate = getCurrentTemplate
+  window.shareViaSimpleFacebookShare = shareViaSimpleFacebookShare
+  window.showToast = showToast
+
+  console.log('✅ ALL FUNCTIONS FORCED TO GLOBAL SCOPE')
+  console.log('shareToFacebook type:', typeof window.shareToFacebook)
+  
+  // Test it
+  if (typeof window.shareToFacebook === 'function') {
+    console.log('🎉 SUCCESS! shareToFacebook is now available!')
+  } else {
+    console.error('❌ STILL FAILED!')
+  }
+}, 100)
+
+// Also assign immediately
+window.shareToFacebook = shareToFacebook
+window.showToast = showToast
+window.generateCurrentImage = generateCurrentImage
+window.getCurrentFormData = getCurrentFormData
+
+console.log('🚀 Facebook sharing module loaded!')
+console.log('shareToFacebook available:', typeof shareToFacebook)
