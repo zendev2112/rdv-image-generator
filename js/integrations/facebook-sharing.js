@@ -488,11 +488,11 @@ function generateFacebookPostText(content) {
 }
 
 /**
- * Enhanced Facebook sharing with multiple methods - SIMPLIFIED VERSION
+ * Enhanced Facebook sharing - PRIORITIZING DIRECT AUTOMATIC SHARING
  */
 async function shareToFacebookMultipleMethods(facebookPost) {
   try {
-    console.log('📱 Using simplified Facebook sharing options...')
+    console.log('📱 Showing Facebook sharing options - prioritizing automatic...')
 
     const modal = document.createElement('div')
     modal.style.cssText = `
@@ -509,63 +509,87 @@ async function shareToFacebookMultipleMethods(facebookPost) {
       font-family: 'Inter', sans-serif;
     `
 
-    // In the shareToFacebookMultipleMethods function, replace the modal.innerHTML with:
     modal.innerHTML = `
-  <div style="background: white; padding: 30px; border-radius: 16px; max-width: 500px; width: 90%;
-              text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 3px solid #4267B2;">
-    
-    <div style="width: 70px; height: 70px; background: linear-gradient(45deg, #4267B2, #365899);
-                border-radius: 50%; display: flex; align-items: center; justify-content: center;
-                font-size: 35px; margin: 0 auto 20px auto;">📘</div>
-    
-    <h3 style="color: #4267B2; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
-      Compartir en Facebook
-    </h3>
-    
-    <p style="color: #666; margin-bottom: 25px; line-height: 1.5; font-size: 15px;">
-      Elige el método que prefieras:
-    </p>
-    
-    <div style="display: flex; flex-direction: column; gap: 15px;">
-      
-      <button onclick="downloadAndCopy()" style="background: #4267B2; color: white; border: none;
-                   padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
-                   font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: 22px;">📥</span>
-          <div style="text-align: left;">
-            <div style="font-size: 16px;">Descargar imagen + copiar texto</div>
-            <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Método recomendado</div>
-          </div>
+      <div style="background: white; padding: 30px; border-radius: 16px; max-width: 500px; width: 90%;
+                  text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); border: 3px solid #4267B2;">
+        
+        <div style="width: 70px; height: 70px; background: linear-gradient(45deg, #4267B2, #365899);
+                    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+                    font-size: 35px; margin: 0 auto 20px auto;">📘</div>
+        
+        <h3 style="color: #4267B2; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
+          Compartir en Facebook
+        </h3>
+        
+        <p style="color: #666; margin-bottom: 25px; line-height: 1.5; font-size: 15px;">
+          Elige el método que prefieras:
+        </p>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+          
+          <!-- DIRECT AUTOMATIC SHARING - MAIN GOAL -->
+          <button onclick="shareDirectly()" style="background: linear-gradient(45deg, #4267B2, #365899); color: white; border: none;
+                       padding: 20px 24px; border-radius: 12px; font-weight: 700; cursor: pointer;
+                       font-size: 16px; display: flex; align-items: center; justify-content: space-between;
+                       box-shadow: 0 4px 12px rgba(66, 103, 178, 0.3);">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 24px;">🤖</span>
+              <div style="text-align: left;">
+                <div style="font-size: 16px;">Publicar Automáticamente</div>
+                <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Un click y listo - Graph API</div>
+              </div>
+            </div>
+            <span style="font-size: 18px;">🚀</span>
+          </button>
+          
+          <!-- FALLBACK: Download + Copy -->
+          <button onclick="downloadAndCopy()" style="background: #42b883; color: white; border: none;
+                       padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
+                       font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 22px;">📥</span>
+              <div style="text-align: left;">
+                <div style="font-size: 16px;">Descargar imagen + copiar texto</div>
+                <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Si falla el automático</div>
+              </div>
+            </div>
+            <span style="font-size: 18px;">→</span>
+          </button>
+          
+          <!-- FALLBACK: Copy text only -->
+          <button onclick="copyTextOnly()" style="background: #f39c12; color: white; border: none;
+                       padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
+                       font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 22px;">📋</span>
+              <div style="text-align: left;">
+                <div style="font-size: 16px;">Solo copiar texto</div>
+                <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Sin imagen</div>
+              </div>
+            </div>
+            <span style="font-size: 18px;">→</span>
+          </button>
         </div>
-        <span style="font-size: 18px;">→</span>
-      </button>
-      
-      <button onclick="copyTextOnly()" style="background: #42b883; color: white; border: none;
-                   padding: 18px 20px; border-radius: 12px; font-weight: 600; cursor: pointer;
-                   font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: 22px;">📋</span>
-          <div style="text-align: left;">
-            <div style="font-size: 16px;">Solo copiar texto</div>
-            <div style="font-size: 12px; opacity: 0.8; font-weight: 400;">Sin imagen</div>
-          </div>
-        </div>
-        <span style="font-size: 18px;">→</span>
-      </button>
-    </div>
-    
-    <button onclick="closeModal()" style="background: #f0f0f0; color: #666; border: none;
-                 padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; 
-                 margin-top: 20px; font-size: 14px;">
-      Cancelar
-    </button>
-  </div>
-`
+        
+        <button onclick="closeModal()" style="background: #f0f0f0; color: #666; border: none;
+                     padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; 
+                     margin-top: 20px; font-size: 14px;">
+          Cancelar
+        </button>
+      </div>
+    `
 
     document.body.appendChild(modal)
 
-    // SIMPLIFIED MODAL FUNCTIONS
+    // MODAL FUNCTIONS - PRIORITIZING DIRECT SHARING
+    window.shareDirectly = function () {
+      document.body.removeChild(modal)
+      // Call the Graph API direct sharing method
+      const content = getCurrentFormData()
+      shareViaSecureAPI(content, facebookPost.image)
+      cleanupModalFunctions()
+    }
+
     window.downloadAndCopy = function () {
       document.body.removeChild(modal)
       downloadImageForManualSharing(facebookPost)
@@ -584,140 +608,17 @@ async function shareToFacebookMultipleMethods(facebookPost) {
     }
 
     function cleanupModalFunctions() {
+      delete window.shareDirectly
       delete window.downloadAndCopy
       delete window.copyTextOnly
       delete window.closeModal
     }
   } catch (error) {
     console.error('❌ Error in sharing modal:', error)
-    // Fallback to download method
-    downloadImageForManualSharing(facebookPost)
+    // Fallback to direct API method
+    const content = getCurrentFormData()
+    shareViaSecureAPI(content, facebookPost.image)
   }
-}
-
-/**
- * NEW: Copy text only and open Facebook
- */
-function copyTextAndOpenFacebook(facebookPost) {
-  try {
-    console.log('📋 Copying text and opening Facebook...')
-
-    // Copy text to clipboard
-    navigator.clipboard.writeText(facebookPost.message).then(() => {
-      showToast('📋 Texto copiado al portapapeles', 'success')
-    }).catch(() => {
-      console.log('Clipboard failed')
-      showToast('💡 Copia el texto manualmente', 'warning')
-    })
-
-    // Open Facebook
-    window.open('https://www.facebook.com/', '_blank')
-    showToast('🌐 Facebook abierto - pega el texto', 'info')
-
-    // Show simple instructions
-    showSimpleFacebookInstructions(facebookPost)
-    
-  } catch (error) {
-    console.error('❌ Error copying text:', error)
-    showToast('Error copiando texto', 'error')
-  }
-}
-
-/**
- * UPDATED: Simple Facebook instructions (no image)
- */
-function showSimpleFacebookInstructions(facebookPost) {
-  const modal = document.createElement('div')
-  modal.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-    z-index: 10001;
-    max-width: 450px;
-    width: 90%;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    border: 3px solid #4267B2;
-  `
-
-  modal.innerHTML = `
-    <div style="width: 70px; height: 70px; background: linear-gradient(45deg, #4267B2, #365899);
-                border-radius: 50%; display: flex; align-items: center; justify-content: center;
-                font-size: 35px; margin: 0 auto 20px auto;">📘</div>
-    
-    <h3 style="color: #4267B2; margin-bottom: 20px; font-size: 24px; font-weight: 700;">
-      ¡Texto copiado!
-    </h3>
-    
-    <div style="text-align: left; margin-bottom: 20px; line-height: 1.6; color: #333;">
-      <p><strong>En Facebook:</strong></p>
-      <ol style="padding-left: 20px; font-size: 14px;">
-        <li>Haz clic en "¿Qué estás pensando?"</li>
-        <li>Pega el texto (Ctrl+V)</li>
-        <li>¡Publica!</li>
-      </ol>
-    </div>
-    
-    <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; 
-                font-size: 12px; max-height: 120px; overflow-y: auto; text-align: left;">
-      <strong>Texto copiado:</strong><br>
-      ${facebookPost.message.replace(/\n/g, '<br>')}
-    </div>
-    
-    <div style="display: flex; gap: 12px;">
-      <button onclick="window.open('https://facebook.com', '_blank')" style="flex: 1; background: #4267B2;
-                     color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600;
-                     cursor: pointer; font-size: 14px;">
-        📘 Ir a Facebook
-      </button>
-      
-      <button onclick="this.parentElement.parentElement.remove()" style="flex: 1; background: #f0f0f0;
-                     color: #666; border: none; padding: 12px; border-radius: 8px; font-weight: 600;
-                     cursor: pointer; font-size: 14px;">
-        Cerrar
-      </button>
-    </div>
-  `
-
-  document.body.appendChild(modal)
-
-  // Auto-close after 30 seconds
-  setTimeout(() => {
-    if (modal.parentNode) {
-      modal.parentNode.removeChild(modal)
-    }
-  }, 30000)
-}
-
-/**
- * REMOVE/SIMPLIFY: shareViaFacebookShareDialog - Make it work properly
- */
-function shareViaFacebookShareDialog(facebookPost) {
-  console.log('🚀 Facebook share dialog requested - using working method...')
-  
-  // Instead of the broken share dialog, go straight to copy+download
-  downloadImageForManualSharing(facebookPost)
-}
-
-/**
- * REMOVE: shareViaSimpleFacebookShare - Not needed anymore
- */
-function shareViaSimpleFacebookShare(facebookPost) {
-  console.log('🔄 Redirecting to working method...')
-  copyTextAndOpenFacebook(facebookPost)
-}
-
-/**
- * REMOVE: shareViaFacebookWebIntent - Merged with copyTextOnly
- */
-function shareViaFacebookWebIntent(facebookPost) {
-  console.log('🔄 Using copy text method instead...')
-  copyTextAndOpenFacebook(facebookPost)
 }
 
 // GLOBAL ASSIGNMENTS - ADD AT THE VERY END
