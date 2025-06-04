@@ -605,46 +605,14 @@ async function shareToFacebookMultipleMethods(facebookPost) {
 }
 
 /**
- * Share via Facebook Share Dialog - IMPROVED VERSION
+ * Share via Facebook Share Dialog - FIXED to avoid CSP issues
  */
 function shareViaFacebookShareDialog(facebookPost) {
-  try {
-    console.log('🚀 Opening Facebook Share Dialog...')
-
-    // Method 1: Try the simple Facebook share URL first
-    const shareUrl = encodeURIComponent(facebookPost.link || 'https://radiodelvolga.com')
-    
-    // Use the simpler Facebook share URL that's more reliable
-    const facebookShareUrl = `https://www.facebook.com/share.php?u=${shareUrl}`
-
-    // Open in a popup window with better specs
-    const popup = window.open(
-      facebookShareUrl,
-      'facebook-share',
-      'width=600,height=500,scrollbars=yes,resizable=yes,location=yes,menubar=no,toolbar=no'
-    )
-
-    // Check if popup was blocked
-    if (!popup || popup.closed || typeof popup.closed === 'undefined') {
-      console.warn('⚠️ Popup blocked, trying alternative method...')
-      
-      // Fallback: Open in new tab
-      window.open(facebookShareUrl, '_blank')
-      showToast('🌐 Facebook Share abierto en nueva pestaña', 'info')
-    } else {
-      showToast('🚀 Facebook Share Dialog abierto', 'success')
-    }
-
-    // Show instructions with the text to copy
-    showFacebookSharingInstructions(facebookPost)
-    
-  } catch (error) {
-    console.error('❌ Error opening Facebook Share Dialog:', error)
-    
-    // Ultimate fallback: Just open Facebook and copy text
-    console.log('🔄 Falling back to manual sharing...')
-    shareViaFacebookWebIntent(facebookPost)
-  }
+  console.log('🚀 Facebook share requested - using reliable method...')
+  
+  // AVOID the problematic share dialog entirely
+  // Use the simple method that always works
+  shareViaSimpleFacebookShare(facebookPost)
 }
 
 /**
@@ -683,23 +651,32 @@ function shareViaAdvancedFacebookDialog(facebookPost) {
 }
 
 /**
- * Simple Facebook share that always works
+ * Simple Facebook share that AVOIDS the problematic share dialog
  */
 function shareViaSimpleFacebookShare(facebookPost) {
-  console.log('🌐 Using simple Facebook share...')
+  console.log('🌐 Using reliable Facebook sharing (avoiding share dialog)...')
   
-  const shareUrl = encodeURIComponent(facebookPost.link || 'https://radiodelvolga.com')
-  const facebookUrl = `https://www.facebook.com/share.php?u=${shareUrl}`
+  // SKIP the problematic share.php URL entirely
+  // Instead, copy text and open Facebook directly
   
-  // Try popup first, then fallback to new tab
-  const popup = window.open(facebookUrl, 'facebook-share', 'width=600,height=500')
-  
-  if (!popup) {
-    window.open(facebookUrl, '_blank')
+  try {
+    // Copy text to clipboard first
+    navigator.clipboard.writeText(facebookPost.message).then(() => {
+      showToast('📋 Texto copiado al portapapeles', 'success')
+    }).catch(() => {
+      console.log('Clipboard failed')
+    })
+
+    // Open Facebook main page instead of share dialog
+    window.open('https://www.facebook.com/', '_blank')
+    
+    showToast('🌐 Facebook abierto - pega el texto copiado', 'success')
+    showFacebookSharingInstructions(facebookPost)
+    
+  } catch (error) {
+    console.error('❌ Error in simple Facebook share:', error)
+    showToast('Error abriendo Facebook', 'error')
   }
-  
-  showToast('🚀 Facebook Share abierto', 'success')
-  showFacebookSharingInstructions(facebookPost)
 }
 
 /**
