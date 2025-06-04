@@ -57,12 +57,6 @@ async function testAPIConnection() {
   }
 }
 
-// Just add this simple check at the top of shareToFacebook():
-if (location.protocol !== 'https:' && !location.hostname.includes('localhost')) {
-  console.warn('⚠️ HTTPS required in production')
-  return
-}
-
 /**
  * Enhanced main Facebook sharing function with Graph API option - DEBUG VERSION
  */
