@@ -283,6 +283,42 @@ async function compressImageBlob(blob, maxSizeMB = 5) {
 }
 
 /**
+ * NEW: Compress image for API - max 800x600, 60% quality
+ */
+async function compressImageForAPI(blob) {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+    
+    img.onload = () => {
+      // Reduce size to max 800x600 for API
+      let { width, height } = img
+      const maxWidth = 800
+      const maxHeight = 600
+      
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width
+        width = maxWidth
+      }
+      if (height > maxHeight) {
+        width = (width * maxHeight) / height
+        height = maxHeight
+      }
+      
+      canvas.width = width
+      canvas.height = height
+      ctx.drawImage(img, 0, 0, width, height)
+      
+      // Convert to blob with heavy compression
+      canvas.toBlob(resolve, 'image/jpeg', 0.6) // 60% quality
+    }
+    
+    img.src = URL.createObjectURL(blob)
+  })
+}
+
+/**
  * NEW: Share via secure Graph API backend - NO FRONTEND KEYS
  */
 async function shareViaSecureAPI(content, imageBlob) {
@@ -290,16 +326,22 @@ async function shareViaSecureAPI(content, imageBlob) {
     console.log('🤖 Using your secure backend API...')
     showToast('🤖 Publicando automáticamente via backend...', 'info')
 
-    // Compress image before sending
-    console.log('📦 Compressing image...')
-    const compressedBlob = await compressImageBlob(imageBlob)
+    // Compress image BEFORE converting to base64
+    console.log('📦 Compressing image for API...')
+    const compressedBlob = await compressImageForAPI(imageBlob)
+    
+    // Convert compressed blob to base64
     const base64Image = await blobToBase64(compressedBlob)
+    
+    // Check size
+    const sizeMB = (base64Image.length / 1024 / 1024).toFixed(2)
+    console.log(`📏 Compressed image size: ${sizeMB}MB`)
+    
+    if (sizeMB > 4) {
+      throw new Error(`Image still too large: ${sizeMB}MB. Max allowed: 4MB`)
+    }
 
-    console.log(
-      `📏 Image size: ${(base64Image.length / 1024 / 1024).toFixed(2)}MB`
-    )
-
-    // Prepare post data - NO API KEY NEEDED
+    // Prepare post data
     const postData = {
       platform: 'facebook',
       imageBlob: base64Image,
@@ -314,15 +356,13 @@ async function shareViaSecureAPI(content, imageBlob) {
     }
 
     console.log('📤 Sending to your backend API...')
-
-    // Call your existing quick-publish endpoint WITHOUT API KEY
+    
     const response = await fetch(
       `${RDV_API_CONFIG.baseUrl}${RDV_API_CONFIG.endpoints.quickPublish}`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // NO API KEY HEADER
         },
         body: JSON.stringify(postData),
       }
