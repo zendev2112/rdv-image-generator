@@ -10,18 +10,19 @@ export const handler = async (event, context) => {
   try {
     const { imageBlob, caption } = JSON.parse(event.body)
 
-    // ✅ DEBUG: Check all environment variables
+    // ✅ DEBUG: Check all environment variables (using correct names)
     console.log('🔍 Environment variables check:', {
-      hasFacebookAppId: !!process.env.FACEBOOK_APP_ID,
-      facebookAppId: process.env.FACEBOOK_APP_ID,
+      hasMetaAppId: !!process.env.META_APP_ID,
+      metaAppId: process.env.META_APP_ID,
       hasMetaAccessToken: !!process.env.META_ACCESS_TOKEN,
       metaAccessTokenLength: process.env.META_ACCESS_TOKEN?.length || 0,
       hasFacebookPageId: !!process.env.FACEBOOK_PAGE_ID,
       facebookPageId: process.env.FACEBOOK_PAGE_ID,
     })
 
-    if (!process.env.FACEBOOK_APP_ID) {
-      throw new Error('FACEBOOK_APP_ID environment variable not set')
+    // ✅ FIXED: Use META_APP_ID instead of FACEBOOK_APP_ID
+    if (!process.env.META_APP_ID) {
+      throw new Error('META_APP_ID environment variable not set')
     }
     if (!process.env.META_ACCESS_TOKEN) {
       throw new Error('META_ACCESS_TOKEN environment variable not set')
@@ -64,10 +65,10 @@ export const handler = async (event, context) => {
       )
     }
 
-    // ✅ 2. Start upload session with detailed logging
+    // ✅ 2. Start upload session (using META_APP_ID)
     console.log('📤 Starting upload session...')
     const uploadSessionUrl =
-      `https://graph.facebook.com/v23.0/${process.env.FACEBOOK_APP_ID}/uploads` +
+      `https://graph.facebook.com/v23.0/${process.env.META_APP_ID}/uploads` +
       `?file_name=${encodeURIComponent(filename)}` +
       `&file_length=${imageBuffer.length}` +
       `&file_type=${encodeURIComponent(contentType)}` +
