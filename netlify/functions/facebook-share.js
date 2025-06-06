@@ -34,29 +34,31 @@ export const handler = async (event, context) => {
       sizeMB: (imageBuffer.length / 1024 / 1024).toFixed(2),
     })
 
-    // ✅ APPROACH 1: Upload to Cloudinary first, then use URL
-    console.log('☁️ Uploading to Cloudinary first...')
+    // ✅ FIXED: Use form-data for Cloudinary upload
+    console.log('☁️ Uploading to Cloudinary with form-data...')
+
+    const FormData = (await import('form-data')).default
+    const formData = new FormData()
+
+    formData.append('file', imageBlob) // Use the original base64 data
+    formData.append('upload_preset', 'rdv_social_posts')
+    formData.append('folder', 'facebook_posts')
+    formData.append('public_id', `rdv_fb_${Date.now()}`)
 
     const cloudinaryResponse = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          file: imageBlob,
-          upload_preset: 'rdv_social_posts', // You'll need to create this
-          folder: 'facebook_posts',
-          public_id: `rdv_fb_${Date.now()}`,
-          overwrite: true,
-          resource_type: 'image',
-        }),
+        body: formData,
       }
     )
 
     if (!cloudinaryResponse.ok) {
-      throw new Error('Cloudinary upload failed')
+      const errorText = await cloudinaryResponse.text()
+      console.error('❌ Cloudinary error:', errorText)
+      throw new Error(
+        `Cloudinary upload failed: ${cloudinaryResponse.status} - ${errorText}`
+      )
     }
 
     const cloudinaryResult = await cloudinaryResponse.json()
@@ -64,7 +66,7 @@ export const handler = async (event, context) => {
 
     console.log('✅ Image uploaded to Cloudinary:', imageUrl)
 
-    // ✅ APPROACH 2: Use Facebook's URL-based upload
+    // ✅ Use Facebook's URL-based upload
     console.log('📤 Uploading to Facebook via URL method...')
 
     const uploadData = new URLSearchParams({
