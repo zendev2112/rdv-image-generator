@@ -10,7 +10,7 @@ export const handler = async (event, context) => {
   try {
     const { imageBlob, caption } = JSON.parse(event.body)
 
-    console.log('📘 Facebook share function started:', {
+    console.log('📘 Facebook share function started (Cloudinary + URL):', {
       hasImage: !!imageBlob,
       captionLength: caption?.length || 0,
       timestamp: new Date().toISOString(),
@@ -24,26 +24,22 @@ export const handler = async (event, context) => {
       }
     }
 
-    // Convert base64 to buffer
-    const base64Data = imageBlob.replace(/^data:image\/[a-z]+;base64,/, '')
-    const imageBuffer = Buffer.from(base64Data, 'base64')
+    console.log('☁️ Uploading to Cloudinary with correct preset...')
 
-    console.log('🖼️ Image details:', {
-      size: imageBuffer.length,
-      sizeKB: Math.round(imageBuffer.length / 1024),
-      sizeMB: (imageBuffer.length / 1024 / 1024).toFixed(2),
-    })
-
-    // ✅ FIXED: Use form-data for Cloudinary upload
-    console.log('☁️ Uploading to Cloudinary with form-data...')
-
+    // ✅ FIXED: Use form-data properly for Cloudinary
     const FormData = (await import('form-data')).default
     const formData = new FormData()
 
-    formData.append('file', imageBlob) // Use the original base64 data
-    formData.append('upload_preset', 'rdv_social_posts')
+    formData.append('file', imageBlob) // Send the full base64 data string
+    formData.append('upload_preset', 'rdv_social_posts') // Your created preset
     formData.append('folder', 'facebook_posts')
     formData.append('public_id', `rdv_fb_${Date.now()}`)
+
+    console.log('📤 Cloudinary upload details:', {
+      preset: 'rdv_social_posts',
+      folder: 'facebook_posts',
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    })
 
     const cloudinaryResponse = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -53,9 +49,11 @@ export const handler = async (event, context) => {
       }
     )
 
+    console.log('📊 Cloudinary response status:', cloudinaryResponse.status)
+
     if (!cloudinaryResponse.ok) {
       const errorText = await cloudinaryResponse.text()
-      console.error('❌ Cloudinary error:', errorText)
+      console.error('❌ Cloudinary error response:', errorText)
       throw new Error(
         `Cloudinary upload failed: ${cloudinaryResponse.status} - ${errorText}`
       )
@@ -64,9 +62,10 @@ export const handler = async (event, context) => {
     const cloudinaryResult = await cloudinaryResponse.json()
     const imageUrl = cloudinaryResult.secure_url
 
-    console.log('✅ Image uploaded to Cloudinary:', imageUrl)
+    console.log('✅ Image uploaded to Cloudinary successfully!')
+    console.log('🔗 Cloudinary URL:', imageUrl)
 
-    // ✅ Use Facebook's URL-based upload
+    // ✅ Use Facebook's URL-based upload (much more reliable)
     console.log('📤 Uploading to Facebook via URL method...')
 
     const uploadData = new URLSearchParams({
@@ -104,7 +103,8 @@ export const handler = async (event, context) => {
       throw new Error('No image ID received from Facebook')
     }
 
-    console.log('✅ Image uploaded to Facebook, creating post...')
+    console.log('✅ Image uploaded to Facebook! ID:', uploadResult.id)
+    console.log('📝 Creating post with image...')
 
     // Create post with uploaded image
     const postData = new URLSearchParams({
@@ -124,7 +124,7 @@ export const handler = async (event, context) => {
 
     const postResult = await postResponse.json()
 
-    console.log('📊 Post result:', {
+    console.log('📊 Post creation result:', {
       status: postResponse.status,
       ok: postResponse.ok,
       hasId: !!postResult.id,
@@ -132,10 +132,15 @@ export const handler = async (event, context) => {
     })
 
     if (!postResponse.ok || postResult.error) {
+      console.error('❌ Post creation failed:', postResult.error)
       throw new Error(postResult.error?.message || 'Post creation failed')
     }
 
-    console.log('✅ Facebook post created successfully!')
+    if (!postResult.id) {
+      throw new Error('No post ID received from Facebook')
+    }
+
+    console.log('✅ Facebook post created successfully! ID:', postResult.id)
 
     return {
       statusCode: 200,
@@ -146,7 +151,7 @@ export const handler = async (event, context) => {
         postUrl: `https://www.facebook.com/${process.env.FACEBOOK_PAGE_ID}/posts/${postResult.id}`,
         platform: 'facebook',
         publishedAt: new Date().toISOString(),
-        method: 'netlify_function_url_upload',
+        method: 'netlify_cloudinary_url_upload',
         imageId: uploadResult.id,
         cloudinaryUrl: imageUrl,
       }),
