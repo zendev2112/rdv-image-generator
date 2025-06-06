@@ -57,59 +57,69 @@ async function testAPIConnection() {
   }
 }
 
-/**
- * Enhanced main Facebook sharing function with Graph API option - DEBUG VERSION
- */
 async function shareToFacebook() {
-  console.log('📘 Sharing to Facebook...')
+  console.log('📘 Starting Facebook sharing process...')
 
   try {
-    console.log('🔍 Step 1: Showing toast...')
-    showToast('🔄 Preparando para compartir en Facebook...', 'info')
-
-    console.log('🔍 Step 2: Getting form data...')
-    const content = getCurrentFormData()
-    console.log('📝 Content:', content)
-
-    console.log('🔍 Step 3: Getting platform...')
-    const platform = getCurrentPlatform()
-    console.log('🎯 Platform:', platform)
-
-    console.log('🔍 Step 4: Getting template...')
-    const template = getCurrentTemplate()
-    console.log('📋 Template:', template)
-
-    // SKIP platform validation for now to test
-    console.log('🔍 Step 5: Skipping platform validation for testing...')
-
-    console.log('🔍 Step 6: Generating image...')
-    const imageBlob = await generateCurrentImage()
-    console.log('🖼️ Image generated:', imageBlob.size, 'bytes')
-
-    console.log('🔍 Step 7: Showing sharing modal...')
-
-    // SIMPLIFY: Skip the enhanced modal and go straight to manual methods
-    console.log('🔍 Going directly to manual methods for testing...')
-
-    const facebookPost = {
-      message: generateFacebookPostText(content),
-      image: imageBlob,
-      link: content.url || 'https://radiodelvolga.com',
-      name: content.title,
-      description: content.excerpt,
-      caption: 'Radio del Volga',
+    // Get the current image data
+    const canvas = document.getElementById('canvas')
+    if (!canvas) {
+      throw new Error('No canvas found')
     }
 
-    console.log('📝 Facebook post object:', facebookPost)
+    showToast('📸 Capturando imagen...', 'info')
 
-    console.log('🔍 Step 8: Calling manual sharing methods...')
-    await shareToFacebookMultipleMethods(facebookPost)
+    // Capture the image
+    const imageDataUrl = await html2canvas(canvas, {
+      backgroundColor: null,
+      scale: 2,
+      logging: false,
+      useCORS: true,
+    }).then((canvas) => canvas.toDataURL('image/png', 0.9))
 
-    console.log('✅ Facebook sharing completed successfully!')
+    // Get the caption
+    const title = document.getElementById('title')?.value || ''
+    const excerpt = document.getElementById('excerpt')?.value || ''
+    const caption = `${title}\n\n${excerpt}\n\n#RDVNoticias #RadioDelVolga`
+
+    showToast('📤 Compartiendo en Facebook...', 'info')
+
+    // ✅ ADD API KEY HEADER
+    const response = await fetch(
+      'https://rdv-news-api.vercel.app/api/social-media-publishing/quick-publish',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': 'rdv-2024-social-media-api-key', // ✅ ADD THIS LINE
+        },
+        body: JSON.stringify({
+          platform: 'facebook',
+          imageBlob: imageDataUrl,
+          caption: caption,
+          metadata: {
+            source: 'rdv-image-generator',
+            timestamp: new Date().toISOString(),
+          },
+        }),
+      }
+    )
+
+    const result = await response.json()
+
+    if (response.ok && result.success) {
+      showToast('✅ ¡Compartido en Facebook exitosamente!', 'success')
+
+      if (result.postUrl) {
+        // Open the Facebook post
+        window.open(result.postUrl, '_blank')
+      }
+    } else {
+      throw new Error(result.error || result.details || 'Error desconocido')
+    }
   } catch (error) {
-    console.error('❌ Error sharing to Facebook:', error)
-    console.error('❌ Error stack:', error.stack)
-    showToast(`❌ Error compartiendo: ${error.message}`, 'error')
+    console.error('❌ Facebook sharing error:', error)
+    showToast(`❌ Error al compartir: ${error.message}`, 'error')
   }
 }
 
