@@ -58,7 +58,7 @@ async function testAPIConnection() {
 }
 
 async function shareToFacebook() {
-  console.log('📘 Starting Facebook sharing process...')
+  console.log('📘 Starting Facebook sharing via Netlify Function...')
 
   try {
     // Get the current image data
@@ -84,27 +84,29 @@ async function shareToFacebook() {
 
     showToast('📤 Compartiendo en Facebook...', 'info')
 
-    // In your shareToFacebook function, update the headers:
-    const response = await fetch(
-      'https://rdv-news-api.vercel.app/api/social-media-publishing/quick-publish',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key':
-            '16e887e46f7105bd5628e6cad1ef24b2fe2a28c0f0f4d69a8aea276401be78a8', // ✅ Use the exact key from your .env
+    console.log('📤 Calling Netlify function...')
+
+    // ✅ USE NETLIFY FUNCTION (same domain, no CORS!)
+    const response = await fetch('/.netlify/functions/facebook-share', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        // ❌ NO API KEY NEEDED - same domain!
+      },
+      body: JSON.stringify({
+        imageBlob: imageDataUrl,
+        caption: caption,
+        metadata: {
+          source: 'rdv-image-generator',
+          timestamp: new Date().toISOString(),
         },
-        body: JSON.stringify({
-          platform: 'facebook',
-          imageBlob: imageDataUrl,
-          caption: caption,
-          metadata: {
-            source: 'rdv-image-generator',
-            timestamp: new Date().toISOString(),
-          },
-        }),
-      }
-    )
+      }),
+    })
+
+    console.log('📊 Netlify function response:', {
+      status: response.status,
+      ok: response.ok,
+    })
 
     const result = await response.json()
 
@@ -115,6 +117,8 @@ async function shareToFacebook() {
         // Open the Facebook post
         window.open(result.postUrl, '_blank')
       }
+
+      console.log('✅ Facebook sharing successful:', result)
     } else {
       throw new Error(result.error || result.details || 'Error desconocido')
     }
