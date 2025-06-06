@@ -10,6 +10,26 @@ export const handler = async (event, context) => {
   try {
     const { imageBlob, caption } = JSON.parse(event.body)
 
+    // ✅ DEBUG: Check all environment variables
+    console.log('🔍 Environment variables check:', {
+      hasFacebookAppId: !!process.env.FACEBOOK_APP_ID,
+      facebookAppId: process.env.FACEBOOK_APP_ID,
+      hasMetaAccessToken: !!process.env.META_ACCESS_TOKEN,
+      metaAccessTokenLength: process.env.META_ACCESS_TOKEN?.length || 0,
+      hasFacebookPageId: !!process.env.FACEBOOK_PAGE_ID,
+      facebookPageId: process.env.FACEBOOK_PAGE_ID,
+    })
+
+    if (!process.env.FACEBOOK_APP_ID) {
+      throw new Error('FACEBOOK_APP_ID environment variable not set')
+    }
+    if (!process.env.META_ACCESS_TOKEN) {
+      throw new Error('META_ACCESS_TOKEN environment variable not set')
+    }
+    if (!process.env.FACEBOOK_PAGE_ID) {
+      throw new Error('FACEBOOK_PAGE_ID environment variable not set')
+    }
+
     // Convert base64 to buffer
     const base64Data = imageBlob.replace(/^data:image\/[a-z]+;base64,/, '')
     const imageBuffer = Buffer.from(base64Data, 'base64')
@@ -17,23 +37,68 @@ export const handler = async (event, context) => {
     const contentType = isJPEG ? 'image/jpeg' : 'image/png'
     const filename = `rdv_${Date.now()}.${isJPEG ? 'jpg' : 'png'}`
 
-    // 1. Start upload session
-    const startSessionRes = await fetch(
-      `https://graph.facebook.com/v23.0/${process.env.FACEBOOK_APP_ID}/uploads` +
-        `?file_name=${encodeURIComponent(filename)}` +
-        `&file_length=${imageBuffer.length}` +
-        `&file_type=${encodeURIComponent(contentType)}` +
-        `&access_token=${process.env.META_ACCESS_TOKEN}`,
-      { method: 'POST' }
-    )
-    const session = await startSessionRes.json()
-    if (!session.id)
-      throw new Error(
-        'Failed to start upload session: ' + JSON.stringify(session)
-      )
-    const uploadSessionId = session.id.replace('upload:', '')
+    console.log('📄 File details:', {
+      filename,
+      contentType,
+      size: imageBuffer.length,
+      sizeKB: Math.round(imageBuffer.length / 1024),
+      sizeMB: (imageBuffer.length / 1024 / 1024).toFixed(2),
+    })
 
-    // 2. Upload file
+    // ✅ 1. Test token validity first
+    console.log('🔐 Testing access token validity...')
+    const tokenTestUrl = `https://graph.facebook.com/v23.0/me?access_token=${process.env.META_ACCESS_TOKEN}`
+
+    const tokenTestRes = await fetch(tokenTestUrl)
+    const tokenTestResult = await tokenTestRes.json()
+
+    console.log('📊 Token test result:', {
+      status: tokenTestRes.status,
+      ok: tokenTestRes.ok,
+      result: tokenTestResult,
+    })
+
+    if (!tokenTestRes.ok) {
+      throw new Error(
+        `Invalid access token: ${JSON.stringify(tokenTestResult)}`
+      )
+    }
+
+    // ✅ 2. Start upload session with detailed logging
+    console.log('📤 Starting upload session...')
+    const uploadSessionUrl =
+      `https://graph.facebook.com/v23.0/${process.env.FACEBOOK_APP_ID}/uploads` +
+      `?file_name=${encodeURIComponent(filename)}` +
+      `&file_length=${imageBuffer.length}` +
+      `&file_type=${encodeURIComponent(contentType)}` +
+      `&access_token=${process.env.META_ACCESS_TOKEN}`
+
+    console.log(
+      '🔗 Upload session URL:',
+      uploadSessionUrl.replace(process.env.META_ACCESS_TOKEN, '[TOKEN_HIDDEN]')
+    )
+
+    const startSessionRes = await fetch(uploadSessionUrl, { method: 'POST' })
+    const session = await startSessionRes.json()
+
+    console.log('📊 Upload session result:', {
+      status: startSessionRes.status,
+      ok: startSessionRes.ok,
+      headers: Object.fromEntries(startSessionRes.headers.entries()),
+      session: session,
+    })
+
+    if (!startSessionRes.ok || !session.id) {
+      throw new Error(
+        `Failed to start upload session: ${JSON.stringify(session)}`
+      )
+    }
+
+    const uploadSessionId = session.id.replace('upload:', '')
+    console.log('✅ Upload session started:', uploadSessionId)
+
+    // ✅ 3. Upload file
+    console.log('📁 Uploading file...')
     const uploadRes = await fetch(
       `https://graph.facebook.com/v23.0/upload:${uploadSessionId}`,
       {
@@ -45,14 +110,24 @@ export const handler = async (event, context) => {
         body: imageBuffer,
       }
     )
-    const uploadResult = await uploadRes.json()
-    if (!uploadResult.h)
-      throw new Error('Failed to upload file: ' + JSON.stringify(uploadResult))
-    const uploadedFileHandle = uploadResult.h
 
-    // 3. Publish the file (this step may vary; here's a generic example)
-    // You may need to check the docs for the correct endpoint and parameters for publishing a photo
-    // For example, you might need to use /me/photos or /<PAGE_ID>/photos with the handle
+    const uploadResult = await uploadRes.json()
+
+    console.log('📊 File upload result:', {
+      status: uploadRes.status,
+      ok: uploadRes.ok,
+      result: uploadResult,
+    })
+
+    if (!uploadRes.ok || !uploadResult.h) {
+      throw new Error(`Failed to upload file: ${JSON.stringify(uploadResult)}`)
+    }
+
+    const uploadedFileHandle = uploadResult.h
+    console.log('✅ File uploaded:', uploadedFileHandle)
+
+    // ✅ 4. Publish the photo
+    console.log('📝 Publishing photo...')
     const publishRes = await fetch(
       `https://graph.facebook.com/v23.0/${process.env.FACEBOOK_PAGE_ID}/photos`,
       {
@@ -66,11 +141,22 @@ export const handler = async (event, context) => {
         }).toString(),
       }
     )
+
     const publishResult = await publishRes.json()
-    if (!publishResult.id)
+
+    console.log('📊 Publish result:', {
+      status: publishRes.status,
+      ok: publishRes.ok,
+      result: publishResult,
+    })
+
+    if (!publishRes.ok || !publishResult.id) {
       throw new Error(
-        'Failed to publish photo: ' + JSON.stringify(publishResult)
+        `Failed to publish photo: ${JSON.stringify(publishResult)}`
       )
+    }
+
+    console.log('✅ Facebook post published successfully!')
 
     return {
       statusCode: 200,
