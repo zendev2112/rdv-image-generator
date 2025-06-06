@@ -84,14 +84,15 @@ async function shareToFacebook() {
 
     showToast('📤 Compartiendo en Facebook...', 'info')
 
-    // ✅ ADD API KEY HEADER
+    // In your shareToFacebook function, update the headers:
     const response = await fetch(
       'https://rdv-news-api.vercel.app/api/social-media-publishing/quick-publish',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-API-Key': 'rdv-2024-social-media-api-key', // ✅ ADD THIS LINE
+          'X-API-Key':
+            '16e887e46f7105bd5628e6cad1ef24b2fe2a28c0f0f4d69a8aea276401be78a8', // ✅ Use the exact key from your .env
         },
         body: JSON.stringify({
           platform: 'facebook',
