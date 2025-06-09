@@ -28,16 +28,30 @@ export const handler = async (event, context) => {
       imageData = imageBlob.split(',')[1] // Remove "data:image/png;base64," prefix
     }
 
-    // ✅ SIMPLIFIED: Let Make.com handle the conversion
+    // ✅ Add validation for base64 data
+    if (!imageData || imageData.length < 100) {
+      throw new Error('Invalid or empty image data')
+    }
+
+    // ✅ Validate base64 format
+    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
+    if (!base64Regex.test(imageData)) {
+      throw new Error('Invalid base64 format')
+    }
+
     const makePayload = {
-      image_data: imageData, // Clean base64 string
+      image_data: imageData,
       caption: caption,
       post_to_facebook: true,
+      // ✅ Add metadata for debugging
+      image_size: imageData.length,
+      timestamp: new Date().toISOString()
     }
 
     console.log('📤 Sending to Make.com webhook...')
     console.log('📊 Base64 length:', imageData.length)
     console.log('📊 Caption:', caption)
+    console.log('📊 Base64 valid:', base64Regex.test(imageData))
 
     const MAKE_WEBHOOK_URL =
       'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
