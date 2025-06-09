@@ -57,9 +57,7 @@ export const handler = async (event, context) => {
     formData.append('file', `data:image/png;base64,${imageData}`)
     formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET)
     formData.append('folder', 'rdv-news')
-    formData.append('quality', 'auto:good')
-    formData.append('format', 'jpg')
-    formData.append('transformation', 'c_limit,w_1200,h_900/q_auto:good')
+
 
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
