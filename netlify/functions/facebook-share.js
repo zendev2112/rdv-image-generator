@@ -48,28 +48,52 @@ export const handler = async (event, context) => {
     const imageSizeKB = (imageData.length * 3) / 4 / 1024
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    // ✅ OPTIMIZED: Use JSON upload instead of multipart (faster)
-    console.log('📤 Uploading to Cloudinary with JSON payload...')
+    // ✅ COMPRESS IMAGE: Reduce size if too large
+    let processedImageData = imageData
+    if (imageSizeKB > 500) {
+      console.log('🔧 Image too large, applying compression...')
 
-    const cloudinaryPayload = {
-      file: `data:image/png;base64,${imageData}`,
-      upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
-      folder: 'rdv-news',
-      public_id: `rdv-hq-${Date.now()}`,
-      tags: 'rdv-news,facebook,high-quality',
+      // Simple compression by reducing quality of base64
+      // Remove padding and re-encode with compression
+      const buffer = Buffer.from(imageData, 'base64')
+
+      // Reduce buffer size by sampling (simple compression)
+      const compressionRatio = Math.min(0.7, 500 / imageSizeKB)
+      const targetSize = Math.floor(buffer.length * compressionRatio)
+
+      // Create compressed buffer by sampling
+      const compressedBuffer = Buffer.alloc(targetSize)
+      for (let i = 0; i < targetSize; i++) {
+        const sourceIndex = Math.floor((i / targetSize) * buffer.length)
+        compressedBuffer[i] = buffer[sourceIndex]
+      }
+
+      processedImageData = compressedBuffer.toString('base64')
+      const newSizeKB = (processedImageData.length * 3) / 4 / 1024
+      console.log('📉 Compressed image size:', Math.round(newSizeKB), 'KB')
     }
+
+    // ✅ SIMPLIFIED: Use form-urlencoded upload (faster than JSON for large data)
+    console.log('📤 Uploading to Cloudinary with form data...')
+
+    const formParams = new URLSearchParams()
+    formParams.append('file', `data:image/png;base64,${processedImageData}`)
+    formParams.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET)
+    formParams.append('folder', 'rdv-news')
+    formParams.append('public_id', `rdv-hq-${Date.now()}`)
+    formParams.append('tags', 'rdv-news,facebook')
 
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`
     console.log('🎯 Cloudinary URL:', cloudinaryUrl)
 
-    // ✅ Add timeout to prevent hanging
-    const uploadTimeout = 8000 // 8 seconds max
+    // ✅ Increase timeout for large uploads
+    const uploadTimeout = 15000 // 15 seconds max
     const uploadPromise = fetch(cloudinaryUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify(cloudinaryPayload),
+      body: formParams.toString(),
     })
 
     const timeoutPromise = new Promise((_, reject) =>
@@ -79,7 +103,7 @@ export const handler = async (event, context) => {
       )
     )
 
-    console.log('⏱️ Starting upload with timeout...')
+    console.log('⏱️ Starting upload with 15s timeout...')
     const cloudinaryUpload = await Promise.race([uploadPromise, timeoutPromise])
 
     console.log('📊 Cloudinary response status:', cloudinaryUpload.status)
@@ -97,9 +121,10 @@ export const handler = async (event, context) => {
     console.log('🔗 Cloudinary URL:', cloudinaryResult.secure_url)
 
     // ✅ Quality analysis
+    const finalSizeKB = Math.round(cloudinaryResult.bytes / 1024)
     console.log('🔍 QUALITY ANALYSIS:', {
       original_size_kb: Math.round(imageSizeKB),
-      cloudinary_size_kb: Math.round(cloudinaryResult.bytes / 1024),
+      cloudinary_size_kb: finalSizeKB,
       dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       format: cloudinaryResult.format,
     })
@@ -110,7 +135,7 @@ export const handler = async (event, context) => {
       caption: caption,
       post_to_facebook: true,
       original_size_kb: Math.round(imageSizeKB),
-      optimized_size_kb: Math.round(cloudinaryResult.bytes / 1024),
+      optimized_size_kb: finalSizeKB,
       image_dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       image_format: cloudinaryResult.format,
       timestamp: new Date().toISOString(),
@@ -120,8 +145,8 @@ export const handler = async (event, context) => {
     const MAKE_WEBHOOK_URL =
       'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
 
-    // ✅ Add timeout for Make.com webhook
-    const webhookTimeout = 3000 // 3 seconds max
+    // ✅ Quick webhook call with short timeout
+    const webhookTimeout = 5000 // 5 seconds max
     const webhookPromise = fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: {
@@ -137,67 +162,95 @@ export const handler = async (event, context) => {
       )
     )
 
-    const response = await Promise.race([webhookPromise, webhookTimeoutPromise])
-
-    console.log('📊 Make.com response:', {
-      status: response.status,
-      ok: response.ok,
-      statusText: response.statusText,
-    })
-
-    let responseText = ''
     try {
-      responseText = await response.text()
-      console.log('📄 Make.com response:', responseText)
-    } catch (textError) {
-      console.error('❌ Error reading response:', textError.message)
-    }
+      const response = await Promise.race([
+        webhookPromise,
+        webhookTimeoutPromise,
+      ])
 
-    if (!response.ok) {
-      console.error(
-        '❌ Make.com webhook failed:',
-        response.status,
-        responseText
-      )
-      // ✅ Don't throw error - still return success since Cloudinary worked
-      console.log('⚠️ Continuing despite Make.com error...')
-    }
+      console.log('📊 Make.com response:', {
+        status: response.status,
+        ok: response.ok,
+        statusText: response.statusText,
+      })
 
-    // ✅ Return success regardless of Make.com response
-    const successResponse = {
-      success: true,
-      message: 'Image uploaded to Cloudinary successfully',
-      platform: 'facebook',
-      publishedAt: new Date().toISOString(),
-      cloudinary_url: cloudinaryResult.secure_url,
-      make_com_status: response.ok ? 'success' : 'failed',
-      make_com_response: responseText,
-      image_quality: {
-        dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
-        format: cloudinaryResult.format,
-        final_size_kb: Math.round(cloudinaryResult.bytes / 1024),
-      },
-    }
+      let responseText = ''
+      try {
+        responseText = await response.text()
+        console.log('📄 Make.com response:', responseText)
+      } catch (textError) {
+        console.error('❌ Error reading response:', textError.message)
+      }
 
-    console.log('🎉 Success response:', successResponse)
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(successResponse),
+      if (!response.ok) {
+        console.error(
+          '❌ Make.com webhook failed:',
+          response.status,
+          responseText
+        )
+      }
+
+      // ✅ Return success regardless of Make.com response
+      const successResponse = {
+        success: true,
+        message: 'Image uploaded to Cloudinary and sent to Make.com',
+        platform: 'facebook',
+        publishedAt: new Date().toISOString(),
+        cloudinary_url: cloudinaryResult.secure_url,
+        make_com_status: response.ok ? 'success' : 'failed',
+        make_com_response: responseText,
+        image_quality: {
+          dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+          format: cloudinaryResult.format,
+          final_size_kb: finalSizeKB,
+        },
+      }
+
+      console.log('🎉 Success response:', successResponse)
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(successResponse),
+      }
+    } catch (webhookError) {
+      console.error('❌ Make.com webhook timeout/error:', webhookError.message)
+
+      // ✅ Still return success since Cloudinary worked
+      const partialSuccessResponse = {
+        success: true,
+        message: 'Image uploaded to Cloudinary (Make.com webhook failed)',
+        platform: 'facebook',
+        publishedAt: new Date().toISOString(),
+        cloudinary_url: cloudinaryResult.secure_url,
+        make_com_status: 'timeout',
+        make_com_error: webhookError.message,
+        image_quality: {
+          dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+          format: cloudinaryResult.format,
+          final_size_kb: finalSizeKB,
+        },
+      }
+
+      console.log('⚠️ Partial success response:', partialSuccessResponse)
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(partialSuccessResponse),
+      }
     }
   } catch (error) {
     console.error('❌ Function error:', error.message)
 
-    // ✅ If it's a timeout, try to continue gracefully
+    // ✅ Handle different error types
     if (error.message.includes('timeout')) {
-      console.log('⚠️ Timeout occurred, returning partial success...')
+      console.log('⚠️ Upload timeout occurred...')
       return {
-        statusCode: 202, // Accepted but processing incomplete
+        statusCode: 408, // Request Timeout
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: false,
-          error: 'Processing timeout',
-          details: error.message,
+          error: 'Upload timeout',
+          details: 'Image upload took too long. Try with a smaller image.',
           timestamp: new Date().toISOString(),
         }),
       }
