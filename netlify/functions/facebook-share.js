@@ -52,37 +52,35 @@ export const handler = async (event, context) => {
 
     // ✅ HIGH-QUALITY IMAGE PROCESSING - Convert to higher quality format
     console.log('🎨 Processing image for maximum quality...')
-
+    
     // Convert base64 to buffer for processing
     const imageBuffer = Buffer.from(imageData, 'base64')
-
+    
     // Create high-quality canvas processing (simulated)
     // Since we can't use canvas in Netlify, we'll use a different approach
     let processedImageData = imageData
-
+    
     // ✅ For very large images, we need smarter compression
     if (imageSizeKB > 800) {
-      console.log(
-        '⚠️ Large image detected, applying intelligent compression...'
-      )
-
+      console.log('⚠️ Large image detected, applying intelligent compression...')
+      
       // Strategy: Create a higher quality base64 by adjusting the data
       // This is a workaround since we can't use image processing libraries
-
+      
       // Remove any padding and ensure clean base64
       processedImageData = imageData.replace(/[^A-Za-z0-9+/]/g, '')
-
+      
       // Add proper padding
       while (processedImageData.length % 4 !== 0) {
         processedImageData += '='
       }
-
+      
       console.log('✅ Image pre-processed for quality optimization')
     }
 
     // ✅ Upload to Cloudinary with HIGH-QUALITY settings
     console.log('📤 Uploading to Cloudinary with maximum quality settings...')
-
+    
     const formData = new FormData()
     formData.append('file', `data:image/png;base64,${processedImageData}`)
     formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET)
@@ -90,10 +88,7 @@ export const handler = async (event, context) => {
     // ✅ High-quality parameters
     formData.append('public_id', `rdv-hq-${Date.now()}`)
     formData.append('tags', 'rdv-news,facebook,ultra-high-quality')
-    formData.append(
-      'context',
-      'source=netlify|quality=ultra|processing=enhanced'
-    )
+    formData.append('context', 'source=netlify|quality=ultra|processing=enhanced')
 
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -115,33 +110,22 @@ export const handler = async (event, context) => {
 
     const cloudinaryResult = await cloudinaryUpload.json()
     console.log('📸 Cloudinary upload successful:', cloudinaryResult.secure_url)
-
+    
     // ✅ Enhanced quality analysis
     console.log('🔍 QUALITY ANALYSIS:', {
       original_size_kb: Math.round(imageSizeKB),
       cloudinary_size_kb: Math.round(cloudinaryResult.bytes / 1024),
       dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       format: cloudinaryResult.format,
-      compression_ratio: `${Math.round(
-        (imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100
-      )}%`,
-      quality_score:
-        cloudinaryResult.bytes > 500000
-          ? 'HIGH'
-          : cloudinaryResult.bytes > 200000
-          ? 'MEDIUM'
-          : 'LOW',
+      compression_ratio: `${Math.round((imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100)}%`,
+      quality_score: cloudinaryResult.bytes > 500000 ? 'HIGH' : cloudinaryResult.bytes > 200000 ? 'MEDIUM' : 'LOW'
     })
 
     // ✅ QUALITY CHECK - If still too compressed, log warning
     const finalSizeKB = Math.round(cloudinaryResult.bytes / 1024)
     if (finalSizeKB < 300) {
-      console.log(
-        '⚠️ WARNING: Final image size is quite small, may affect quality'
-      )
-      console.log(
-        '💡 Consider updating Cloudinary preset to higher quality settings'
-      )
+      console.log('⚠️ WARNING: Final image size is quite small, may affect quality')
+      console.log('💡 Consider updating Cloudinary preset to higher quality settings')
     }
 
     const makePayload = {
@@ -154,15 +138,8 @@ export const handler = async (event, context) => {
       optimized_size_kb: Math.round(cloudinaryResult.bytes / 1024),
       image_dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       image_format: cloudinaryResult.format,
-      compression_ratio: Math.round(
-        (imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100
-      ),
-      quality_score:
-        cloudinaryResult.bytes > 500000
-          ? 'HIGH'
-          : cloudinaryResult.bytes > 200000
-          ? 'MEDIUM'
-          : 'LOW',
+      compression_ratio: Math.round((imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100),
+      quality_score: cloudinaryResult.bytes > 500000 ? 'HIGH' : cloudinaryResult.bytes > 200000 ? 'MEDIUM' : 'LOW',
       processing_enhanced: true,
       timestamp: new Date().toISOString(),
     }
@@ -206,8 +183,7 @@ export const handler = async (event, context) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message:
-            'High-quality Facebook posting initiated via Make.com with Cloudinary',
+          message: 'High-quality Facebook posting initiated via Make.com with Cloudinary',
           platform: 'facebook',
           publishedAt: new Date().toISOString(),
           method: 'make_com_webhook',
@@ -215,22 +191,13 @@ export const handler = async (event, context) => {
           cloudinary_url: cloudinaryResult.secure_url,
           optimized: true,
           enhanced_processing: true,
-          size_reduction: `${Math.round(imageSizeKB)}KB → ${Math.round(
-            cloudinaryResult.bytes / 1024
-          )}KB`,
+          size_reduction: `${Math.round(imageSizeKB)}KB → ${Math.round(cloudinaryResult.bytes / 1024)}KB`,
           image_quality: {
             dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
             format: cloudinaryResult.format,
             final_size_kb: Math.round(cloudinaryResult.bytes / 1024),
-            quality_score:
-              cloudinaryResult.bytes > 500000
-                ? 'HIGH'
-                : cloudinaryResult.bytes > 200000
-                ? 'MEDIUM'
-                : 'LOW',
-            compression_ratio: `${Math.round(
-              (imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100
-            )}%`,
+            quality_score: cloudinaryResult.bytes > 500000 ? 'HIGH' : cloudinaryResult.bytes > 200000 ? 'MEDIUM' : 'LOW',
+            compression_ratio: `${Math.round((imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100)}%`,
           },
         }),
       }
