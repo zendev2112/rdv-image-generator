@@ -28,17 +28,16 @@ export const handler = async (event, context) => {
       imageData = imageBlob.split(',')[1] // Remove "data:image/png;base64," prefix
     }
 
-    // ✅ IMPROVED: Send binary data instead of base64 string
+    // ✅ SIMPLIFIED: Let Make.com handle the conversion
     const makePayload = {
-      image_data: imageData, // Clean base64 without data URL prefix
+      image_data: imageData, // Clean base64 string
       caption: caption,
       post_to_facebook: true,
-      post_to_instagram: false,
-      image_type: 'png', // Specify image type for Facebook
     }
 
-    console.log('📤 Sending to Make.com webhook (direct Facebook)...')
-    console.log('📊 Image data preview:', imageData.substring(0, 50) + '...')
+    console.log('📤 Sending to Make.com webhook...')
+    console.log('📊 Base64 length:', imageData.length)
+    console.log('📊 Caption:', caption)
 
     const MAKE_WEBHOOK_URL =
       'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
