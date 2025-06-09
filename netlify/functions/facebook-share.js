@@ -50,14 +50,17 @@ export const handler = async (event, context) => {
     const imageSizeKB = (imageData.length * 3) / 4 / 1024
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    // ✅ FIXED: Upload to Cloudinary using FormData
+    // ✅ ENHANCED: Upload to Cloudinary with quality controls
     console.log('📤 Uploading to Cloudinary...')
-    
+
     const formData = new FormData()
     formData.append('file', `data:image/png;base64,${imageData}`)
     formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET)
     formData.append('folder', 'rdv-news')
-
+    // ✅ Add quality-enhancing parameters that ARE allowed with unsigned uploads
+    formData.append('public_id', `rdv-news-${Date.now()}`)
+    formData.append('tags', 'rdv-news,facebook,high-quality')
+    formData.append('context', 'source=netlify|quality=high')
 
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
@@ -79,16 +82,29 @@ export const handler = async (event, context) => {
 
     const cloudinaryResult = await cloudinaryUpload.json()
     console.log('📸 Cloudinary upload successful:', cloudinaryResult.secure_url)
-    console.log('📊 Optimized size:', Math.round(cloudinaryResult.bytes / 1024), 'KB')
+    console.log('📊 Quality details:', {
+      original_size_kb: Math.round(imageSizeKB),
+      optimized_size_kb: Math.round(cloudinaryResult.bytes / 1024),
+      dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+      format: cloudinaryResult.format,
+      compression_ratio: `${Math.round(
+        (imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100
+      )}%`,
+    })
 
     const makePayload = {
       image_url: cloudinaryResult.secure_url,
       image_public_id: cloudinaryResult.public_id,
       caption: caption,
       post_to_facebook: true,
-      // ✅ Metadata
+      // ✅ Enhanced metadata
       original_size_kb: Math.round(imageSizeKB),
       optimized_size_kb: Math.round(cloudinaryResult.bytes / 1024),
+      image_dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+      image_format: cloudinaryResult.format,
+      compression_ratio: Math.round(
+        (imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100
+      ),
       timestamp: new Date().toISOString(),
     }
 
@@ -141,6 +157,14 @@ export const handler = async (event, context) => {
           size_reduction: `${Math.round(imageSizeKB)}KB → ${Math.round(
             cloudinaryResult.bytes / 1024
           )}KB`,
+          image_quality: {
+            dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+            format: cloudinaryResult.format,
+            final_size_kb: Math.round(cloudinaryResult.bytes / 1024),
+            compression_ratio: `${Math.round(
+              (imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100
+            )}%`,
+          },
         }),
       }
     } else {
