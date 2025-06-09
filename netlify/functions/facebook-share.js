@@ -50,27 +50,22 @@ export const handler = async (event, context) => {
     const imageSizeKB = (imageData.length * 3) / 4 / 1024
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    // ✅ Upload to Cloudinary for optimization
+    // ✅ FIXED: Upload to Cloudinary using FormData
     console.log('📤 Uploading to Cloudinary...')
+    
+    const formData = new FormData()
+    formData.append('file', `data:image/png;base64,${imageData}`)
+    formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET)
+    formData.append('folder', 'rdv-news')
+    formData.append('quality', 'auto:good')
+    formData.append('format', 'jpg')
+    formData.append('transformation', 'c_limit,w_1200,h_900/q_auto:good')
+
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          file: `data:image/png;base64,${imageData}`,
-          upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
-          folder: 'rdv-news',
-          quality: 'auto:good',
-          format: 'jpg',
-          transformation: [
-            { width: 1200, height: 900, crop: 'limit' },
-            { quality: 'auto:good' },
-            { fetch_format: 'auto' },
-          ],
-        }),
+        body: formData, // ✅ Use FormData instead of JSON
       }
     )
 
