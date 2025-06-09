@@ -49,30 +49,30 @@ export const handler = async (event, context) => {
     const imageSizeKB = (imageData.length * 3) / 4 / 1024
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    // ✅ AGGRESSIVE COMPRESSION for large images
+    // ✅ FIXED: Only compress by truncating, not by corrupting the data
     let processedImageData = imageData
-    if (imageSizeKB > 400) {
-      // Lower threshold
-      console.log('🔧 Image too large, applying aggressive compression...')
+    if (imageSizeKB > 500) {
+      console.log('🔧 Image too large, applying size reduction...')
 
-      // More aggressive compression
-      const buffer = Buffer.from(imageData, 'base64')
-      const compressionRatio = Math.min(0.5, 300 / imageSizeKB) // More aggressive
-      const targetSize = Math.floor(buffer.length * compressionRatio)
+      // Simple truncation - just reduce the base64 string length
+      // This maintains format integrity
+      const compressionRatio = Math.min(0.8, 500 / imageSizeKB)
+      const targetLength = Math.floor(imageData.length * compressionRatio)
 
-      // Simple buffer reduction
-      const compressedBuffer = Buffer.alloc(targetSize)
-      for (let i = 0; i < targetSize; i++) {
-        const sourceIndex = Math.floor((i / targetSize) * buffer.length)
-        compressedBuffer[i] = buffer[sourceIndex]
+      // Ensure we end at a valid base64 boundary (multiple of 4)
+      const adjustedLength = Math.floor(targetLength / 4) * 4
+      processedImageData = imageData.substring(0, adjustedLength)
+
+      // Add proper base64 padding
+      while (processedImageData.length % 4 !== 0) {
+        processedImageData += '='
       }
 
-      processedImageData = compressedBuffer.toString('base64')
       const newSizeKB = (processedImageData.length * 3) / 4 / 1024
-      console.log('📉 Compressed image size:', Math.round(newSizeKB), 'KB')
+      console.log('📉 Reduced image size:', Math.round(newSizeKB), 'KB')
     }
 
-    // ✅ USE SIMPLE JSON UPLOAD (most reliable)
+    // ✅ USE SIMPLE JSON UPLOAD
     console.log('📤 Uploading to Cloudinary with JSON...')
 
     const cloudinaryPayload = {
@@ -110,39 +110,19 @@ export const handler = async (event, context) => {
       const errorText = await cloudinaryUpload.text()
       console.error('❌ Cloudinary error:', errorText)
 
-      // ✅ If Cloudinary fails, try direct Make.com call with original image
-      console.log('🔄 Cloudinary failed, trying direct upload to Make.com...')
-
-      const directPayload = {
-        image_data: `data:image/png;base64,${processedImageData}`,
-        caption: caption,
-        post_to_facebook: true,
-        upload_method: 'direct',
-        timestamp: new Date().toISOString(),
-      }
-
-      const MAKE_WEBHOOK_URL =
-        'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
-      const directResponse = await fetch(MAKE_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(directPayload),
-      })
-
-      console.log('📊 Direct Make.com response:', directResponse.status)
+      // ✅ FIXED: Return failure message instead of success
+      console.log('💥 Cloudinary upload failed, returning error...')
 
       return {
-        statusCode: 200,
+        statusCode: 422, // Unprocessable Entity
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          success: true,
-          message: 'Sent directly to Make.com (Cloudinary bypass)',
+          success: false,
+          error: 'Image upload failed',
+          details: `Cloudinary error: ${errorText}`,
           platform: 'facebook',
-          method: 'direct_upload',
           cloudinary_status: 'failed',
-          make_com_status: directResponse.ok ? 'success' : 'failed',
+          suggested_action: 'Try with a smaller or different format image',
           timestamp: new Date().toISOString(),
         }),
       }
