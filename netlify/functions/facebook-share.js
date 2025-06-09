@@ -52,25 +52,43 @@ export const handler = async (event, context) => {
 
     console.log('📤 Uploading to Cloudinary...')
 
-    // ✅ FIXED: Use JSON instead of FormData (FormData causes 502 in Netlify)
-    const cloudinaryPayload = {
-      file: `data:image/png;base64,${imageData}`,
-      upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
-      folder: 'rdv-news',
-      public_id: `rdv-hq-${Date.now()}`,
-      tags: 'rdv-news,facebook,high-quality',
-    }
+    // ✅ FIXED: Create multipart form data manually (Node.js compatible)
+    const boundary = '----formdata-netlify-' + Math.random().toString(36)
+    const formData = [
+      `--${boundary}`,
+      'Content-Disposition: form-data; name="file"',
+      '',
+      `data:image/png;base64,${imageData}`,
+      `--${boundary}`,
+      'Content-Disposition: form-data; name="upload_preset"',
+      '',
+      process.env.CLOUDINARY_UPLOAD_PRESET,
+      `--${boundary}`,
+      'Content-Disposition: form-data; name="folder"',
+      '',
+      'rdv-news',
+      `--${boundary}`,
+      'Content-Disposition: form-data; name="public_id"',
+      '',
+      `rdv-hq-${Date.now()}`,
+      `--${boundary}`,
+      'Content-Disposition: form-data; name="tags"',
+      '',
+      'rdv-news,facebook,high-quality',
+      `--${boundary}--`,
+      '',
+    ].join('\r\n')
 
-    console.log('🔧 Uploading to Cloudinary with JSON payload...')
+    console.log('🔧 Uploading to Cloudinary with multipart form...')
 
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
       {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': `multipart/form-data; boundary=${boundary}`,
         },
-        body: JSON.stringify(cloudinaryPayload),
+        body: formData,
       }
     )
 
