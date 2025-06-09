@@ -50,51 +50,27 @@ export const handler = async (event, context) => {
     const imageSizeKB = (imageData.length * 3) / 4 / 1024
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    // ✅ HIGH-QUALITY IMAGE PROCESSING - Convert to higher quality format
-    console.log('🎨 Processing image for maximum quality...')
-    
-    // Convert base64 to buffer for processing
-    const imageBuffer = Buffer.from(imageData, 'base64')
-    
-    // Create high-quality canvas processing (simulated)
-    // Since we can't use canvas in Netlify, we'll use a different approach
-    let processedImageData = imageData
-    
-    // ✅ For very large images, we need smarter compression
-    if (imageSizeKB > 800) {
-      console.log('⚠️ Large image detected, applying intelligent compression...')
-      
-      // Strategy: Create a higher quality base64 by adjusting the data
-      // This is a workaround since we can't use image processing libraries
-      
-      // Remove any padding and ensure clean base64
-      processedImageData = imageData.replace(/[^A-Za-z0-9+/]/g, '')
-      
-      // Add proper padding
-      while (processedImageData.length % 4 !== 0) {
-        processedImageData += '='
-      }
-      
-      console.log('✅ Image pre-processed for quality optimization')
+    console.log('📤 Uploading to Cloudinary...')
+
+    // ✅ FIXED: Use JSON instead of FormData (FormData causes 502 in Netlify)
+    const cloudinaryPayload = {
+      file: `data:image/png;base64,${imageData}`,
+      upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
+      folder: 'rdv-news',
+      public_id: `rdv-hq-${Date.now()}`,
+      tags: 'rdv-news,facebook,high-quality',
     }
 
-    // ✅ Upload to Cloudinary with HIGH-QUALITY settings
-    console.log('📤 Uploading to Cloudinary with maximum quality settings...')
-    
-    const formData = new FormData()
-    formData.append('file', `data:image/png;base64,${processedImageData}`)
-    formData.append('upload_preset', process.env.CLOUDINARY_UPLOAD_PRESET)
-    formData.append('folder', 'rdv-news')
-    // ✅ High-quality parameters
-    formData.append('public_id', `rdv-hq-${Date.now()}`)
-    formData.append('tags', 'rdv-news,facebook,ultra-high-quality')
-    formData.append('context', 'source=netlify|quality=ultra|processing=enhanced')
+    console.log('🔧 Uploading to Cloudinary with JSON payload...')
 
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
       {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cloudinaryPayload),
       }
     )
 
@@ -110,43 +86,30 @@ export const handler = async (event, context) => {
 
     const cloudinaryResult = await cloudinaryUpload.json()
     console.log('📸 Cloudinary upload successful:', cloudinaryResult.secure_url)
-    
-    // ✅ Enhanced quality analysis
+
+    // ✅ Quality analysis
     console.log('🔍 QUALITY ANALYSIS:', {
       original_size_kb: Math.round(imageSizeKB),
       cloudinary_size_kb: Math.round(cloudinaryResult.bytes / 1024),
       dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       format: cloudinaryResult.format,
-      compression_ratio: `${Math.round((imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100)}%`,
-      quality_score: cloudinaryResult.bytes > 500000 ? 'HIGH' : cloudinaryResult.bytes > 200000 ? 'MEDIUM' : 'LOW'
     })
-
-    // ✅ QUALITY CHECK - If still too compressed, log warning
-    const finalSizeKB = Math.round(cloudinaryResult.bytes / 1024)
-    if (finalSizeKB < 300) {
-      console.log('⚠️ WARNING: Final image size is quite small, may affect quality')
-      console.log('💡 Consider updating Cloudinary preset to higher quality settings')
-    }
 
     const makePayload = {
       image_url: cloudinaryResult.secure_url,
       image_public_id: cloudinaryResult.public_id,
       caption: caption,
       post_to_facebook: true,
-      // ✅ Enhanced metadata with quality metrics
+      // ✅ Metadata
       original_size_kb: Math.round(imageSizeKB),
       optimized_size_kb: Math.round(cloudinaryResult.bytes / 1024),
       image_dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       image_format: cloudinaryResult.format,
-      compression_ratio: Math.round((imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100),
-      quality_score: cloudinaryResult.bytes > 500000 ? 'HIGH' : cloudinaryResult.bytes > 200000 ? 'MEDIUM' : 'LOW',
-      processing_enhanced: true,
       timestamp: new Date().toISOString(),
     }
 
     console.log('📤 Sending to Make.com webhook...')
-    console.log('📊 High-quality image URL:', cloudinaryResult.secure_url)
-    console.log('📊 Caption:', caption)
+    console.log('📊 Image URL:', cloudinaryResult.secure_url)
 
     const MAKE_WEBHOOK_URL =
       'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
@@ -176,28 +139,24 @@ export const handler = async (event, context) => {
     console.log('📄 Make.com raw response:', responseText)
 
     if (responseText.includes('Accepted')) {
-      console.log('✅ Make.com accepted high-quality image successfully!')
+      console.log('✅ Make.com accepted image successfully!')
 
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: 'High-quality Facebook posting initiated via Make.com with Cloudinary',
+          message: 'Facebook posting initiated via Make.com with Cloudinary',
           platform: 'facebook',
           publishedAt: new Date().toISOString(),
           method: 'make_com_webhook',
           status: 'accepted',
           cloudinary_url: cloudinaryResult.secure_url,
           optimized: true,
-          enhanced_processing: true,
-          size_reduction: `${Math.round(imageSizeKB)}KB → ${Math.round(cloudinaryResult.bytes / 1024)}KB`,
           image_quality: {
             dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
             format: cloudinaryResult.format,
             final_size_kb: Math.round(cloudinaryResult.bytes / 1024),
-            quality_score: cloudinaryResult.bytes > 500000 ? 'HIGH' : cloudinaryResult.bytes > 200000 ? 'MEDIUM' : 'LOW',
-            compression_ratio: `${Math.round((imageSizeKB / (cloudinaryResult.bytes / 1024)) * 100)}%`,
           },
         }),
       }
@@ -205,14 +164,16 @@ export const handler = async (event, context) => {
       throw new Error(`Unexpected Make.com response: ${responseText}`)
     }
   } catch (error) {
-    console.error('❌ Make.com automation error:', error)
+    console.error('❌ Function error:', error)
+    console.error('❌ Error stack:', error.stack)
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         success: false,
-        error: 'Make.com automation failed',
+        error: 'Function failed',
         details: error.message,
+        stack: error.stack,
         timestamp: new Date().toISOString(),
       }),
     }
