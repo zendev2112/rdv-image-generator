@@ -54,20 +54,28 @@ export const handler = async (event, context) => {
       )
     }
 
-    const result = await response.json()
+    // ✅ FIXED: Handle "Accepted" response (not JSON)
+    const responseText = await response.text()
+    console.log('📄 Make.com raw response:', responseText)
 
-    console.log('✅ Make.com automation successful:', result)
+    // Make.com webhooks return "Accepted" when successful
+    if (responseText.includes('Accepted')) {
+      console.log('✅ Make.com accepted webhook successfully!')
 
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        success: true,
-        facebookId: result.facebook_id,
-        platform: 'facebook',
-        publishedAt: result.timestamp,
-        method: 'make_com_direct_facebook',
-      }),
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          success: true,
+          message: 'Facebook posting initiated via Make.com',
+          platform: 'facebook',
+          publishedAt: new Date().toISOString(),
+          method: 'make_com_webhook',
+          status: 'accepted',
+        }),
+      }
+    } else {
+      throw new Error(`Unexpected Make.com response: ${responseText}`)
     }
   } catch (error) {
     console.error('❌ Make.com automation error:', error)
