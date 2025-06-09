@@ -49,27 +49,15 @@ export const handler = async (event, context) => {
     const imageSizeKB = (imageData.length * 3) / 4 / 1024
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    // ✅ FIXED: Only compress by truncating, not by corrupting the data
+    // ✅ QUALITY FIRST: No compression to maintain image quality
     let processedImageData = imageData
-    if (imageSizeKB > 500) {
-      console.log('🔧 Image too large, applying size reduction...')
+    console.log('🎨 Preserving original image quality (no compression)')
 
-      // Simple truncation - just reduce the base64 string length
-      // This maintains format integrity
-      const compressionRatio = Math.min(0.8, 500 / imageSizeKB)
-      const targetLength = Math.floor(imageData.length * compressionRatio)
-
-      // Ensure we end at a valid base64 boundary (multiple of 4)
-      const adjustedLength = Math.floor(targetLength / 4) * 4
-      processedImageData = imageData.substring(0, adjustedLength)
-
-      // Add proper base64 padding
-      while (processedImageData.length % 4 !== 0) {
-        processedImageData += '='
-      }
-
-      const newSizeKB = (processedImageData.length * 3) / 4 / 1024
-      console.log('📉 Reduced image size:', Math.round(newSizeKB), 'KB')
+    if (imageSizeKB > 1000) {
+      console.log('⚠️ Large image detected:', Math.round(imageSizeKB), 'KB')
+      console.log(
+        '💡 Large images may take longer to upload but quality will be preserved'
+      )
     }
 
     // ✅ USE SIMPLE JSON UPLOAD
@@ -79,13 +67,15 @@ export const handler = async (event, context) => {
       file: `data:image/png;base64,${processedImageData}`,
       upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
       folder: 'rdv-news',
+      public_id: `rdv-hq-${Date.now()}`,
+      tags: 'rdv-news,facebook,ultra-high-quality',
     }
 
     const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`
     console.log('🎯 Uploading to:', cloudinaryUrl)
 
-    // ✅ Set reasonable timeout
-    const uploadTimeout = 12000 // 12 seconds
+    // ✅ Longer timeout for high-quality uploads
+    const uploadTimeout = 15000 // 15 seconds for quality uploads
     const uploadPromise = fetch(cloudinaryUrl, {
       method: 'POST',
       headers: {
@@ -101,7 +91,7 @@ export const handler = async (event, context) => {
       )
     )
 
-    console.log('⏱️ Starting upload with 12s timeout...')
+    console.log('⏱️ Starting high-quality upload with 15s timeout...')
     const cloudinaryUpload = await Promise.race([uploadPromise, timeoutPromise])
 
     console.log('📊 Cloudinary response status:', cloudinaryUpload.status)
@@ -110,54 +100,71 @@ export const handler = async (event, context) => {
       const errorText = await cloudinaryUpload.text()
       console.error('❌ Cloudinary error:', errorText)
 
-      // ✅ FIXED: Return failure message instead of success
-      console.log('💥 Cloudinary upload failed, returning error...')
-
       return {
-        statusCode: 422, // Unprocessable Entity
+        statusCode: 422,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: false,
-          error: 'Image upload failed',
+          error: 'High-quality image upload failed',
           details: `Cloudinary error: ${errorText}`,
           platform: 'facebook',
           cloudinary_status: 'failed',
-          suggested_action: 'Try with a smaller or different format image',
+          original_size_kb: Math.round(imageSizeKB),
           timestamp: new Date().toISOString(),
         }),
       }
     }
 
     const cloudinaryResult = await cloudinaryUpload.json()
-    console.log('📸 Cloudinary upload successful!')
+    console.log('📸 High-quality Cloudinary upload successful!')
     console.log('🔗 URL:', cloudinaryResult.secure_url)
 
-    // ✅ Quality analysis
+    // ✅ Detailed quality analysis
     const finalSizeKB = Math.round(cloudinaryResult.bytes / 1024)
-    console.log('🔍 Final size:', finalSizeKB, 'KB')
+    console.log('🎨 QUALITY ANALYSIS:', {
+      original_size_kb: Math.round(imageSizeKB),
+      final_size_kb: finalSizeKB,
+      dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+      format: cloudinaryResult.format,
+      quality_preserved: finalSizeKB >= Math.round(imageSizeKB * 0.7), // 70% retention is good
+      cloudinary_optimizations: 'Applied via upload preset',
+    })
 
     const makePayload = {
       image_url: cloudinaryResult.secure_url,
       image_public_id: cloudinaryResult.public_id,
       caption: caption,
       post_to_facebook: true,
+      high_quality: true,
+      original_size_kb: Math.round(imageSizeKB),
+      final_size_kb: finalSizeKB,
+      image_dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
       timestamp: new Date().toISOString(),
     }
 
-    console.log('📤 Sending to Make.com...')
+    console.log('📤 Sending high-quality image to Make.com...')
     const MAKE_WEBHOOK_URL =
       'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
+
+    // ✅ Debug Make.com connection
+    console.log('🔍 Make.com webhook details:', {
+      url: MAKE_WEBHOOK_URL,
+      payload_size: JSON.stringify(makePayload).length,
+      image_url: makePayload.image_url.substring(0, 100) + '...',
+      has_caption: !!makePayload.caption,
+    })
 
     const webhookPromise = fetch(MAKE_WEBHOOK_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'User-Agent': 'RDV-Image-Generator/1.0',
       },
       body: JSON.stringify(makePayload),
     })
 
     const webhookTimeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Make.com timeout')), 5000)
+      setTimeout(() => reject(new Error('Make.com timeout')), 8000)
     )
 
     try {
@@ -166,23 +173,31 @@ export const handler = async (event, context) => {
         webhookTimeoutPromise,
       ])
 
-      console.log('📊 Make.com response:', response.status)
+      console.log('📊 Make.com response:', {
+        status: response.status,
+        ok: response.ok,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+      })
 
       const responseText = await response.text()
-      console.log('📄 Make.com response:', responseText)
+      console.log('📄 Make.com response text:', responseText)
 
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: 'Posted to Facebook via Make.com',
+          message: 'High-quality image posted to Facebook via Make.com',
           platform: 'facebook',
           cloudinary_url: cloudinaryResult.secure_url,
           make_com_status: response.ok ? 'success' : 'failed',
-          image_quality: {
+          quality_info: {
+            original_size_kb: Math.round(imageSizeKB),
             final_size_kb: finalSizeKB,
             dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+            format: cloudinaryResult.format,
+            quality_level: 'high',
           },
         }),
       }
@@ -194,10 +209,16 @@ export const handler = async (event, context) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: 'Image uploaded to Cloudinary (Make.com timeout)',
+          message:
+            'High-quality image uploaded to Cloudinary (Make.com timeout)',
           platform: 'facebook',
           cloudinary_url: cloudinaryResult.secure_url,
           make_com_status: 'timeout',
+          quality_info: {
+            final_size_kb: finalSizeKB,
+            dimensions: `${cloudinaryResult.width}x${cloudinaryResult.height}`,
+            format: cloudinaryResult.format,
+          },
         }),
       }
     }
@@ -210,8 +231,8 @@ export const handler = async (event, context) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: false,
-          error: 'Upload timeout',
-          details: 'Try with a smaller image',
+          error: 'High-quality upload timeout',
+          details: 'Large high-quality image took too long to upload',
           timestamp: new Date().toISOString(),
         }),
       }
