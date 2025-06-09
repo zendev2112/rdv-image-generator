@@ -10,7 +10,7 @@ export const handler = async (event, context) => {
   try {
     const { imageBlob, caption } = JSON.parse(event.body)
 
-    console.log('🚀 Starting Make.com direct Facebook automation...')
+    console.log('🚀 Starting Make.com Facebook automation with Cloudinary...')
 
     if (!imageBlob || !caption) {
       return {
@@ -20,12 +20,12 @@ export const handler = async (event, context) => {
       }
     }
 
-    // ✅ FIXED: Convert base64 to proper format for Facebook
+    // ✅ Convert base64 to proper format
     let imageData = imageBlob
 
     // If it's a data URL, extract just the base64 part
     if (imageBlob.startsWith('data:image/')) {
-      imageData = imageBlob.split(',')[1] // Remove "data:image/png;base64," prefix
+      imageData = imageBlob.split(',')[1]
     }
 
     // ✅ Add validation for base64 data
@@ -33,52 +33,53 @@ export const handler = async (event, context) => {
       throw new Error('Invalid or empty image data')
     }
 
-    // ✅ CHECK IMAGE SIZE AND COMPRESS IF NEEDED
-    const imageSizeKB = (imageData.length * 3) / 4 / 1024 // Convert base64 to actual file size
-    console.log('📏 Image size:', Math.round(imageSizeKB), 'KB')
+    const imageSizeKB = (imageData.length * 3) / 4 / 1024
+    console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
-    if (imageSizeKB > 800) {
-      // If larger than 800KB
-      console.log('⚠️ Image too large for Facebook, compressing...')
+    // ✅ Upload to Cloudinary for optimization
+    const cloudinaryUpload = await fetch(
+      `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          file: `data:image/png;base64,${imageData}`,
+          upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET,
+          folder: 'rdv-news',
+          quality: 'auto:good',
+          format: 'jpg',
+          transformation: [
+            { width: 1200, height: 900, crop: 'limit' },
+            { quality: 'auto:good' },
+            { fetch_format: 'auto' },
+          ],
+        }),
+      }
+    )
 
-      // Create canvas to compress image
-      const canvas = require('canvas')
-      const buffer = Buffer.from(imageData, 'base64')
-      const img = new canvas.Image()
-      img.src = buffer
-
-      // Create smaller canvas
-      const compressedCanvas = canvas.createCanvas(800, 600) // Smaller dimensions
-      const ctx = compressedCanvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, 800, 600)
-
-      // Get compressed base64
-      imageData = compressedCanvas
-        .toBuffer('image/jpeg', { quality: 0.7 })
-        .toString('base64')
-
-      const newSizeKB = (imageData.length * 3) / 4 / 1024
-      console.log('✅ Compressed to:', Math.round(newSizeKB), 'KB')
+    if (!cloudinaryUpload.ok) {
+      throw new Error(`Cloudinary upload failed: ${cloudinaryUpload.status}`)
     }
 
-    // ✅ Validate base64 format
-    const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
-    if (!base64Regex.test(imageData)) {
-      throw new Error('Invalid base64 format')
-    }
+    const cloudinaryResult = await cloudinaryUpload.json()
+    console.log('📸 Cloudinary upload successful:', cloudinaryResult.secure_url)
+    console.log('📊 Optimized size:', Math.round(cloudinaryResult.bytes / 1024), 'KB')
 
     const makePayload = {
-      image_data: imageData,
+      image_url: cloudinaryResult.secure_url,
+      image_public_id: cloudinaryResult.public_id,
       caption: caption,
       post_to_facebook: true,
-      // ✅ Add metadata for debugging
-      image_size: imageData.length,
-      image_size_kb: Math.round((imageData.length * 3) / 4 / 1024),
+      // ✅ Metadata
+      original_size_kb: Math.round(imageSizeKB),
+      optimized_size_kb: Math.round(cloudinaryResult.bytes / 1024),
       timestamp: new Date().toISOString(),
     }
 
     console.log('📤 Sending to Make.com webhook...')
-    console.log('📊 Final image size:', makePayload.image_size_kb, 'KB')
+    console.log('📊 Image URL:', cloudinaryResult.secure_url)
     console.log('📊 Caption:', caption)
 
     const MAKE_WEBHOOK_URL =
@@ -116,13 +117,16 @@ export const handler = async (event, context) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           success: true,
-          message: 'Facebook posting initiated via Make.com',
+          message: 'Facebook posting initiated via Make.com with Cloudinary',
           platform: 'facebook',
           publishedAt: new Date().toISOString(),
           method: 'make_com_webhook',
           status: 'accepted',
-          image_compressed: imageSizeKB > 800,
-          final_size_kb: Math.round((imageData.length * 3) / 4 / 1024),
+          cloudinary_url: cloudinaryResult.secure_url,
+          optimized: true,
+          size_reduction: `${Math.round(imageSizeKB)}KB → ${Math.round(
+            cloudinaryResult.bytes / 1024
+          )}KB`,
         }),
       }
     } else {
