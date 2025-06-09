@@ -33,6 +33,34 @@ export const handler = async (event, context) => {
       throw new Error('Invalid or empty image data')
     }
 
+    // ✅ CHECK IMAGE SIZE AND COMPRESS IF NEEDED
+    const imageSizeKB = (imageData.length * 3) / 4 / 1024 // Convert base64 to actual file size
+    console.log('📏 Image size:', Math.round(imageSizeKB), 'KB')
+
+    if (imageSizeKB > 800) {
+      // If larger than 800KB
+      console.log('⚠️ Image too large for Facebook, compressing...')
+
+      // Create canvas to compress image
+      const canvas = require('canvas')
+      const buffer = Buffer.from(imageData, 'base64')
+      const img = new canvas.Image()
+      img.src = buffer
+
+      // Create smaller canvas
+      const compressedCanvas = canvas.createCanvas(800, 600) // Smaller dimensions
+      const ctx = compressedCanvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, 800, 600)
+
+      // Get compressed base64
+      imageData = compressedCanvas
+        .toBuffer('image/jpeg', { quality: 0.7 })
+        .toString('base64')
+
+      const newSizeKB = (imageData.length * 3) / 4 / 1024
+      console.log('✅ Compressed to:', Math.round(newSizeKB), 'KB')
+    }
+
     // ✅ Validate base64 format
     const base64Regex = /^[A-Za-z0-9+/]*={0,2}$/
     if (!base64Regex.test(imageData)) {
@@ -45,13 +73,13 @@ export const handler = async (event, context) => {
       post_to_facebook: true,
       // ✅ Add metadata for debugging
       image_size: imageData.length,
-      timestamp: new Date().toISOString()
+      image_size_kb: Math.round((imageData.length * 3) / 4 / 1024),
+      timestamp: new Date().toISOString(),
     }
 
     console.log('📤 Sending to Make.com webhook...')
-    console.log('📊 Base64 length:', imageData.length)
+    console.log('📊 Final image size:', makePayload.image_size_kb, 'KB')
     console.log('📊 Caption:', caption)
-    console.log('📊 Base64 valid:', base64Regex.test(imageData))
 
     const MAKE_WEBHOOK_URL =
       'https://hook.us1.make.com/iygbk1s4ghqcs8y366w153acvyucr67r'
@@ -77,11 +105,9 @@ export const handler = async (event, context) => {
       )
     }
 
-    // ✅ FIXED: Handle "Accepted" response (not JSON)
     const responseText = await response.text()
     console.log('📄 Make.com raw response:', responseText)
 
-    // Make.com webhooks return "Accepted" when successful
     if (responseText.includes('Accepted')) {
       console.log('✅ Make.com accepted webhook successfully!')
 
@@ -95,6 +121,8 @@ export const handler = async (event, context) => {
           publishedAt: new Date().toISOString(),
           method: 'make_com_webhook',
           status: 'accepted',
+          image_compressed: imageSizeKB > 800,
+          final_size_kb: Math.round((imageData.length * 3) / 4 / 1024),
         }),
       }
     } else {
