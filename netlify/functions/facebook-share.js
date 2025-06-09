@@ -20,6 +20,20 @@ export const handler = async (event, context) => {
       }
     }
 
+    // ✅ Check environment variables
+    console.log('🔧 Environment check:', {
+      hasCloudName: !!process.env.CLOUDINARY_CLOUD_NAME,
+      hasUploadPreset: !!process.env.CLOUDINARY_UPLOAD_PRESET,
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    })
+
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_UPLOAD_PRESET
+    ) {
+      throw new Error('Missing Cloudinary environment variables')
+    }
+
     // ✅ Convert base64 to proper format
     let imageData = imageBlob
 
@@ -37,6 +51,7 @@ export const handler = async (event, context) => {
     console.log('📏 Original image size:', Math.round(imageSizeKB), 'KB')
 
     // ✅ Upload to Cloudinary for optimization
+    console.log('📤 Uploading to Cloudinary...')
     const cloudinaryUpload = await fetch(
       `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
       {
@@ -59,8 +74,14 @@ export const handler = async (event, context) => {
       }
     )
 
+    console.log('📊 Cloudinary response status:', cloudinaryUpload.status)
+
     if (!cloudinaryUpload.ok) {
-      throw new Error(`Cloudinary upload failed: ${cloudinaryUpload.status}`)
+      const errorText = await cloudinaryUpload.text()
+      console.error('❌ Cloudinary error response:', errorText)
+      throw new Error(
+        `Cloudinary upload failed: ${cloudinaryUpload.status} - ${errorText}`
+      )
     }
 
     const cloudinaryResult = await cloudinaryUpload.json()
