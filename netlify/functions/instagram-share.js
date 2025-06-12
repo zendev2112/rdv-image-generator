@@ -61,6 +61,8 @@ export const handler = async (event, context) => {
     // Send to Make webhook
     const makePayload = {
       image_url: cloudinaryResult.secure_url,
+      image_public_id: cloudinaryResult.public_id, // <-- add this line
+
       caption: caption,
       post_to_instagram: true,
       timestamp: new Date().toISOString(),
