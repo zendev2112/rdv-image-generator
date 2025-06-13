@@ -14,7 +14,7 @@ export const handler = async (event, context) => {
   }
 
   try {
-    const { imageBlob, caption, location_id } = JSON.parse(event.body)
+    const { imageBlob, caption, location_id, content_type } = JSON.parse(event.body)
     console.log('Parsed body:', { imageBlobLength: imageBlob?.length, caption })
 
     if (!imageBlob || !caption) {
@@ -66,6 +66,7 @@ export const handler = async (event, context) => {
       post_to_instagram: true,
       timestamp: new Date().toISOString(),
       ...(location_id && { location_id }),
+      content_type: content_type || 'post',
     }
     console.log('Sending to Make webhook:', makePayload)
 
