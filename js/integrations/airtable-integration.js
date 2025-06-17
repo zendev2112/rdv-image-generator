@@ -33,10 +33,45 @@ async function fetchAppConfig() {
     }
     
     const result = await response.json()
-    
+
     if (!result.success) {
-      throw new Error(result.error || 'Error en la configuración del servidor')
+      throw new Error(result.error || 'Error loading data')
     }
+    
+    console.log('✅ Record loaded via server:', result)
+    console.log('🔍 Full result structure:', JSON.stringify(result, null, 2))
+    
+    // Extract the data correctly
+    let airtableFields = null
+    
+    // Try different possible data structures
+    if (result.data) {
+      // If server returns data directly
+      airtableFields = result.data
+    } else if (result.fields) {
+      // If server returns fields directly
+      airtableFields = result.fields
+    } else if (result.record && result.record.fields) {
+      // If server returns a record object
+      airtableFields = result.record.fields
+    }
+    
+    console.log('🔍 Extracted fields:', airtableFields)
+    console.log('🔍 Fields type:', typeof airtableFields)
+    
+    // Validate the data before using it
+    if (!airtableFields || typeof airtableFields !== 'object') {
+      console.error('❌ No valid fields found in response')
+      throw new Error('Invalid data format received from server')
+    }
+    
+    // Check if we have the expected properties
+    if (!airtableFields.title && !airtableFields.Title && !airtableFields.titulo) {
+      console.warn('⚠️ No title field found. Available fields:', Object.keys(airtableFields))
+    }
+    
+    // Fill form with data
+    fillFormFromAirtable(airtableFields)
     
     APP_CONFIG = result.config
     console.log('✅ Configuration loaded from server:', APP_CONFIG)
@@ -333,61 +368,69 @@ async function uploadToAirtable() {
 /**
  * Fill form from Airtable data (Enhanced to load image)
  */
+// Find this function and update it:
 function fillFormFromAirtable(fields) {
-  console.log('Filling form with fields:', fields)
+  try {
+    console.log('🔍 fillFormFromAirtable called with:', fields)
+    console.log('🔍 Fields type:', typeof fields)
+    console.log('🔍 Fields keys:', fields ? Object.keys(fields) : 'No fields')
 
-  // Map Airtable fields to form fields
-  const formData = {
-    title: fields[FIELD_MAP.title] || '',
-    excerpt:
-      fields[FIELD_MAP.excerpt] || fields[FIELD_MAP.socialMediaText] || '',
-    tags: fields[FIELD_MAP.tags] || '',
-    category: fields[FIELD_MAP.section] || 'general',
-    backgroundImage:
-      fields[FIELD_MAP.imgUrl] || fields[FIELD_MAP.image]?.[0]?.url || '',
-    source: 'RDV Noticias',
-    author: 'Redacción RDV',
+    // Safety check
+    if (!fields || typeof fields !== 'object') {
+      console.error('❌ Invalid fields passed to fillFormFromAirtable:', fields)
+      showToast('❌ Error: Datos inválidos recibidos', 'error')
+      return
+    }
+
+    // Get form elements
+    const titleElement = document.getElementById('title')
+    const excerptElement = document.getElementById('excerpt')
+    const overlineElement = document.getElementById('overline')
+    const imgUrlElement = document.getElementById('imgUrl')
+
+    // Fill title (try different possible field names)
+    const title = fields.title || fields.Title || fields.titulo || fields.Título || ''
+    if (titleElement) {
+      titleElement.value = title
+      console.log('✅ Title set:', title)
+    } else {
+      console.warn('⚠️ Title element not found')
+    }
+
+    // Fill excerpt (try different possible field names)
+    const excerpt = fields.excerpt || fields.Excerpt || fields.extracto || fields.Extracto || fields.description || fields.Description || ''
+    if (excerptElement) {
+      excerptElement.value = excerpt
+      console.log('✅ Excerpt set:', excerpt)
+    } else {
+      console.warn('⚠️ Excerpt element not found')
+    }
+
+    // Fill overline (try different possible field names)
+    const overline = fields.overline || fields.Overline || fields.sobretitulo || fields.Sobretitulo || ''
+    if (overlineElement) {
+      overlineElement.value = overline
+      console.log('✅ Overline set:', overline)
+    } else {
+      console.warn('⚠️ Overline element not found')
+    }
+
+    // Fill image URL (try different possible field names)
+    const imgUrl = fields.imgUrl || fields.imageUrl || fields.image_url || fields.imagen || fields.Imagen || ''
+    if (imgUrlElement) {
+      imgUrlElement.value = imgUrl
+      console.log('✅ Image URL set:', imgUrl)
+    } else {
+      console.warn('⚠️ Image URL element not found')
+    }
+
+    // Show success message
+    showToast('✅ Formulario llenado con datos de Airtable', 'success')
+
+  } catch (error) {
+    console.error('❌ Error in fillFormFromAirtable:', error)
+    showToast('❌ Error llenando formulario', 'error')
   }
-
-  console.log('Mapped form data:', formData)
-
-  // Fill form fields
-  Object.keys(formData).forEach((fieldId) => {
-    const element = document.getElementById(fieldId)
-    if (element && formData[fieldId]) {
-      console.log(`Setting ${fieldId} to:`, formData[fieldId])
-      element.value = formData[fieldId]
-
-      // Trigger input event for character counters
-      element.dispatchEvent(new Event('input'))
-
-      // Special handling for background image
-      if (fieldId === 'backgroundImage' && formData[fieldId]) {
-        // Trigger image load event
-        element.dispatchEvent(new Event('change'))
-
-        // Apply image directly to the canvas element with enhanced loading
-        setTimeout(() => {
-          // Check if it's an Instagram image first
-          if (isInstagramImage(formData[fieldId])) {
-            console.log('📷 Instagram image detected in Airtable data')
-            applyInstagramImageDirect(formData[fieldId])
-          } else {
-            applyImageToCanvasEnhanced(formData[fieldId])
-          }
-        }, 500)
-      }
-    } else if (!element) {
-      console.warn(`Form element not found: ${fieldId}`)
-    }
-  })
-
-  // Force preview update after data is loaded
-  setTimeout(() => {
-    if (typeof updatePreview === 'function') {
-      updatePreview()
-    }
-  }, 1000)
 }
 
 /**
