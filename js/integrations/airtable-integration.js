@@ -389,47 +389,225 @@ function fillFormFromAirtable(fields) {
     const imgUrlElement = document.getElementById('imgUrl')
 
     // Fill title (try different possible field names)
-    const title = fields.title || fields.Title || fields.titulo || fields.Título || ''
+    const title =
+      fields.title || fields.Title || fields.titulo || fields.Título || ''
     if (titleElement) {
       titleElement.value = title
       console.log('✅ Title set:', title)
-    } else {
-      console.warn('⚠️ Title element not found')
     }
 
     // Fill excerpt (try different possible field names)
-    const excerpt = fields.excerpt || fields.Excerpt || fields.extracto || fields.Extracto || fields.description || fields.Description || ''
+    const excerpt =
+      fields.excerpt ||
+      fields.Excerpt ||
+      fields.extracto ||
+      fields.Extracto ||
+      fields.description ||
+      fields.Description ||
+      ''
     if (excerptElement) {
       excerptElement.value = excerpt
       console.log('✅ Excerpt set:', excerpt)
-    } else {
-      console.warn('⚠️ Excerpt element not found')
     }
 
     // Fill overline (try different possible field names)
-    const overline = fields.overline || fields.Overline || fields.sobretitulo || fields.Sobretitulo || ''
+    const overline =
+      fields.overline ||
+      fields.Overline ||
+      fields.sobretitulo ||
+      fields.Sobretitulo ||
+      ''
     if (overlineElement) {
       overlineElement.value = overline
       console.log('✅ Overline set:', overline)
-    } else {
-      console.warn('⚠️ Overline element not found')
     }
 
-    // Fill image URL (try different possible field names)
-    const imgUrl = fields.imgUrl || fields.imageUrl || fields.image_url || fields.imagen || fields.Imagen || ''
-    if (imgUrlElement) {
+    // Handle image URL with CORS proxy
+    const imgUrl = extractImageUrl(fields)
+    console.log('🖼️ Extracted image URL:', imgUrl)
+
+    if (imgUrl && imgUrlElement) {
+      // Set the original URL in the form
       imgUrlElement.value = imgUrl
-      console.log('✅ Image URL set:', imgUrl)
+      console.log('✅ Image URL set in form:', imgUrl)
+
+      // Load image with CORS proxy
+      loadImageWithCorsProxy(imgUrl)
     } else {
-      console.warn('⚠️ Image URL element not found')
+      console.warn('⚠️ No image URL found or element missing')
     }
 
     // Show success message
     showToast('✅ Formulario llenado con datos de Airtable', 'success')
-
   } catch (error) {
     console.error('❌ Error in fillFormFromAirtable:', error)
     showToast('❌ Error llenando formulario', 'error')
+  }
+}
+
+// ADD these functions RIGHT AFTER the fillFormFromAirtable function:
+
+/**
+ * Extract image URL from various possible field formats
+ */
+function extractImageUrl(fields) {
+  console.log('🔍 Extracting image URL from fields:', fields)
+  
+  // Try different possible field names for images
+  const imageFields = [
+    'imgUrl', 'imageUrl', 'image_url', 'imagen', 'Imagen',
+    'img', 'photo', 'picture', 'featured_image', 'attachment'
+  ]
+  
+  for (const fieldName of imageFields) {
+    const fieldValue = fields[fieldName]
+    
+    if (fieldValue) {
+      console.log(`🔍 Found field "${fieldName}":`, fieldValue)
+      
+      // Handle different formats
+      if (typeof fieldValue === 'string') {
+        // Direct URL string
+        return fieldValue
+      } else if (Array.isArray(fieldValue) && fieldValue.length > 0) {
+        // Array of attachments (Airtable format)
+        const attachment = fieldValue[0]
+        if (attachment.url) {
+          return attachment.url
+        } else if (typeof attachment === 'string') {
+          return attachment
+        }
+      } else if (fieldValue.url) {
+        // Object with url property
+        return fieldValue.url
+      }
+    }
+  }
+  
+  console.warn('⚠️ No image URL found in any expected field')
+  return null
+}
+
+/**
+ * Load image with CORS proxy fallback
+ */
+async function loadImageWithCorsProxy(originalUrl) {
+  if (!originalUrl) {
+    console.warn('⚠️ No URL provided for image loading')
+    return
+  }
+
+  console.log('🖼️ Starting image load with CORS proxy for:', originalUrl)
+  
+  // Enhanced CORS Proxies with more options
+  const CORS_PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://cors-anywhere.herokuapp.com/',
+    'https://thingproxy.freeboard.io/fetch/',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://yacdn.org/proxy/',
+    'https://cors.eu.org/',
+    'https://cors-proxy.htmldriven.com/?url=',
+  ]
+
+  // Specific image proxy services
+  const IMAGE_PROXIES = [
+    'https://images.weserv.nl/?url=',
+    'https://imageproxy.pimg.tw/resize?url=',
+    'https://wsrv.nl/?url=',
+  ]
+
+  // All proxies to try (image proxies first, then CORS proxies)
+  const allProxies = [...IMAGE_PROXIES, ...CORS_PROXIES]
+
+  // Try loading the original URL first
+  try {
+    console.log('🔄 Trying original URL first:', originalUrl)
+    await testImageLoad(originalUrl)
+    console.log('✅ Original URL works, using it directly')
+    updateImageInForm(originalUrl)
+    return
+  } catch (error) {
+    console.log('❌ Original URL failed, trying proxies...')
+  }
+
+  // Try each proxy
+  for (let i = 0; i < allProxies.length; i++) {
+    const proxy = allProxies[i]
+    const proxiedUrl = proxy + encodeURIComponent(originalUrl)
+    
+    try {
+      console.log(`🔄 Trying proxy ${i + 1}/${allProxies.length}: ${proxy}`)
+      
+      await testImageLoad(proxiedUrl)
+      
+      console.log(`✅ Proxy ${i + 1} successful:`, proxy)
+      updateImageInForm(proxiedUrl)
+      showToast(`✅ Imagen cargada vía proxy ${i + 1}`, 'success')
+      return
+      
+    } catch (error) {
+      console.log(`❌ Proxy ${i + 1} failed:`, proxy)
+      
+      // Add delay between attempts to avoid rate limiting
+      if (i < allProxies.length - 1) {
+        await new Promise(resolve => setTimeout(resolve, 500))
+      }
+    }
+  }
+
+  // All proxies failed
+  console.error('❌ All proxies failed for image:', originalUrl)
+  showToast('⚠️ No se pudo cargar la imagen con ningún proxy', 'warning')
+  
+  // Still set the original URL in the form as fallback
+  updateImageInForm(originalUrl)
+}
+
+/**
+ * Test if an image URL loads successfully
+ */
+function testImageLoad(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    
+    img.onload = () => {
+      console.log(`✅ Image loaded successfully: ${url.substring(0, 100)}...`)
+      resolve(url)
+    }
+    
+    img.onerror = () => {
+      reject(new Error(`Failed to load image: ${url}`))
+    }
+    
+    // Set timeout for slow proxies
+    setTimeout(() => {
+      reject(new Error(`Timeout loading image: ${url}`))
+    }, 10000) // 10 second timeout
+    
+    img.src = url
+  })
+}
+
+/**
+ * Update the image in the form and preview
+ */
+function updateImageInForm(imageUrl) {
+  const imgUrlElement = document.getElementById('imgUrl')
+  
+  if (imgUrlElement) {
+    imgUrlElement.value = imageUrl
+    console.log('✅ Image URL updated in form:', imageUrl)
+    
+    // Trigger preview update if function exists
+    if (typeof updatePreview === 'function') {
+      updatePreview()
+    }
+    
+    // Trigger any image change events
+    imgUrlElement.dispatchEvent(new Event('input'))
+    imgUrlElement.dispatchEvent(new Event('change'))
   }
 }
 
