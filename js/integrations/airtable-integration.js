@@ -224,35 +224,25 @@ fillFormFromAirtable(airtableData)
   }
 }
 
-/**
- * Load content from Airtable record
- */
 async function loadFromAirtable(recordId = null) {
   try {
-    // Get record ID from URL params or input field
+    // Ensure we have config first
+    const config = await fetchAppConfig()
+
+    // Get record ID
     const id =
       recordId ||
       getRecordIdFromUrl() ||
       document.getElementById('recordId')?.value?.trim()
 
     if (!id) {
-      console.warn('No record ID provided')
-      if (typeof showToast === 'function') {
-        showToast('Por favor ingresa un ID de registro válido', 'warning')
-      }
+      showToast('Por favor ingresa un ID de registro válido', 'warning')
       return
     }
 
-    console.log('Loading record:', id)
+    showToast('🔄 Cargando desde Airtable vía servidor...', 'info')
 
-    if (typeof showToast === 'function') {
-      showToast('Cargando desde Airtable...', 'info')
-    }
-
-    // Get config from server first
-    const config = await fetchAppConfig()
-
-    // Use server proxy instead of direct Airtable call
+    // FIX: Call the AIRTABLE-PROXY endpoint, not the config endpoint
     const response = await fetch(
       `${API_BASE_URL}/airtable-proxy/record/${id}`,
       {
@@ -264,33 +254,43 @@ async function loadFromAirtable(recordId = null) {
     )
 
     if (!response.ok) {
-      const errorData = await response.text()
-      throw new Error(`Error ${response.status}: ${errorData}`)
+      const errorData = await response.json()
+      throw new Error(errorData.error || `HTTP ${response.status}`)
     }
 
-    const data = await response.json()
-    const fields = data.fields
+    const result = await response.json()
+    console.log('✅ Airtable record response:', result)
+    console.log('🔍 Full result structure:', JSON.stringify(result, null, 2))
 
-    console.log('Record data:', data)
+    if (!result.success) {
+      throw new Error(result.error || 'Error loading data')
+    }
+
+    // Extract the data correctly
+    const airtableFields = result.data
+    console.log('🔍 Extracted fields:', airtableFields)
+    console.log('🔍 Fields type:', typeof airtableFields)
+
+    // Validate the data before using it
+    if (!airtableFields || typeof airtableFields !== 'object') {
+      console.error('❌ No valid fields found in response')
+      throw new Error('Invalid data format received from server')
+    }
 
     // Fill form with data
-    fillFormFromAirtable(fields)
+    fillFormFromAirtable(airtableFields)
 
-    // Update preview if function exists
+    // Update preview
     if (typeof updatePreview === 'function') {
       updatePreview()
     }
 
-    if (typeof showToast === 'function') {
-      showToast('✅ Datos cargados correctamente', 'success')
-    }
-
-    return data
+    showToast('✅ Datos cargados desde servidor', 'success')
+    return airtableFields
   } catch (error) {
-    console.error('Error loading from Airtable:', error)
-    if (typeof showToast === 'function') {
-      showToast(`Error: ${error.message}`, 'error')
-    }
+    console.error('❌ Error loading from server:', error)
+    showToast(`❌ Error: ${error.message}`, 'error')
+    throw error
   }
 }
 
