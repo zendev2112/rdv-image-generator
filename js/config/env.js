@@ -5,13 +5,7 @@
 
 export const ENV_CONFIG = {
     // Airtable Configuration (Predefined)
-    AIRTABLE: {
-        API_KEY: 'patXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', // Your API key
-        BASE_ID: 'appXXXXXXXXXXXXXX',  // Your Airtable base ID
-        TABLE_NAME: 'Noticias',        // Your table name
-        TIMEOUT: 30000,
-        MAX_RECORDS: 100
-    },
+
     
     // App Configuration
     APP: {
@@ -21,12 +15,7 @@ export const ENV_CONFIG = {
         DEBUG: false
     },
     
-    // External Services
-    SERVICES: {
-        CLOUDINARY_CLOUD_NAME: 'your-cloudinary-name',
-        SLACK_WEBHOOK_URL: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK',
-        IMAGE_HOSTING_SERVICE: 'cloudinary' // 'cloudinary' | 'imgur' | 'custom'
-    },
+ 
     
     // UI Defaults
     DEFAULTS: {

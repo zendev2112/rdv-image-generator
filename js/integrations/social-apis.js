@@ -4,12 +4,37 @@
  */
 
 // Configuration for your existing RDV-NEWS-API
-const SECURE_API_CONFIG = {
-  baseUrl:
-    window.location.hostname === 'localhost'
-      ? 'http://localhost:3001/api/social-publishing' // Your existing server port
-      : 'https://rdv-news-api.vercel.app/api/social-publishing', // Your production URL
-  apiKey: 'rdv_secure_api_key_2024_xyz123', // Matches your .env
+// Dynamic configuration that gets updated from server
+let SECURE_API_CONFIG = {
+  baseUrl: window.location.hostname === 'localhost'
+    ? 'http://localhost:3001/api/social-media-publishing'
+    : 'https://rdv-news-api.vercel.app/api/social-media-publishing',
+  apiKey: 'rdv_secure_api_key_2024_xyz123',
+}
+
+// Function to update config from server
+async function updateSocialApiConfig() {
+  try {
+    const response = await fetch(`${window.location.hostname === 'localhost' 
+      ? 'http://localhost:3001/api' 
+      : 'https://rdv-news-api.vercel.app/api'}/config/client-config`, {
+      headers: {
+        'X-API-Key': SECURE_API_CONFIG.apiKey,
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (response.ok) {
+      const result = await response.json()
+      if (result.success && result.config.socialApi) {
+        SECURE_API_CONFIG.baseUrl = result.config.socialApi.baseUrl
+        console.log('✅ Social API config updated from server:', SECURE_API_CONFIG)
+      }
+    }
+  } catch (error) {
+    console.warn('Could not update social API config from server:', error)
+    // Continue with hardcoded values
+  }
 }
 
 /**
@@ -399,3 +424,8 @@ if (typeof window !== 'undefined') {
 
 console.log('✅ Secure Social APIs loaded (using RDV-NEWS-API backend)')
 console.log('🔧 API Config:', getApiConfigInfo())
+
+// Update config on load
+document.addEventListener('DOMContentLoaded', () => {
+  updateSocialApiConfig()
+})

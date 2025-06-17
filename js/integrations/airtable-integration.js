@@ -3,14 +3,68 @@
  * No environment variables needed - direct configuration
  */
 
-// PREDEFINED AIRTABLE CONFIGURATION
-const AIRTABLE_CONFIG = {
-  API_KEY:
-    'patlPzRF8YzZNnogn.8b3d2d68528bfa5b0643a212f832966d1a327f6ca85e8c0f373609452318af4c',
-  BASE_ID: 'appWtDlgG21KUI3IN',
-  TABLE_NAME: 'Redes Sociales', // Corrected table name
-  TIMEOUT: 30000,
+// Dynamic configuration from server
+let APP_CONFIG = null
+const CLIENT_API_KEY = 'rdv_secure_api_key_2024_xyz123'
+
+// Base API URL
+const API_BASE_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3001/api'
+  : 'https://rdv-news-api.vercel.app/api'
+
+/**
+ * Fetch configuration from server
+ */
+async function fetchAppConfig() {
+  if (APP_CONFIG) return APP_CONFIG // Return cached config
+  
+  try {
+    showToast('🔄 Cargando configuración desde servidor...', 'info')
+    
+    const response = await fetch(`${API_BASE_URL}/config/client-config`, {
+      headers: {
+        'X-API-Key': CLIENT_API_KEY,
+        'Content-Type': 'application/json'
+      }
+    })
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+    
+    const result = await response.json()
+    
+    if (!result.success) {
+      throw new Error(result.error || 'Error en la configuración del servidor')
+    }
+    
+    APP_CONFIG = result.config
+    console.log('✅ Configuration loaded from server:', APP_CONFIG)
+    
+    showToast('✅ Configuración cargada del servidor', 'success')
+    return APP_CONFIG
+    
+  } catch (error) {
+    console.error('❌ Failed to fetch config from server:', error)
+    showToast(`❌ Error cargando configuración: ${error.message}`, 'error')
+    
+    // Fallback to hardcoded values for smooth transition
+    console.warn('⚠️ Using fallback configuration')
+    APP_CONFIG = {
+      airtable: {
+        baseId: 'appWtDlgG21KUI3IN',
+        tableName: 'Redes Sociales',
+        timeout: 30000
+      }
+    }
+    
+    return APP_CONFIG
+  }
 }
+
+// Keep TABLE_NAME for compatibility
+const TABLE_NAME = 'Redes Sociales'
+const TIMEOUT = 30000
 
 // Enhanced CORS Proxies with more options and dedicated image proxies
 const CORS_PROXIES = [
@@ -80,14 +134,12 @@ async function testAirtableConnection() {
       }
     }
 
-    // Now test access to the specific table
+    // Test via server proxy
     const response = await fetch(
-      `https://api.airtable.com/v0/${
-        AIRTABLE_CONFIG.BASE_ID
-      }/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}?maxRecords=1`,
+      `${API_BASE_URL}/airtable-proxy/test-connection`,
       {
         headers: {
-          Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+          'X-API-Key': CLIENT_API_KEY,
           'Content-Type': 'application/json',
         },
       }
@@ -139,14 +191,15 @@ async function loadFromAirtable(recordId = null) {
       showToast('Cargando desde Airtable...', 'info')
     }
 
-    // Fetch from Airtable using predefined config
+    // Get config from server first
+    const config = await fetchAppConfig()
+
+    // Use server proxy instead of direct Airtable call
     const response = await fetch(
-      `https://api.airtable.com/v0/${
-        AIRTABLE_CONFIG.BASE_ID
-      }/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}/${id}`,
+      `${API_BASE_URL}/airtable-proxy/record/${id}`,
       {
         headers: {
-          Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+          'X-API-Key': CLIENT_API_KEY,
           'Content-Type': 'application/json',
         },
       }
@@ -223,17 +276,19 @@ async function uploadToAirtable() {
 
     console.log('Updating Airtable with data:', updateData)
 
+    // Get config from server first
+    const config = await fetchAppConfig()
+
+    // Use server proxy for upload
     const response = await fetch(
-      `https://api.airtable.com/v0/${
-        AIRTABLE_CONFIG.BASE_ID
-      }/${encodeURIComponent(AIRTABLE_CONFIG.TABLE_NAME)}/${recordId}`,
+      `${API_BASE_URL}/airtable-proxy/record/${recordId}`,
       {
         method: 'PATCH',
         headers: {
-          Authorization: `Bearer ${AIRTABLE_CONFIG.API_KEY}`,
+          'X-API-Key': CLIENT_API_KEY,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(updateData),
+        body: JSON.stringify({ fields: updateData.fields }),
       }
     )
 
