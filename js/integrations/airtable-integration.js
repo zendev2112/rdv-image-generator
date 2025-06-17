@@ -134,16 +134,39 @@ async function testAirtableConnection() {
       }
     }
 
-    // Test via server proxy
-    const response = await fetch(
-      `${API_BASE_URL}/airtable-proxy/test-connection`,
-      {
-        headers: {
-          'X-API-Key': CLIENT_API_KEY,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+// Use server proxy instead of direct Airtable call
+const response = await fetch(`${API_BASE_URL}/airtable-proxy/record/${id}`, {
+  headers: {
+    'X-API-Key': CLIENT_API_KEY,
+    'Content-Type': 'application/json'
+  }
+})
+
+if (!response.ok) {
+  const errorData = await response.json()
+  throw new Error(errorData.error || `HTTP ${response.status}`)
+}
+
+const result = await response.json()
+
+if (!result.success) {
+  throw new Error(result.error || 'Error loading data')
+}
+
+// ADD DEBUGGING HERE:
+console.log('🔍 Server response structure:', result)
+console.log('🔍 Data from server:', result.data)
+console.log('🔍 Data type:', typeof result.data)
+
+// Check what data structure we're getting
+const airtableData = result.data
+
+// ADD MORE DEBUGGING:
+console.log('🔍 Airtable data structure:', airtableData)
+console.log('🔍 Available fields:', Object.keys(airtableData || {}))
+
+// Fill form with data (this is where the error happens)
+fillFormFromAirtable(airtableData)
 
     console.log('Response status:', response.status)
 
