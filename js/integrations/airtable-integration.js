@@ -382,6 +382,41 @@ function fillFormFromAirtable(fields) {
       return
     }
 
+    // ADD THIS DEBUGGING CODE:
+    console.log('🔍 ALL FIELDS DETAILED:')
+    Object.keys(fields).forEach((key) => {
+      console.log(`  - ${key}:`, fields[key])
+    })
+
+    // Look for any field that might contain an image
+    console.log('🔍 LOOKING FOR IMAGE FIELDS:')
+    Object.keys(fields).forEach((key) => {
+      const value = fields[key]
+      if (
+        typeof value === 'string' &&
+        (value.includes('http') ||
+          value.includes('airtable') ||
+          value.includes('.jpg') ||
+          value.includes('.png') ||
+          value.includes('.jpeg') ||
+          value.includes('.gif'))
+      ) {
+        console.log(`  📸 POSSIBLE IMAGE FIELD: ${key} = ${value}`)
+      } else if (Array.isArray(value) && value.length > 0) {
+        console.log(`  📋 ARRAY FIELD: ${key} =`, value)
+        value.forEach((item, index) => {
+          if (item && item.url) {
+            console.log(`    📸 POSSIBLE IMAGE IN ARRAY[${index}]: ${item.url}`)
+          }
+        })
+      } else if (value && typeof value === 'object') {
+        console.log(`  📦 OBJECT FIELD: ${key} =`, value)
+        if (value.url) {
+          console.log(`    📸 POSSIBLE IMAGE IN OBJECT: ${value.url}`)
+        }
+      }
+    })
+
     // Get form elements
     const titleElement = document.getElementById('title')
     const excerptElement = document.getElementById('excerpt')
