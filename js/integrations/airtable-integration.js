@@ -1023,17 +1023,34 @@ function detectImageOrientationAndScale(canvas) {
 }
 
 /**
- * NEW: Apply scaling for horizontal images (show more of the image)
+ * ENHANCED: Apply scaling for horizontal images with gray texture background
  */
 function applyHorizontalImageScaling(canvas) {
   canvas.style.setProperty('background-size', 'contain', 'important')
   canvas.style.setProperty('background-position', 'center center', 'important')
   canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
   
-  // Add a subtle background color for letterboxing
-  canvas.style.setProperty('background-color', '#faf6ef', 'important')
+  // Add subtle gray texture background for letterboxing
+  canvas.style.setProperty('background-color', '#f0f0f0', 'important')
+  canvas.style.setProperty('background-image', `
+    url("${canvas.style.backgroundImage.match(/url\(["']?([^"')]+)["']?\)/)[1]}"),
+    repeating-linear-gradient(
+      45deg,
+      rgba(200, 200, 200, 0.1) 0px,
+      rgba(200, 200, 200, 0.1) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(180, 180, 180, 0.08) 0px,
+      rgba(180, 180, 180, 0.08) 1px,
+      transparent 1px,
+      transparent 8px
+    )
+  `, 'important')
   
-  console.log('✅ Applied horizontal image scaling (contain)')
+  console.log('✅ Applied horizontal image scaling with gray texture background')
 }
 
 /**
@@ -1109,7 +1126,7 @@ function createEnhancedImageOverlay(canvas, imageUrl) {
 }
 
 /**
- * NEW: Detect image orientation and apply scaling to overlay element
+ * ENHANCED: Detect image orientation and apply scaling to overlay with texture
  */
 function detectImageOrientationForOverlay(overlay, imageUrl) {
   const tempImg = new Image()
@@ -1120,11 +1137,29 @@ function detectImageOrientationForOverlay(overlay, imageUrl) {
     console.log(`📐 Overlay image dimensions: ${this.width}x${this.height}, aspect ratio: ${aspectRatio.toFixed(2)}`)
     
     if (aspectRatio > 1.5) {
-      // Wide horizontal image - use contain
-      overlay.style.setProperty('background-size', 'contain', 'important')
-      overlay.style.setProperty('background-position', 'center center', 'important')
-      overlay.style.setProperty('background-color', '#faf6ef', 'important')
-      console.log('📱 Overlay: Wide horizontal - using contain')
+      // Wide horizontal image - use contain with textured background
+      overlay.style.setProperty('background-color', '#f0f0f0', 'important')
+      overlay.style.setProperty('background-image', `
+        url("${imageUrl}"),
+        repeating-linear-gradient(
+          45deg,
+          rgba(200, 200, 200, 0.1) 0px,
+          rgba(200, 200, 200, 0.1) 1px,
+          transparent 1px,
+          transparent 8px
+        ),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(180, 180, 180, 0.08) 0px,
+          rgba(180, 180, 180, 0.08) 1px,
+          transparent 1px,
+          transparent 8px
+        )
+      `, 'important')
+      overlay.style.setProperty('background-size', 'contain, 8px 8px, 8px 8px', 'important')
+      overlay.style.setProperty('background-position', 'center center, 0 0, 0 0', 'important')
+      overlay.style.setProperty('background-repeat', 'no-repeat, repeat, repeat', 'important')
+      console.log('📱 Overlay: Wide horizontal - using contain with gray texture')
     } else if (aspectRatio < 0.8) {
       // Tall vertical image - use cover with top focus
       overlay.style.setProperty('background-size', 'cover', 'important')
