@@ -2,6 +2,173 @@
 <html lang="es">
 
 <head>
+  <script>
+    /**
+     * RDV News App - Password Protection
+     * Simple but effective protection for single-user news operation
+     */
+    (function () {
+      'use strict';
+
+      // Configuration
+      const CONFIG = {
+        password: 'RDV-News-2024!', // Change this to your preferred password
+        sessionKey: 'rdv-news-authenticated',
+        sessionDuration: 8 * 60 * 60 * 1000, // 8 hours in milliseconds
+        maxAttempts: 3
+      };
+
+      // Check if already authenticated
+      function isAuthenticated() {
+        const authData = sessionStorage.getItem(CONFIG.sessionKey);
+
+        if (!authData) return false;
+
+        try {
+          const data = JSON.parse(authData);
+          const now = Date.now();
+
+          // Check if session has expired
+          if (now > data.expiry) {
+            sessionStorage.removeItem(CONFIG.sessionKey);
+            return false;
+          }
+
+          return true;
+        } catch (error) {
+          sessionStorage.removeItem(CONFIG.sessionKey);
+          return false;
+        }
+      }
+
+      // Set authentication
+      function setAuthenticated() {
+        const expiry = Date.now() + CONFIG.sessionDuration;
+        const authData = {
+          authenticated: true,
+          timestamp: Date.now(),
+          expiry: expiry
+        };
+
+        sessionStorage.setItem(CONFIG.sessionKey, JSON.stringify(authData));
+      }
+
+      // Get failed attempts count
+      function getFailedAttempts() {
+        const attempts = localStorage.getItem('rdv-failed-attempts');
+        return attempts ? parseInt(attempts) : 0;
+      }
+
+      // Increment failed attempts
+      function incrementFailedAttempts() {
+        const attempts = getFailedAttempts() + 1;
+        localStorage.setItem('rdv-failed-attempts', attempts.toString());
+        return attempts;
+      }
+
+      // Reset failed attempts
+      function resetFailedAttempts() {
+        localStorage.removeItem('rdv-failed-attempts');
+      }
+
+      // Show login prompt
+      function showLogin() {
+        const attempts = getFailedAttempts();
+
+        if (attempts >= CONFIG.maxAttempts) {
+          alert('Demasiados intentos fallidos. Acceso bloqueado.');
+          window.location.href = 'https://google.com';
+          return;
+        }
+
+        const remainingAttempts = CONFIG.maxAttempts - attempts;
+        const message = attempts > 0
+          ? `Contraseña incorrecta. Te quedan ${remainingAttempts} intentos.\n\nIngresa la contraseña para RDV News:`
+          : 'Acceso restringido a RDV News\n\nIngresa la contraseña:';
+
+        const password = prompt(message);
+
+        if (password === null) {
+          // User cancelled
+          window.location.href = 'https://google.com';
+          return;
+        }
+
+        if (password === CONFIG.password) {
+          setAuthenticated();
+          resetFailedAttempts();
+          showWelcomeMessage();
+        } else {
+          const newAttempts = incrementFailedAttempts();
+
+          if (newAttempts >= CONFIG.maxAttempts) {
+            alert('Demasiados intentos fallidos. Acceso bloqueado.');
+            window.location.href = 'https://google.com';
+          } else {
+            showLogin(); // Try again
+          }
+        }
+      }
+
+      // Show welcome message
+      function showWelcomeMessage() {
+        console.log('✅ RDV News - Acceso autorizado');
+
+        // Optional: Show toast notification if showToast function exists
+        setTimeout(() => {
+          if (typeof showToast === 'function') {
+            showToast('✅ Sesión iniciada correctamente', 'success');
+          }
+        }, 1000);
+      }
+
+      // Add logout functionality
+      function addLogoutButton() {
+        document.addEventListener('DOMContentLoaded', function () {
+          // Create logout button
+          const logoutBtn = document.createElement('button');
+          logoutBtn.innerHTML = '🔒 Cerrar Sesión';
+          logoutBtn.style.cssText = `
+              position: fixed;
+              top: 10px;
+              right: 10px;
+              background: #dc3545;
+              color: white;
+              border: none;
+              padding: 8px 12px;
+              border-radius: 4px;
+              cursor: pointer;
+              z-index: 9999;
+              font-size: 12px;
+              font-family: Arial, sans-serif;
+            `;
+
+          logoutBtn.onclick = function () {
+            if (confirm('¿Estás seguro que quieres cerrar sesión?')) {
+              sessionStorage.removeItem(CONFIG.sessionKey);
+              location.reload();
+            }
+          };
+
+          document.body.appendChild(logoutBtn);
+        });
+      }
+
+      // Initialize protection
+      function init() {
+        if (!isAuthenticated()) {
+          showLogin();
+        } else {
+          showWelcomeMessage();
+          addLogoutButton();
+        }
+      }
+
+      // Run immediately
+      init();
+
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RDV Image Generator Pro</title>
