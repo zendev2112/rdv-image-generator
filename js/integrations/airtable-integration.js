@@ -1013,7 +1013,7 @@ function createEnhancedImageOverlay(canvas, imageUrl) {
   Array.from(canvas.children).forEach((child, index) => {
     if (index > 0) { // Skip the overlay itself
       child.style.position = 'relative'
-      child.style.zIndex = '2'
+      child.style.
     }
   })
   
@@ -1658,7 +1658,7 @@ function generateInstagramTemplateHTML(content, templateType) {
 }
 
 /**
- * FIXED: Generate Instagram Post HTML with lighter gradient and better image scaling
+ * FIXED: Generate Instagram Post HTML without background covering the image
  */
 function generateInstagramPostHTML(content) {
   return `
@@ -1666,7 +1666,7 @@ function generateInstagramPostHTML(content) {
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, #faf6ef 0%, rgba(250, 246, 239, 0.9) 100%);
+      background: transparent;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -1680,7 +1680,7 @@ function generateInstagramPostHTML(content) {
       background-position: center;
       background-repeat: no-repeat;
     ">
-      <!-- FIXED: Much lighter gradient overlay that doesn't cover the image -->
+      <!-- MUCH LIGHTER gradient overlay - only at top and bottom edges -->
       <div style="
         position: absolute;
         top: 0;
@@ -1689,31 +1689,31 @@ function generateInstagramPostHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(250, 246, 239, 0.7) 0%, 
-          rgba(250, 246, 239, 0.3) 12%, 
-          transparent 20%, 
-          transparent 80%, 
-          rgba(250, 246, 239, 0.3) 88%, 
-          rgba(250, 246, 239, 0.75) 100%
+          rgba(250, 246, 239, 0.4) 0%, 
+          rgba(250, 246, 239, 0.1) 8%, 
+          transparent 15%, 
+          transparent 85%, 
+          rgba(250, 246, 239, 0.1) 92%, 
+          rgba(250, 246, 239, 0.5) 100%
         );
         z-index: 1;
         pointer-events: none;
       "></div>
 
-      <!-- Header - with enhanced backdrop for better readability -->
+      <!-- Header with stronger backdrop -->
       <div style="
         display: flex; 
         align-items: center; 
         gap: 10px; 
         z-index: 3; 
         position: relative;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
         padding: 12px 16px;
         border-radius: 16px;
         align-self: flex-start;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.9);
       ">
         <div style="
           width: 32px;
@@ -1734,22 +1734,20 @@ function generateInstagramPostHTML(content) {
         <div style="margin-left: auto; color: #ff0808; font-size: 18px;">📷</div>
       </div>
 
-      <!-- REMOVED: Empty space div that was preventing proper image display -->
-
-      <!-- Main Content - enhanced backdrop for better readability over images -->
+      <!-- Main Content with very strong backdrop to stand out over image -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
       ">
-        <!-- Content Background with stronger backdrop -->
+        <!-- Content Background with maximum readability -->
         <div style="
-          background: rgba(255, 255, 255, 0.92);
-          backdrop-filter: blur(20px);
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(25px);
           border-radius: 20px;
           padding: 20px;
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-          border: 1px solid rgba(255, 255, 255, 0.9);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          border: 2px solid rgba(255, 255, 255, 0.95);
         ">
           <!-- Category Badge -->
           <div style="
@@ -1772,7 +1770,6 @@ function generateInstagramPostHTML(content) {
             line-height: 1.2;
             margin: 0 0 10px 0;
             color: #000000;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
           ">${content.title || 'Título de la noticia'}</h1>
 
           <!-- Excerpt -->
@@ -1782,7 +1779,6 @@ function generateInstagramPostHTML(content) {
             line-height: 1.3;
             margin: 0 0 12px 0;
             color: #292929;
-            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
           ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
 
           <!-- Footer with hashtags and source -->
@@ -1796,7 +1792,6 @@ function generateInstagramPostHTML(content) {
               font-size: 11px;
               color: #ff0808;
               font-weight: 600;
-              text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
             ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
             
             <div style="
