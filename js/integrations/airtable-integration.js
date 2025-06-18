@@ -936,16 +936,18 @@ function createInstagramImageInfo(canvas, imageUrl) {
 /**
  * NEW: Optimize image display specifically for Instagram posts
  */
+/**
+ * ENHANCED: Optimize image display specifically for Instagram posts with smart scaling
+ */
 function optimizeImageForInstagram(canvas) {
   // Check if this is an Instagram post template
   const isInstagramPost = canvas.querySelector('.instagram-post-template')
   
   if (isInstagramPost) {
-    console.log('🎯 Optimizing image for Instagram post template')
+    console.log('🎯 Optimizing image for Instagram post template with smart scaling')
     
-    // Apply Instagram-specific image optimizations
-    canvas.style.setProperty('background-size', 'cover', 'important')
-    canvas.style.setProperty('background-position', 'center 30%', 'important') // Slightly favor top
+    // For Instagram posts (1:1), use contain for horizontal images and cover for vertical
+    detectImageOrientationAndScale(canvas)
     
     // Create subtle image enhancement overlay
     const existingEnhancement = canvas.querySelector('.instagram-image-enhancement')
@@ -960,10 +962,10 @@ function optimizeImageForInstagram(canvas) {
         height: 100%;
         background: linear-gradient(
           135deg,
-          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.03) 0%,
           transparent 30%,
           transparent 70%,
-          rgba(0, 0, 0, 0.05) 100%
+          rgba(0, 0, 0, 0.03) 100%
         );
         z-index: 0;
         pointer-events: none;
@@ -976,10 +978,91 @@ function optimizeImageForInstagram(canvas) {
 }
 
 /**
- * ENHANCED: Create image overlay with better scaling
+ * NEW: Detect image orientation and apply appropriate scaling
+ */
+function detectImageOrientationAndScale(canvas) {
+  const currentImage = canvas.style.backgroundImage
+  if (!currentImage || currentImage === 'none') return
+  
+  // Extract URL from background-image
+  const urlMatch = currentImage.match(/url\(["']?([^"')]+)["']?\)/)
+  if (!urlMatch) return
+  
+  const imageUrl = urlMatch[1]
+  
+  // Create a temporary image to get dimensions
+  const tempImg = new Image()
+  tempImg.crossOrigin = 'anonymous'
+  
+  tempImg.onload = function() {
+    const aspectRatio = this.width / this.height
+    console.log(`📐 Image dimensions: ${this.width}x${this.height}, aspect ratio: ${aspectRatio.toFixed(2)}`)
+    
+    // Apply scaling based on aspect ratio
+    if (aspectRatio > 1.5) {
+      // Wide horizontal image - use contain to show full image
+      console.log('📱 Wide horizontal image detected - using contain + smart positioning')
+      applyHorizontalImageScaling(canvas)
+    } else if (aspectRatio < 0.8) {
+      // Tall vertical image - use cover with top focus
+      console.log('📱 Vertical image detected - using cover with top focus')
+      applyVerticalImageScaling(canvas)
+    } else {
+      // Square-ish image - use cover with center
+      console.log('📱 Square-ish image detected - using standard cover')
+      applySquareImageScaling(canvas)
+    }
+  }
+  
+  tempImg.onerror = function() {
+    console.log('⚠️ Could not detect image orientation, using default scaling')
+    applySquareImageScaling(canvas)
+  }
+  
+  tempImg.src = imageUrl
+}
+
+/**
+ * NEW: Apply scaling for horizontal images (show more of the image)
+ */
+function applyHorizontalImageScaling(canvas) {
+  canvas.style.setProperty('background-size', 'contain', 'important')
+  canvas.style.setProperty('background-position', 'center center', 'important')
+  canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
+  
+  // Add a subtle background color for letterboxing
+  canvas.style.setProperty('background-color', '#faf6ef', 'important')
+  
+  console.log('✅ Applied horizontal image scaling (contain)')
+}
+
+/**
+ * NEW: Apply scaling for vertical images
+ */
+function applyVerticalImageScaling(canvas) {
+  canvas.style.setProperty('background-size', 'cover', 'important')
+  canvas.style.setProperty('background-position', 'center top', 'important')
+  canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
+  
+  console.log('✅ Applied vertical image scaling (cover with top focus)')
+}
+
+/**
+ * NEW: Apply scaling for square-ish images
+ */
+function applySquareImageScaling(canvas) {
+  canvas.style.setProperty('background-size', 'cover', 'important')
+  canvas.style.setProperty('background-position', 'center center', 'important')
+  canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
+  
+  console.log('✅ Applied square image scaling (standard cover)')
+}
+
+/**
+ * ENHANCED: Create image overlay with smart scaling based on orientation
  */
 function createEnhancedImageOverlay(canvas, imageUrl) {
-  console.log('🔄 Creating enhanced image overlay')
+  console.log('🔄 Creating enhanced image overlay with smart scaling')
   
   // Remove existing overlay
   const existingOverlay = canvas.querySelector('.canvas-image-overlay')
@@ -996,7 +1079,7 @@ function createEnhancedImageOverlay(canvas, imageUrl) {
     height: 100%;
     background-image: url("${imageUrl}");
     background-size: cover;
-    background-position: center 30%;
+    background-position: center center;
     background-repeat: no-repeat;
     background-attachment: scroll;
     z-index: 0;
@@ -1019,16 +1102,54 @@ function createEnhancedImageOverlay(canvas, imageUrl) {
   
   hideCanvasPlaceholder(canvas)
   
-  // Apply Instagram optimizations if needed
-  optimizeImageForInstagram(canvas)
+  // Apply smart scaling to the overlay
+  detectImageOrientationForOverlay(overlay, imageUrl)
   
-  console.log('✅ Enhanced image overlay created successfully')
+  console.log('✅ Enhanced image overlay created with smart scaling')
 }
+
 /**
- * ENHANCED: Apply image to canvas with better scaling for Instagram posts
+ * NEW: Detect image orientation and apply scaling to overlay element
+ */
+function detectImageOrientationForOverlay(overlay, imageUrl) {
+  const tempImg = new Image()
+  tempImg.crossOrigin = 'anonymous'
+  
+  tempImg.onload = function() {
+    const aspectRatio = this.width / this.height
+    console.log(`📐 Overlay image dimensions: ${this.width}x${this.height}, aspect ratio: ${aspectRatio.toFixed(2)}`)
+    
+    if (aspectRatio > 1.5) {
+      // Wide horizontal image - use contain
+      overlay.style.setProperty('background-size', 'contain', 'important')
+      overlay.style.setProperty('background-position', 'center center', 'important')
+      overlay.style.setProperty('background-color', '#faf6ef', 'important')
+      console.log('📱 Overlay: Wide horizontal - using contain')
+    } else if (aspectRatio < 0.8) {
+      // Tall vertical image - use cover with top focus
+      overlay.style.setProperty('background-size', 'cover', 'important')
+      overlay.style.setProperty('background-position', 'center top', 'important')
+      console.log('📱 Overlay: Vertical - using cover with top focus')
+    } else {
+      // Square-ish image - use cover with center
+      overlay.style.setProperty('background-size', 'cover', 'important')
+      overlay.style.setProperty('background-position', 'center center', 'important')
+      console.log('📱 Overlay: Square-ish - using standard cover')
+    }
+  }
+  
+  tempImg.onerror = function() {
+    console.log('⚠️ Could not detect overlay image orientation')
+  }
+  
+  tempImg.src = imageUrl
+}
+
+/**
+ * ENHANCED: Apply image to canvas with smart scaling for Instagram posts
  */
 function applyImageToCanvasMultiple(canvas, imageUrl) {
-  console.log('🎨 Applying image with enhanced scaling')
+  console.log('🎨 Applying image with smart scaling for Instagram')
   
   // Prepare canvas
   canvas.style.display = 'block'
@@ -1036,13 +1157,16 @@ function applyImageToCanvasMultiple(canvas, imageUrl) {
   canvas.style.width = '100%'
   canvas.style.minHeight = '600px'
   
-  // ENHANCED: Better CSS Background with optimized scaling
+  // ENHANCED: Better CSS Background with smart scaling
   try {
     canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important')
-    canvas.style.setProperty('background-size', 'cover', 'important')
-    canvas.style.setProperty('background-position', 'center center', 'important')
     canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
     canvas.style.setProperty('background-attachment', 'scroll', 'important')
+    
+    // Initially set cover, will be adjusted by orientation detection
+    canvas.style.setProperty('background-size', 'cover', 'important')
+    canvas.style.setProperty('background-position', 'center center', 'important')
+    
     canvas.setAttribute('data-bg-loaded', 'true')
     
     // Check if CSS background worked and optimize it
@@ -1052,13 +1176,13 @@ function applyImageToCanvasMultiple(canvas, imageUrl) {
         console.warn('CSS background failed, trying overlay method')
         createEnhancedImageOverlay(canvas, imageUrl)
       } else {
-        console.log('✅ CSS background applied with enhanced scaling')
+        console.log('✅ CSS background applied, optimizing for Instagram')
         hideCanvasPlaceholder(canvas)
         
-        // Add image optimization for Instagram posts
+        // Add smart Instagram optimization
         optimizeImageForInstagram(canvas)
       }
-    }, 200)
+    }, 300) // Increased timeout for better detection
     
   } catch (error) {
     console.warn('CSS background method failed:', error)
