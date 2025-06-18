@@ -1520,10 +1520,14 @@ function applyInstagramContentToCanvas(content, templateType) {
 /**
  * MISSING FUNCTION: Set canvas dimensions for Instagram
  */
+/**
+ * UPDATED: Set canvas dimensions for Instagram with portrait support
+ */
 function setCanvasForInstagram(canvas, templateType) {
   const dimensions = {
     'story': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' },
     'post': { width: 1080, height: 1080, ratio: '1/1', maxWidth: '400px' },
+    'portrait': { width: 1080, height: 1350, ratio: '4/5', maxWidth: '380px' }, // NEW
     'reel-cover': { width: 1080, height: 1920, ratio: '9/16', maxWidth: '350px' }
   }
   
@@ -1549,6 +1553,8 @@ function generateInstagramTemplateHTML(content, templateType) {
       return generateInstagramStoryHTML(content)
     case 'post':
       return generateInstagramPostHTML(content)
+    case 'portrait':  // NEW
+      return generateInstagramPortraitPostHTML(content)
     case 'reel-cover':
       return generateInstagramReelCoverHTML(content)
     default:
@@ -1953,6 +1959,161 @@ function generateInstagramReelCoverHTML(content) {
         ">
           <span>🎵</span>
           <span>Audio original • ${content.source || 'RDV'}</span>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Generate Instagram Portrait Post HTML (4:5 aspect ratio)
+ */
+function generateInstagramPortraitPostHTML(content) {
+  return `
+    <div class="instagram-portrait-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 30px 25px;
+      color: #262626;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 4/5;
+      border-radius: 8px;
+      overflow: hidden;
+    ">
+      <!-- Strategic gradient overlay for portrait -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg, 
+          rgba(255,255,255,0.8) 0%, 
+          rgba(255,255,255,0.4) 12%, 
+          transparent 20%, 
+          transparent 80%, 
+          rgba(255,255,255,0.4) 88%, 
+          rgba(255,255,255,0.9) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      "></div>
+
+      <!-- Header - compact -->
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        z-index: 3; 
+        position: relative;
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(10px);
+        padding: 12px 16px;
+        border-radius: 16px;
+        align-self: flex-start;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      ">
+        <div style="
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(45deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+          font-size: 14px;
+        ">RDV</div>
+        <div>
+          <div style="font-weight: 600; font-size: 13px; color: #262626;">radiodelvolga</div>
+          <div style="font-size: 11px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
+        </div>
+        <div style="margin-left: auto; color: #833ab4; font-size: 18px;">📷</div>
+      </div>
+
+      <!-- Empty space for image to show (larger area for portrait) -->
+      <div style="flex: 1; min-height: 200px;"></div>
+
+      <!-- Main Content - optimized for portrait -->
+      <div style="
+        z-index: 3; 
+        position: relative;
+      ">
+        <!-- Content Background -->
+        <div style="
+          background: rgba(255,255,255,0.9);
+          backdrop-filter: blur(15px);
+          border-radius: 20px;
+          padding: 25px 20px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+          border: 1px solid rgba(255,255,255,0.3);
+        ">
+          <!-- Category Badge -->
+          <div style="
+            background: linear-gradient(45deg, #833ab4, #fd1d1d);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+          ">${content.category || 'NOTICIAS'}</div>
+
+          <!-- Title - larger for portrait -->
+          <h1 style="
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 12px 0;
+            color: #262626;
+          ">${content.title || 'Título de la noticia'}</h1>
+
+          <!-- Excerpt - more space in portrait -->
+          <p style="
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0 0 15px 0;
+            color: #555;
+          ">${(content.excerpt || 'Descripción de la noticia').length > 140 ? content.excerpt.substring(0, 140) + '...' : content.excerpt}</p>
+
+          <!-- Footer with hashtags and source -->
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+          ">
+            <div style="
+              font-size: 12px;
+              color: #385185;
+              font-weight: 600;
+              line-height: 1.3;
+            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 4).join(' ')}</div>
+            
+            <div style="
+              background: rgba(131, 58, 180, 0.1);
+              border: 1px solid rgba(131, 58, 180, 0.3);
+              padding: 6px 12px;
+              border-radius: 12px;
+              font-size: 11px;
+              font-weight: 600;
+              color: #833ab4;
+            ">${content.source || 'RDV'}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -3180,6 +3341,8 @@ window.generateInstagramTemplateHTML = generateInstagramTemplateHTML
 window.generateInstagramPostHTML = generateInstagramPostHTML
 window.generateInstagramStoryHTML = generateInstagramStoryHTML
 window.generateInstagramReelCoverHTML = generateInstagramReelCoverHTML
+// Export new portrait post function
+window.generateInstagramPortraitPostHTML = generateInstagramPortraitPostHTML
 // Add Instagram CORS handling functions to global scope
 window.isInstagramImage = isInstagramImage
 window.applyInstagramImageDirect = applyInstagramImageDirect
