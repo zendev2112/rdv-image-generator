@@ -1565,24 +1565,27 @@ function generateInstagramTemplateHTML(content, templateType) {
 /**
  * FIXED: Generate Instagram Post HTML with text at bottom and strategic gradient
  */
+/**
+ * UPDATED: Generate Instagram Post HTML with new color palette
+ */
 function generateInstagramPostHTML(content) {
   return `
     <div class="instagram-post-template" style="
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
+      background: linear-gradient(135deg, #faf6ef 0%, rgba(250, 246, 239, 0.9) 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 25px;
-      color: #262626;
+      color: #000000;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       aspect-ratio: 1/1;
       border-radius: 8px;
       overflow: hidden;
     ">
-      <!-- Strategic gradient overlay - only top and bottom for posts -->
+      <!-- Strategic gradient overlay - updated with new color palette -->
       <div style="
         position: absolute;
         top: 0;
@@ -1591,71 +1594,72 @@ function generateInstagramPostHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(255,255,255,0.8) 0%, 
-          rgba(255,255,255,0.4) 15%, 
+          rgba(250, 246, 239, 0.9) 0%, 
+          rgba(250, 246, 239, 0.6) 15%, 
           transparent 25%, 
           transparent 75%, 
-          rgba(255,255,255,0.4) 85%, 
-          rgba(255,255,255,0.9) 100%
+          rgba(250, 246, 239, 0.6) 85%, 
+          rgba(250, 246, 239, 0.95) 100%
         );
         z-index: 1;
         pointer-events: none;
       "></div>
 
-      <!-- Header - compact -->
+      <!-- Header - updated colors -->
       <div style="
         display: flex; 
         align-items: center; 
         gap: 10px; 
         z-index: 3; 
         position: relative;
-        background: rgba(255,255,255,0.85);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
         padding: 12px 16px;
         border-radius: 16px;
         align-self: flex-start;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(250, 246, 239, 0.5);
       ">
         <div style="
           width: 32px;
           height: 32px;
-          background: linear-gradient(45deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+          background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
-          color: white;
+          color: #ffffff;
           font-size: 14px;
         ">RDV</div>
         <div>
-          <div style="font-weight: 600; font-size: 13px; color: #262626;">radiodelvolga</div>
-          <div style="font-size: 11px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
+          <div style="font-weight: 600; font-size: 13px; color: #000000;">radiodelvolga</div>
+          <div style="font-size: 11px; color: #292929;">${content.date || 'Hoy'}</div>
         </div>
-        <div style="margin-left: auto; color: #833ab4; font-size: 18px;">📷</div>
+        <div style="margin-left: auto; color: #ff0808; font-size: 18px;">📷</div>
       </div>
 
       <!-- Empty space for image to show -->
       <div style="flex: 1;"></div>
 
-      <!-- Main Content - moved to bottom -->
+      <!-- Main Content - updated with new color palette -->
       <div style="
         z-index: 3; 
         position: relative;
       ">
         <!-- Content Background -->
         <div style="
-          background: rgba(255,255,255,0.9);
+          background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(15px);
           border-radius: 20px;
           padding: 20px;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-          border: 1px solid rgba(255,255,255,0.3);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+          border: 1px solid rgba(250, 246, 239, 0.8);
         ">
-          <!-- Category Badge -->
+          <!-- Category Badge - updated colors -->
           <div style="
-            background: linear-gradient(45deg, #833ab4, #fd1d1d);
-            color: white;
+            background: linear-gradient(45deg, #ff0808, #292929);
+            color: #ffffff;
             padding: 6px 12px;
             border-radius: 15px;
             font-size: 10px;
@@ -1671,7 +1675,7 @@ function generateInstagramPostHTML(content) {
             font-weight: 700;
             line-height: 1.2;
             margin: 0 0 10px 0;
-            color: #262626;
+            color: #000000;
           ">${content.title || 'Título de la noticia'}</h1>
 
           <!-- Excerpt -->
@@ -1680,7 +1684,7 @@ function generateInstagramPostHTML(content) {
             font-weight: 400;
             line-height: 1.3;
             margin: 0 0 12px 0;
-            color: #555;
+            color: #292929;
           ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
 
           <!-- Footer with hashtags and source -->
@@ -1692,18 +1696,18 @@ function generateInstagramPostHTML(content) {
           ">
             <div style="
               font-size: 11px;
-              color: #385185;
+              color: #ff0808;
               font-weight: 600;
             ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
             
             <div style="
-              background: rgba(131, 58, 180, 0.1);
-              border: 1px solid rgba(131, 58, 180, 0.3);
+              background: rgba(255, 8, 8, 0.1);
+              border: 1px solid rgba(255, 8, 8, 0.3);
               padding: 4px 8px;
               border-radius: 8px;
               font-size: 10px;
               font-weight: 600;
-              color: #833ab4;
+              color: #ff0808;
             ">${content.source || 'RDV'}</div>
           </div>
         </div>
