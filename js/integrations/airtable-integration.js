@@ -934,10 +934,101 @@ function createInstagramImageInfo(canvas, imageUrl) {
 }
 
 /**
- * Apply image to canvas with multiple rendering methods
+ * NEW: Optimize image display specifically for Instagram posts
+ */
+function optimizeImageForInstagram(canvas) {
+  // Check if this is an Instagram post template
+  const isInstagramPost = canvas.querySelector('.instagram-post-template')
+  
+  if (isInstagramPost) {
+    console.log('🎯 Optimizing image for Instagram post template')
+    
+    // Apply Instagram-specific image optimizations
+    canvas.style.setProperty('background-size', 'cover', 'important')
+    canvas.style.setProperty('background-position', 'center 30%', 'important') // Slightly favor top
+    
+    // Create subtle image enhancement overlay
+    const existingEnhancement = canvas.querySelector('.instagram-image-enhancement')
+    if (!existingEnhancement) {
+      const enhancement = document.createElement('div')
+      enhancement.className = 'instagram-image-enhancement'
+      enhancement.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          transparent 30%,
+          transparent 70%,
+          rgba(0, 0, 0, 0.05) 100%
+        );
+        z-index: 0;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+      `
+      
+      canvas.insertBefore(enhancement, canvas.firstChild)
+    }
+  }
+}
+
+/**
+ * ENHANCED: Create image overlay with better scaling
+ */
+function createEnhancedImageOverlay(canvas, imageUrl) {
+  console.log('🔄 Creating enhanced image overlay')
+  
+  // Remove existing overlay
+  const existingOverlay = canvas.querySelector('.canvas-image-overlay')
+  if (existingOverlay) existingOverlay.remove()
+  
+  // Create enhanced image overlay element
+  const overlay = document.createElement('div')
+  overlay.className = 'canvas-image-overlay'
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("${imageUrl}");
+    background-size: cover;
+    background-position: center 30%;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    z-index: 0;
+    pointer-events: none;
+  `
+  
+  // Ensure canvas is positioned relative
+  canvas.style.position = 'relative'
+  
+  // Insert overlay as first child
+  canvas.insertBefore(overlay, canvas.firstChild)
+  
+  // Ensure other content is above overlay
+  Array.from(canvas.children).forEach((child, index) => {
+    if (index > 0) { // Skip the overlay itself
+      child.style.position = 'relative'
+      child.style.zIndex = '2'
+    }
+  })
+  
+  hideCanvasPlaceholder(canvas)
+  
+  // Apply Instagram optimizations if needed
+  optimizeImageForInstagram(canvas)
+  
+  console.log('✅ Enhanced image overlay created successfully')
+}
+/**
+ * ENHANCED: Apply image to canvas with better scaling for Instagram posts
  */
 function applyImageToCanvasMultiple(canvas, imageUrl) {
-  console.log('🎨 Applying image with multiple methods')
+  console.log('🎨 Applying image with enhanced scaling')
   
   // Prepare canvas
   canvas.style.display = 'block'
@@ -945,29 +1036,33 @@ function applyImageToCanvasMultiple(canvas, imageUrl) {
   canvas.style.width = '100%'
   canvas.style.minHeight = '600px'
   
-  // Method 1: CSS Background
+  // ENHANCED: Better CSS Background with optimized scaling
   try {
     canvas.style.setProperty('background-image', `url("${imageUrl}")`, 'important')
     canvas.style.setProperty('background-size', 'cover', 'important')
-    canvas.style.setProperty('background-position', 'center', 'important')
+    canvas.style.setProperty('background-position', 'center center', 'important')
     canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
+    canvas.style.setProperty('background-attachment', 'scroll', 'important')
     canvas.setAttribute('data-bg-loaded', 'true')
     
-    // Check if CSS background worked
+    // Check if CSS background worked and optimize it
     setTimeout(() => {
       const computedStyle = window.getComputedStyle(canvas)
       if (computedStyle.backgroundImage === 'none' || computedStyle.backgroundImage === '') {
         console.warn('CSS background failed, trying overlay method')
-        createImageOverlay(canvas, imageUrl)
+        createEnhancedImageOverlay(canvas, imageUrl)
       } else {
-        console.log('✅ CSS background applied successfully')
+        console.log('✅ CSS background applied with enhanced scaling')
         hideCanvasPlaceholder(canvas)
+        
+        // Add image optimization for Instagram posts
+        optimizeImageForInstagram(canvas)
       }
     }, 200)
     
   } catch (error) {
     console.warn('CSS background method failed:', error)
-    createImageOverlay(canvas, imageUrl)
+    createEnhancedImageOverlay(canvas, imageUrl)
   }
 }
 
@@ -1563,10 +1658,7 @@ function generateInstagramTemplateHTML(content, templateType) {
 }
 
 /**
- * FIXED: Generate Instagram Post HTML with text at bottom and strategic gradient
- */
-/**
- * UPDATED: Generate Instagram Post HTML with new color palette
+ * FIXED: Generate Instagram Post HTML with lighter gradient and better image scaling
  */
 function generateInstagramPostHTML(content) {
   return `
@@ -1584,8 +1676,11 @@ function generateInstagramPostHTML(content) {
       aspect-ratio: 1/1;
       border-radius: 8px;
       overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     ">
-      <!-- Strategic gradient overlay - updated with new color palette -->
+      <!-- FIXED: Much lighter gradient overlay that doesn't cover the image -->
       <div style="
         position: absolute;
         top: 0;
@@ -1594,31 +1689,31 @@ function generateInstagramPostHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(250, 246, 239, 0.9) 0%, 
-          rgba(250, 246, 239, 0.6) 15%, 
-          transparent 25%, 
-          transparent 75%, 
-          rgba(250, 246, 239, 0.6) 85%, 
-          rgba(250, 246, 239, 0.95) 100%
+          rgba(250, 246, 239, 0.7) 0%, 
+          rgba(250, 246, 239, 0.3) 12%, 
+          transparent 20%, 
+          transparent 80%, 
+          rgba(250, 246, 239, 0.3) 88%, 
+          rgba(250, 246, 239, 0.75) 100%
         );
         z-index: 1;
         pointer-events: none;
       "></div>
 
-      <!-- Header - updated colors -->
+      <!-- Header - with enhanced backdrop for better readability -->
       <div style="
         display: flex; 
         align-items: center; 
         gap: 10px; 
         z-index: 3; 
         position: relative;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(12px);
         padding: 12px 16px;
         border-radius: 16px;
         align-self: flex-start;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(250, 246, 239, 0.5);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.8);
       ">
         <div style="
           width: 32px;
@@ -1639,24 +1734,24 @@ function generateInstagramPostHTML(content) {
         <div style="margin-left: auto; color: #ff0808; font-size: 18px;">📷</div>
       </div>
 
-      <!-- Empty space for image to show -->
-      <div style="flex: 1;"></div>
+      <!-- REMOVED: Empty space div that was preventing proper image display -->
 
-      <!-- Main Content - updated with new color palette -->
+      <!-- Main Content - enhanced backdrop for better readability over images -->
       <div style="
         z-index: 3; 
         position: relative;
+        margin-top: auto;
       ">
-        <!-- Content Background -->
+        <!-- Content Background with stronger backdrop -->
         <div style="
-          background: rgba(255, 255, 255, 0.95);
-          backdrop-filter: blur(15px);
+          background: rgba(255, 255, 255, 0.92);
+          backdrop-filter: blur(20px);
           border-radius: 20px;
           padding: 20px;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-          border: 1px solid rgba(250, 246, 239, 0.8);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(255, 255, 255, 0.9);
         ">
-          <!-- Category Badge - updated colors -->
+          <!-- Category Badge -->
           <div style="
             background: linear-gradient(45deg, #ff0808, #292929);
             color: #ffffff;
@@ -1667,6 +1762,7 @@ function generateInstagramPostHTML(content) {
             text-transform: uppercase;
             display: inline-block;
             margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
           ">${content.category || 'NOTICIAS'}</div>
 
           <!-- Title -->
@@ -1676,6 +1772,7 @@ function generateInstagramPostHTML(content) {
             line-height: 1.2;
             margin: 0 0 10px 0;
             color: #000000;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
           ">${content.title || 'Título de la noticia'}</h1>
 
           <!-- Excerpt -->
@@ -1685,6 +1782,7 @@ function generateInstagramPostHTML(content) {
             line-height: 1.3;
             margin: 0 0 12px 0;
             color: #292929;
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
           ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
 
           <!-- Footer with hashtags and source -->
@@ -1698,16 +1796,18 @@ function generateInstagramPostHTML(content) {
               font-size: 11px;
               color: #ff0808;
               font-weight: 600;
+              text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
             ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
             
             <div style="
-              background: rgba(255, 8, 8, 0.1);
-              border: 1px solid rgba(255, 8, 8, 0.3);
+              background: rgba(255, 8, 8, 0.15);
+              border: 1px solid rgba(255, 8, 8, 0.4);
               padding: 4px 8px;
               border-radius: 8px;
               font-size: 10px;
               font-weight: 600;
               color: #ff0808;
+              backdrop-filter: blur(4px);
             ">${content.source || 'RDV'}</div>
           </div>
         </div>
@@ -1715,157 +1815,7 @@ function generateInstagramPostHTML(content) {
     </div>
   `
 }
-/**
- * FIXED: Generate Instagram Story HTML with text at bottom and strategic gradient
- */
-function generateInstagramStoryHTML(content) {
-  return `
-    <div class="instagram-story-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(131, 58, 180, 0.1) 0%, rgba(253, 29, 29, 0.1) 50%, rgba(252, 176, 64, 0.1) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 30px 25px;
-      color: white;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      aspect-ratio: 9/16;
-      border-radius: 8px;
-      overflow: hidden;
-    ">
-      <!-- Strategic gradient overlay - only top and bottom -->
-      <div style="
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          180deg, 
-          rgba(0,0,0,0.5) 0%, 
-          rgba(0,0,0,0.2) 15%, 
-          transparent 25%, 
-          transparent 75%, 
-          rgba(0,0,0,0.2) 85%, 
-          rgba(0,0,0,0.7) 100%
-        );
-        z-index: 1;
-        pointer-events: none;
-      "></div>
 
-      <!-- Story Header - compact -->
-      <div style="
-        display: flex; 
-        align-items: center; 
-        gap: 10px; 
-        z-index: 3; 
-        position: relative;
-        background: rgba(0,0,0,0.4);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 8px 12px;
-        align-self: flex-start;
-      ">
-        <div style="
-          width: 28px;
-          height: 28px;
-          background: linear-gradient(45deg, #833ab4, #fd1d1d);
-          border: 2px solid white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: white;
-          font-size: 12px;
-        ">RDV</div>
-        <div>
-          <div style="font-weight: 700; font-size: 13px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">radiodelvolga</div>
-          <div style="font-size: 11px; opacity: 0.9; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">Hace 2h</div>
-        </div>
-      </div>
-
-      <!-- Empty space for image to show -->
-      <div style="flex: 1;"></div>
-
-      <!-- Story Content - moved to bottom -->
-      <div style="text-align: left; z-index: 3; position: relative;">
-        <div style="
-          background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(131, 58, 180, 0.6));
-          backdrop-filter: blur(15px);
-          border-radius: 20px;
-          padding: 25px 20px;
-          border: 1px solid rgba(255,255,255,0.2);
-        ">
-          <!-- Category Badge -->
-          <div style="
-            background: linear-gradient(45deg, #fd1d1d, #fcb045);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 12px;
-          ">${content.category || 'NOTICIAS'}</div>
-
-          <!-- Title -->
-          <h1 style="
-            font-size: 22px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin: 0 0 12px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            color: white;
-          ">${content.title || 'Título de la noticia'}</h1>
-
-          <!-- Excerpt -->
-          <p style="
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.3;
-            margin: 0 0 15px 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            color: rgba(255,255,255,0.95);
-          ">${(content.excerpt || 'Descripción').length > 80 ? content.excerpt.substring(0, 80) + '...' : content.excerpt}</p>
-
-          <!-- Footer with hashtags and CTA -->
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-          ">
-            <div style="
-              font-size: 11px;
-              color: rgba(255,255,255,0.8);
-              text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            ">${(content.hashtags || ['#RDV']).slice(0, 2).join(' ')}</div>
-            
-            <div style="
-              background: rgba(255,255,255,0.2);
-              backdrop-filter: blur(10px);
-              border: 1px solid rgba(255,255,255,0.3);
-              padding: 8px 16px;
-              border-radius: 20px;
-              font-size: 12px;
-              font-weight: 600;
-              display: flex;
-              align-items: center;
-              gap: 6px;
-            ">
-              <span>👆</span>
-              <span>Ver más</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `
-}
 /**
  * MISSING FUNCTION: Generate Instagram Reel Cover HTML
  */
