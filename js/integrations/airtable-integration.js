@@ -1013,7 +1013,7 @@ function createEnhancedImageOverlay(canvas, imageUrl) {
   Array.from(canvas.children).forEach((child, index) => {
     if (index > 0) { // Skip the overlay itself
       child.style.position = 'relative'
-      child.style.
+      child.style.zIndex = '2'
     }
   })
   
@@ -1810,6 +1810,7 @@ function generateInstagramPostHTML(content) {
     </div>
   `
 }
+
 
 /**
  * MISSING FUNCTION: Generate Instagram Reel Cover HTML
