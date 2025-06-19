@@ -1231,6 +1231,8 @@ function applyImageToCanvasMultiple(canvas, imageUrl) {
         optimizeImageForInstagram(canvas)
       }
     }, 300) // Increased timeout for better detection
+
+    
     
   } catch (error) {
     console.warn('CSS background method failed:', error)
@@ -2287,6 +2289,135 @@ function generateInstagramOptimizedContent(data, templateType) {
     template: templateType
   }
 }
+
+/**
+ * SIMPLE: Flyer Mode Toggle - Professional gradient overlay
+ */
+let flyerModeEnabled = false
+
+function toggleFlyerMode() {
+  flyerModeEnabled = !flyerModeEnabled
+  
+  const btn = document.getElementById('flyerModeBtn')
+  const btnIcon = document.getElementById('flyerBtnIcon')
+  const btnText = document.getElementById('flyerBtnText')
+  const canvas = document.getElementById('canvas')
+  
+  if (flyerModeEnabled) {
+    // Enable flyer mode - active state
+    btn.style.background = 'linear-gradient(45deg, #ff0808, #292929)'
+    btn.style.color = '#ffffff'
+    btn.style.borderColor = '#ff0808'
+    btn.style.boxShadow = '0 4px 12px rgba(255, 8, 8, 0.3)'
+    btn.style.transform = 'translateY(-1px)'
+    
+    if (btnIcon) btnIcon.textContent = '✨'
+    if (btnText) btnText.textContent = 'Modo ON'
+    
+    showToast('✨ Modo Flyer activado - Gradiente aplicado', 'success')
+    
+    if (canvas) {
+      applyFlyerGradientOverlay(canvas)
+    }
+  } else {
+    // Disable flyer mode - inactive state
+    btn.style.background = 'linear-gradient(45deg, #faf6ef, #ffffff)'
+    btn.style.color = '#292929'
+    btn.style.borderColor = '#ff0808'
+    btn.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.1)'
+    btn.style.transform = 'translateY(0px)'
+    
+    if (btnIcon) btnIcon.textContent = '🎨'
+    if (btnText) btnText.textContent = 'Modo Flyer'
+    
+    showToast('🎨 Modo Flyer desactivado', 'info')
+    
+    if (canvas) {
+      removeFlyerGradientOverlay(canvas)
+    }
+  }
+  
+  console.log('🎨 Flyer mode toggled:', flyerModeEnabled)
+}
+
+/**
+ * SMOOTH: Apply professional gradient overlay for flyers
+ */
+function applyFlyerGradientOverlay(canvas) {
+  // Remove existing flyer overlay
+  const existingOverlay = canvas.querySelector('.flyer-gradient-overlay')
+  if (existingOverlay) existingOverlay.remove()
+  
+  // Create smooth flyer gradient overlay using your color palette
+  const flyerOverlay = document.createElement('div')
+  flyerOverlay.className = 'flyer-gradient-overlay'
+  flyerOverlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      rgba(250, 246, 239, 0.75) 0%,
+      rgba(255, 255, 255, 0.6) 25%,
+      rgba(250, 246, 239, 0.4) 50%,
+      rgba(255, 255, 255, 0.6) 75%,
+      rgba(250, 246, 239, 0.8) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    mix-blend-mode: overlay;
+  `
+  
+  // Ensure canvas positioning
+  canvas.style.position = 'relative'
+  
+  // Insert the overlay properly in the template structure
+  const template = canvas.querySelector('.instagram-post-template, .instagram-portrait-template, .facebook-post-template, .twitter-post-template')
+  if (template) {
+    // Insert after the existing gradient overlay but before content
+    const existingGradient = template.children[0] // Usually the template's own gradient
+    if (existingGradient && existingGradient.style.background.includes('gradient')) {
+      template.insertBefore(flyerOverlay, existingGradient.nextSibling)
+    } else {
+      template.insertBefore(flyerOverlay, template.firstChild)
+    }
+  } else {
+    canvas.appendChild(flyerOverlay)
+  }
+  
+  // Fade in the overlay smoothly
+  setTimeout(() => {
+    flyerOverlay.style.opacity = '1'
+  }, 50)
+  
+  console.log('✨ Flyer gradient overlay applied smoothly')
+}
+
+/**
+ * SMOOTH: Remove flyer gradient overlay
+ */
+function removeFlyerGradientOverlay(canvas) {
+  const flyerOverlay = canvas.querySelector('.flyer-gradient-overlay')
+  if (flyerOverlay) {
+    // Smooth fade out
+    flyerOverlay.style.opacity = '0'
+    
+    // Remove after transition
+    setTimeout(() => {
+      if (flyerOverlay.parentNode) {
+        flyerOverlay.parentNode.removeChild(flyerOverlay)
+      }
+    }, 400) // Match transition duration
+    
+    console.log('✨ Flyer gradient overlay removed smoothly')
+  }
+}
+
+
 
 /**
  * NEW: Select Facebook template and render content
@@ -3492,3 +3623,7 @@ window.selectFacebookTemplate = selectFacebookTemplate
 window.updateFacebookTemplateInfoDisplay = updateFacebookTemplateInfoDisplay
 window.renderFacebookTemplateWithData = renderFacebookTemplateWithData
 window.generateFacebookOptimizedContent = generateFacebookOptimizedContent
+
+window.toggleFlyerMode = toggleFlyerMode
+window.applyFlyerGradientOverlay = applyFlyerGradientOverlay
+window.removeFlyerGradientOverlay = removeFlyerGradientOverlay

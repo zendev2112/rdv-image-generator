@@ -350,7 +350,39 @@
             <button class="template-btn" data-template="portrait" onclick="selectInstagramTemplate('portrait')">
               📱 Portrait Post (4:5)
             </button>
+            <!-- Add this near your other control buttons -->
+            <div class="flyer-controls" style="margin: 15px 0; display: flex; align-items: center; gap: 12px;">
+              <button id="flyerModeBtn" class="flyer-toggle-btn" onclick="toggleFlyerMode()" style="
+                padding: 10px 18px;
+                background: linear-gradient(45deg, #faf6ef, #ffffff);
+                color: #292929;
+                border: 2px solid #ff0808;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                min-width: 140px;
+              ">
+                <span id="flyerBtnIcon">🎨</span>
+                <span id="flyerBtnText">Modo Flyer</span>
+              </button>
+
+              <span style="
+                font-size: 12px; 
+                color: #666; 
+                font-style: italic;
+                opacity: 0.8;
+              ">
+                Suaviza flyers con gradiente profesional
+              </span>
+            </div>
+
           </div>
+
+
 
           <!-- Facebook Templates Section -->
           <div id="facebookTemplates" class="template-section" style="display: none;">
