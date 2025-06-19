@@ -1875,7 +1875,7 @@ function generateInstagramPostHTML(content) {
         pointer-events: none;
       "></div>
 
-      ${generateLogoHTML('post', 'background: #ffffff; border: 2px solid #ff0808;')}
+      ${generateLogoHTML('post')}
 
       <!-- Main Content with very strong backdrop to stand out over image -->
       <div style="
