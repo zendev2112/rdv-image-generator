@@ -2006,7 +2006,7 @@ function generateInstagramStoryHTML(content) {
         position: relative;
       ">
         ${generateLogoHTML('story')}
-        
+      
       </div>
 
       <!-- Story Content -->
