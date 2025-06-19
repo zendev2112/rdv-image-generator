@@ -2590,13 +2590,16 @@ function getLogoForTemplate(templateType) {
 /**
  * UNIVERSAL LOGO COMPONENT: Use this in all template functions
  */
+/**
+ * UPDATED: Universal Logo Component with BIGGER size
+ */
 function generateLogoHTML(templateType, containerStyle = '') {
   const logoUrl = getLogoForTemplate(templateType)
   
   return `
     <div style="
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       overflow: hidden;
       display: flex;
@@ -2607,8 +2610,8 @@ function generateLogoHTML(templateType, containerStyle = '') {
       <img src="${logoUrl}" 
            alt="RDV Logo" 
            style="
-             width: 24px;
-             height: 24px;
+             width: 32px;
+             height: 32px;
              object-fit: contain;
            "
            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
@@ -2624,7 +2627,7 @@ function generateLogoHTML(templateType, containerStyle = '') {
         justify-content: center;
         font-weight: bold;
         color: #ffffff;
-        font-size: 14px;
+        font-size: 16px;
       ">RDV</div>
     </div>
   `
