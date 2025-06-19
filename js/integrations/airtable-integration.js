@@ -934,19 +934,16 @@ function createInstagramImageInfo(canvas, imageUrl) {
 }
 
 /**
- * NEW: Optimize image display specifically for Instagram posts
- */
-/**
- * ENHANCED: Optimize image display specifically for Instagram posts with smart scaling
+ * UPDATED: Optimize image display for Instagram posts AND stories with smart scaling
  */
 function optimizeImageForInstagram(canvas) {
-  // Check if this is an Instagram post template
-  const isInstagramPost = canvas.querySelector('.instagram-post-template')
+  // Check if this is an Instagram template
+  const isInstagramTemplate = canvas.querySelector('.instagram-post-template, .instagram-story-template, .instagram-portrait-template')
   
-  if (isInstagramPost) {
-    console.log('🎯 Optimizing image for Instagram post template with smart scaling')
+  if (isInstagramTemplate) {
+    console.log('🎯 Optimizing image for Instagram template with smart scaling')
     
-    // For Instagram posts (1:1), use contain for horizontal images and cover for vertical
+    // Apply smart scaling for all Instagram templates
     detectImageOrientationAndScale(canvas)
     
     // Create subtle image enhancement overlay
@@ -1023,17 +1020,14 @@ function detectImageOrientationAndScale(canvas) {
 }
 
 /**
- * ENHANCED: Apply scaling for horizontal images with gray texture background
- */
-/**
- * NEW: Apply scaling for horizontal images with custom 06.jpg texture
+ * UPDATED: Apply scaling for horizontal images with custom 06.jpg texture (works for all Instagram templates)
  */
 function applyHorizontalImageScaling(canvas) {
   canvas.style.setProperty('background-size', 'contain', 'important')
   canvas.style.setProperty('background-position', 'center center', 'important')
   canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
   
-  // UPDATED: Use your custom 06.jpg texture instead of CSS patterns
+  // Use your custom 06.jpg texture for horizontal images on ALL Instagram templates
   canvas.style.setProperty('background-color', '#f0f0f0', 'important')
   canvas.style.setProperty('background-image', `
     ${canvas.style.backgroundImage},
@@ -1781,6 +1775,14 @@ function applyInstagramContentToCanvas(content, templateType) {
     console.log('🖼️ Applying background image:', content.backgroundImage)
     setTimeout(() => {
       applyImageToCanvasEnhanced(content.backgroundImage)
+      // UPDATED: Apply smart optimization for BOTH post AND story templates
+      if (
+        templateType === 'post' ||
+        templateType === 'story' ||
+        templateType === 'portrait'
+      ) {
+        optimizeImageForInstagram(canvas)
+      }
     }, 100)
   }
   
