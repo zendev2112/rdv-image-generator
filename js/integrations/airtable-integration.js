@@ -2509,7 +2509,7 @@ function applyFlyerGradientOverlay(canvas) {
     
     if (header) {
       // Insert AFTER the header, not before it
-      template.insertBefore(flyerOverlay, header.nextSibling)
+      template.insertBefore(flyerOverlay, header)
     } else {
       // Fallback: insert as second child (after first background div)
       const children = template.children
