@@ -2410,12 +2410,16 @@ function generateInstagramOptimizedContent(data, templateType) {
  */
 let flyerModeEnabled = false
 
+/**
+ * UPDATED: Flyer Mode Toggle with gradient variant support
+ */
 function toggleFlyerMode() {
   flyerModeEnabled = !flyerModeEnabled
   
   const btn = document.getElementById('flyerModeBtn')
   const btnIcon = document.getElementById('flyerBtnIcon')
   const btnText = document.getElementById('flyerBtnText')
+  const gradientSelect = document.getElementById('gradientVariant') // NEW
   const canvas = document.getElementById('canvas')
   
   if (flyerModeEnabled) {
@@ -2427,7 +2431,14 @@ function toggleFlyerMode() {
     btn.style.transform = 'translateY(-1px)'
     
     if (btnIcon) btnIcon.textContent = '✨'
-    if (btnText) btnText.textContent = 'Modo ON'
+    if (btnText) btnText.textContent = 'Estilizado'
+    
+    // NEW: Enable gradient selector
+    if (gradientSelect) {
+      gradientSelect.disabled = false
+      gradientSelect.style.opacity = '1'
+      gradientSelect.style.pointerEvents = 'auto'
+    }
     
     showToast('✨ Modo Flyer activado - Gradiente aplicado', 'success')
     
@@ -2443,7 +2454,14 @@ function toggleFlyerMode() {
     btn.style.transform = 'translateY(0px)'
     
     if (btnIcon) btnIcon.textContent = '🎨'
-    if (btnText) btnText.textContent = 'Modo Flyer'
+    if (btnText) btnText.textContent = 'Estilizar'
+    
+    // NEW: Disable gradient selector
+    if (gradientSelect) {
+      gradientSelect.disabled = true
+      gradientSelect.style.opacity = '0.5'
+      gradientSelect.style.pointerEvents = 'none'
+    }
     
     showToast('🎨 Modo Flyer desactivado', 'info')
     
@@ -2456,30 +2474,27 @@ function toggleFlyerMode() {
 }
 
 /**
- * SMOOTH: Apply professional gradient overlay for flyers
+ * UPDATED: Apply professional gradient overlay with selectable variants
  */
 function applyFlyerGradientOverlay(canvas) {
   // Remove existing flyer overlay
   const existingOverlay = canvas.querySelector('.flyer-gradient-overlay')
   if (existingOverlay) existingOverlay.remove()
   
-    const flyerOverlay = document.createElement('div')
-    flyerOverlay.className = 'flyer-gradient-overlay'
-    flyerOverlay.style.cssText = `
+  // Get current gradient variant
+  const currentGradient = getCurrentGradient()
+  const variant = GRADIENT_VARIANTS[selectedGradientVariant]
+  
+  // Create stylized darkening overlay with selected gradient
+  const flyerOverlay = document.createElement('div')
+  flyerOverlay.className = 'flyer-gradient-overlay'
+  flyerOverlay.style.cssText = `
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 8, 8, 0.5) 0%,
-      rgba(255, 8, 8, 0.3) 20%,
-      rgba(41, 41, 41, 0.6) 40%,
-      rgba(255, 8, 8, 0.4) 60%,
-      rgba(41, 41, 41, 0.7) 80%,
-      rgba(255, 8, 8, 0.45) 100%
-    );
+    background: ${currentGradient};
     z-index: 2;
     pointer-events: none;
     opacity: 0;
@@ -2509,7 +2524,7 @@ function applyFlyerGradientOverlay(canvas) {
     flyerOverlay.style.opacity = '1'
   }, 50)
   
-  console.log('✨ Flyer gradient overlay applied smoothly')
+  console.log(`✨ Applied ${variant.name} gradient overlay`)
 }
 
 /**
@@ -2670,6 +2685,142 @@ function getCurrentFormContent() {
   }
 }
 
+
+/**
+ * NEW: Gradient variant system
+ */
+let selectedGradientVariant = 'red-dark' // Default variant
+
+/**
+ * NEW: Gradient variant definitions (horizontal top-bottom)
+ */
+const GRADIENT_VARIANTS = {
+  'red-dark': {
+    name: 'Rojo oscuro',
+    icon: '🔥',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(255, 8, 8, 0.7) 0%,
+      rgba(139, 0, 0, 0.8) 25%,
+      rgba(41, 41, 41, 0.9) 50%,
+      rgba(139, 0, 0, 0.8) 75%,
+      rgba(255, 8, 8, 0.7) 100%
+    )`
+  },
+  'blue-dark': {
+    name: 'Azul oscuro',
+    icon: '🌊',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(30, 144, 255, 0.7) 0%,
+      rgba(0, 100, 200, 0.8) 25%,
+      rgba(25, 25, 70, 0.9) 50%,
+      rgba(0, 100, 200, 0.8) 75%,
+      rgba(30, 144, 255, 0.7) 100%
+    )`
+  },
+  'purple-dark': {
+    name: 'Morado oscuro',
+    icon: '🟣',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(138, 43, 226, 0.7) 0%,
+      rgba(75, 0, 130, 0.8) 25%,
+      rgba(25, 25, 25, 0.9) 50%,
+      rgba(75, 0, 130, 0.8) 75%,
+      rgba(138, 43, 226, 0.7) 100%
+    )`
+  },
+  'green-dark': {
+    name: 'Verde oscuro',
+    icon: '🌿',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(34, 139, 34, 0.7) 0%,
+      rgba(0, 100, 0, 0.8) 25%,
+      rgba(25, 50, 25, 0.9) 50%,
+      rgba(0, 100, 0, 0.8) 75%,
+      rgba(34, 139, 34, 0.7) 100%
+    )`
+  },
+  'orange-dark': {
+    name: 'Naranja oscuro',
+    icon: '🍊',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(255, 140, 0, 0.7) 0%,
+      rgba(255, 69, 0, 0.8) 25%,
+      rgba(139, 69, 19, 0.9) 50%,
+      rgba(255, 69, 0, 0.8) 75%,
+      rgba(255, 140, 0, 0.7) 100%
+    )`
+  },
+  'black-gray': {
+    name: 'Negro gris',
+    icon: '⚫',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(64, 64, 64, 0.8) 0%,
+      rgba(32, 32, 32, 0.9) 25%,
+      rgba(0, 0, 0, 0.95) 50%,
+      rgba(32, 32, 32, 0.9) 75%,
+      rgba(64, 64, 64, 0.8) 100%
+    )`
+  },
+  'brand-classic': {
+    name: 'RDV clásico',
+    icon: '🎨',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(255, 8, 8, 0.6) 0%,
+      rgba(250, 246, 239, 0.4) 20%,
+      rgba(41, 41, 41, 0.8) 50%,
+      rgba(250, 246, 239, 0.4) 80%,
+      rgba(255, 8, 8, 0.6) 100%
+    )`
+  },
+  'sepia-warm': {
+    name: 'Sepia cálido',
+    icon: '☕',
+    gradient: `linear-gradient(
+      180deg,
+      rgba(160, 82, 45, 0.7) 0%,
+      rgba(139, 69, 19, 0.8) 25%,
+      rgba(101, 67, 33, 0.9) 50%,
+      rgba(139, 69, 19, 0.8) 75%,
+      rgba(160, 82, 45, 0.7) 100%
+    )`
+  }
+}
+
+/**
+ * NEW: Update gradient variant
+ */
+function updateGradientVariant() {
+  const gradientSelect = document.getElementById('gradientVariant')
+  if (gradientSelect) {
+    selectedGradientVariant = gradientSelect.value
+    console.log('🎨 Gradient variant changed to:', selectedGradientVariant)
+    
+    // Update current canvas if flyer mode is enabled
+    const canvas = document.getElementById('canvas')
+    if (canvas && flyerModeEnabled) {
+      applyFlyerGradientOverlay(canvas)
+    }
+    
+    // Show feedback
+    const variant = GRADIENT_VARIANTS[selectedGradientVariant]
+    showToast(`🎨 Gradiente cambiado a: ${variant.name}`, 'info')
+  }
+}
+
+/**
+ * NEW: Get current gradient based on selected variant
+ */
+function getCurrentGradient() {
+  const variant = GRADIENT_VARIANTS[selectedGradientVariant]
+  return variant ? variant.gradient : GRADIENT_VARIANTS['red-dark'].gradient
+}
 
 
 /**
@@ -3880,3 +4031,8 @@ window.generateFacebookOptimizedContent = generateFacebookOptimizedContent
 window.toggleFlyerMode = toggleFlyerMode
 window.applyFlyerGradientOverlay = applyFlyerGradientOverlay
 window.removeFlyerGradientOverlay = removeFlyerGradientOverlay
+
+// Export gradient variant functions
+window.updateGradientVariant = updateGradientVariant
+window.getCurrentGradient = getCurrentGradient
+window.GRADIENT_VARIANTS = GRADIENT_VARIANTS

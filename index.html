@@ -379,6 +379,59 @@
                 Suaviza flyers con gradiente profesional
               </span>
             </div>
+            <!-- Update your existing flyer controls section -->
+            <div class="flyer-controls"
+              style="margin: 15px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <!-- Existing flyer button -->
+              <button id="flyerModeBtn" class="flyer-toggle-btn" onclick="toggleFlyerMode()" style="
+                padding: 10px 18px;
+                background: linear-gradient(45deg, #faf6ef, #ffffff);
+                color: #292929;
+                border: 2px solid #ff0808;
+                border-radius: 10px;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                min-width: 140px;
+              ">
+                <span id="flyerBtnIcon">🔥</span>
+                <span id="flyerBtnText">Estilizar</span>
+              </button>
+
+              <!-- NEW: Gradient variant selector -->
+              <select id="gradientVariant" onchange="updateGradientVariant()" style="
+                padding: 8px 12px;
+                border: 2px solid #ff0808;
+                border-radius: 8px;
+                background: linear-gradient(45deg, #faf6ef, #ffffff);
+                color: #292929;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                min-width: 160px;
+              " disabled>
+                <option value="red-dark">🔥 Rojo oscuro</option>
+                <option value="blue-dark">🌊 Azul oscuro</option>
+                <option value="purple-dark">🟣 Morado oscuro</option>
+                <option value="green-dark">🌿 Verde oscuro</option>
+                <option value="orange-dark">🍊 Naranja oscuro</option>
+                <option value="black-gray">⚫ Negro gris</option>
+                <option value="brand-classic">🎨 RDV clásico</option>
+                <option value="sepia-warm">☕ Sepia cálido</option>
+              </select>
+
+              <span style="
+                font-size: 11px; 
+                color: #666; 
+                font-style: italic;
+                opacity: 0.8;
+              ">
+                Gradientes horizontales top-bottom
+              </span>
+            </div>
 
           </div>
 
