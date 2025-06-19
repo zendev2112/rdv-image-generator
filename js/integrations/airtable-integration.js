@@ -2501,24 +2501,18 @@ function applyFlyerGradientOverlay(canvas) {
   // Ensure canvas positioning
   canvas.style.position = 'relative'
   
-  // Insert the overlay AFTER the header (not first)
+  // DEBUG: Log template structure
   const template = canvas.querySelector('.instagram-post-template, .instagram-portrait-template, .facebook-post-template, .twitter-post-template')
   if (template) {
-    // Find the header element (it's the first div with display: flex)
-    const header = template.querySelector('div[style*="display: flex"]')
-    
-    if (header) {
-      // Insert AFTER the header, not before it
-      template.insertBefore(flyerOverlay, header)
-    } else {
-      // Fallback: insert as second child (after first background div)
-      const children = template.children
-      if (children.length > 1) {
-        template.insertBefore(flyerOverlay, children[1])
-      } else {
-        template.appendChild(flyerOverlay)
-      }
+    console.log('Template children count:', template.children.length)
+    for (let i = 0; i < template.children.length; i++) {
+      console.log(`Child ${i}:`, template.children[i].tagName, template.children[i].className, template.children[i].style.zIndex)
     }
+    
+    // Insert as absolute first child - bottom layer
+    template.insertBefore(flyerOverlay, template.firstChild)
+    
+    console.log('Flyer gradient inserted as first child')
   } else {
     canvas.appendChild(flyerOverlay)
   }
@@ -2528,7 +2522,7 @@ function applyFlyerGradientOverlay(canvas) {
     flyerOverlay.style.opacity = '1'
   }, 50)
   
-  console.log(`✨ Applied ${variant.name} gradient overlay BELOW header`)
+  console.log(`✨ Applied ${variant.name} gradient overlay as bottom layer`)
 }
 /**
  * SMOOTH: Remove flyer gradient overlay
