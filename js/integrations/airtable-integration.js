@@ -1871,7 +1871,7 @@ function generateInstagramPostHTML(content) {
           rgba(250, 246, 239, 0.1) 92%, 
           rgba(250, 246, 239, 0.5) 100%
         );
-        z-index: 10;
+        z-index: 50;
         pointer-events: none;
       "></div>
 
@@ -2607,21 +2607,25 @@ function generateLogoHTML(templateType, containerStyle = '') {
   
   return `
     <div style="
-      width: 46px;
-      height: 46px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
+      position: relative;
+      z-index: 100;
       ${containerStyle}
     ">
       <img src="${logoUrl}" 
            alt="RDV Logo" 
            style="
-             width: 36px;
-             height: 36px;
+             width: 32px;
+             height: 32px;
              object-fit: contain;
+             position: relative;
+             z-index: 101;
            "
            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
       />
@@ -2636,7 +2640,9 @@ function generateLogoHTML(templateType, containerStyle = '') {
         justify-content: center;
         font-weight: bold;
         color: #ffffff;
-        font-size: 18px;
+        font-size: 16px;
+        position: relative;
+        z-index: 101;
       ">RDV</div>
     </div>
   `
