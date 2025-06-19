@@ -1875,39 +1875,7 @@ function generateInstagramPostHTML(content) {
         pointer-events: none;
       "></div>
 
-      <!-- Header with stronger backdrop -->
-      <div style="
-        display: flex; 
-        align-items: center; 
-        gap: 10px; 
-        z-index: 3; 
-        position: relative;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(15px);
-        padding: 12px 16px;
-        border-radius: 16px;
-        align-self: flex-start;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.9);
-      ">
-        <div style="
-          width: 32px;
-          height: 32px;
-          background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: #ffffff;
-          font-size: 14px;
-        ">RDV</div>
-        <div>
-          <div style="font-weight: 600; font-size: 13px; color: #000000;">radiodelvolga</div>
-          <div style="font-size: 11px; color: #292929;">${content.date || 'Hoy'}</div>
-        </div>
-        <div style="margin-left: auto; color: #ff0808; font-size: 18px;">📷</div>
-      </div>
+      ${generateLogoHTML('post', 'background: #ffffff; border: 2px solid #ff0808;')}
 
       <!-- Main Content with very strong backdrop to stand out over image -->
       <div style="
@@ -1981,6 +1949,153 @@ function generateInstagramPostHTML(content) {
             ">${content.source || 'RDV'}</div>
           </div>
         </div>
+      </div>
+    </div>
+  `
+}
+
+/**
+ * MISSING: Generate Instagram Story HTML (9:16 aspect ratio)
+ */
+function generateInstagramStoryHTML(content) {
+  return `
+    <div class="instagram-story-template" style="
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 30px;
+      color: #ffffff;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      aspect-ratio: 9/16;
+      border-radius: 8px;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    ">
+      <!-- Dark gradient overlay for readability -->
+      <div style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg, 
+          rgba(0, 0, 0, 0.6) 0%, 
+          rgba(0, 0, 0, 0.2) 20%, 
+          transparent 40%, 
+          transparent 60%, 
+          rgba(0, 0, 0, 0.2) 80%, 
+          rgba(0, 0, 0, 0.8) 100%
+        );
+        z-index: 1;
+        pointer-events: none;
+      "></div>
+
+      <!-- Story Header with WHITE LOGO -->
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        z-index: 3; 
+        position: relative;
+      ">
+        <div style="
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #ffffff;
+          border: 2px solid #ffffff;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        ">
+          <img src="./assets/images/logos/rdv-white.svg" 
+               alt="RDV Logo" 
+               style="
+                 width: 28px;
+                 height: 28px;
+                 object-fit: contain;
+                 border-radius: 50%;
+               "
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+          />
+          <!-- Fallback text if image fails to load -->
+          <div style="
+            display: none;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #ffffff;
+            font-size: 14px;
+          ">RDV</div>
+        </div>
+        <div>
+          <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
+        </div>
+        <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
+      </div>
+
+      <!-- Story Content -->
+      <div style="
+        z-index: 3; 
+        position: relative;
+        text-align: center;
+      ">
+        <!-- Category Badge -->
+        <div style="
+          background: linear-gradient(45deg, #ff0808, #292929);
+          color: #ffffff;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 700;
+          text-transform: uppercase;
+          display: inline-block;
+          margin-bottom: 20px;
+          letter-spacing: 0.5px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        ">${content.category || 'NOTICIAS'}</div>
+
+        <!-- Title for story -->
+        <h1 style="
+          font-size: 28px;
+          font-weight: 800;
+          line-height: 1.2;
+          margin: 0 0 16px 0;
+          color: #ffffff;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        ">${content.title || 'Título de la noticia'}</h1>
+
+        <!-- Excerpt for story -->
+        <p style="
+          font-size: 16px;
+          font-weight: 400;
+          line-height: 1.4;
+          margin: 0 0 20px 0;
+          color: rgba(255, 255, 255, 0.9);
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
+
+        <!-- Hashtags -->
+        <div style="
+          font-size: 14px;
+          color: #ffffff;
+          font-weight: 600;
+          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
       </div>
     </div>
   `
@@ -2414,6 +2529,144 @@ function removeFlyerGradientOverlay(canvas) {
     }, 400) // Match transition duration
     
     console.log('✨ Flyer gradient overlay removed smoothly')
+  }
+}
+
+/**
+ * NEW: Logo selection system
+ */
+let selectedLogo = 'auto' // Default to auto-selection
+
+function updateTemplateLogo() {
+  const logoSelect = document.getElementById('logoSelect')
+  if (logoSelect) {
+    selectedLogo = logoSelect.value
+    console.log('🎨 Logo selection changed to:', selectedLogo)
+    
+    // Update current canvas if it exists
+    const canvas = document.getElementById('canvas')
+    if (canvas) {
+      refreshCurrentTemplate()
+    }
+    
+    // Show feedback
+    const logoName = getLogoDisplayName(selectedLogo)
+    showToast(`🎨 Logo cambiado a: ${logoName}`, 'info')
+  }
+}
+
+function getLogoDisplayName(logoValue) {
+  const names = {
+    'auto': 'Auto (recomendado)',
+    'rdv-black.svg': 'Negro',
+    'rdv-white.svg': 'Blanco', 
+    'rdv-red.svg': 'Rojo'
+  }
+  return names[logoValue] || logoValue
+}
+
+/**
+ * NEW: Get appropriate logo based on template and selection
+ */
+function getLogoForTemplate(templateType) {
+  // If user selected a specific logo, use it
+  if (selectedLogo !== 'auto') {
+    return `./assets/images/logos/${selectedLogo}`
+  }
+  
+  // Auto-selection based on template type
+  switch (templateType) {
+    case 'story':
+    case 'reel-cover':
+      return './assets/images/logos/rdv-white.svg' // Dark backgrounds
+    case 'post':
+    case 'portrait':
+      return './assets/images/logos/rdv-black.svg' // Light backgrounds
+    default:
+      return './assets/images/logos/rdv-black.svg'
+  }
+}
+
+/**
+ * UNIVERSAL LOGO COMPONENT: Use this in all template functions
+ */
+function generateLogoHTML(templateType, containerStyle = '') {
+  const logoUrl = getLogoForTemplate(templateType)
+  
+  return `
+    <div style="
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      ${containerStyle}
+    ">
+      <img src="${logoUrl}" 
+           alt="RDV Logo" 
+           style="
+             width: 24px;
+             height: 24px;
+             object-fit: contain;
+           "
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+      />
+      <!-- Fallback text if image fails to load -->
+      <div style="
+        display: none;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #ffffff;
+        font-size: 14px;
+      ">RDV</div>
+    </div>
+  `
+}
+
+/**
+ * NEW: Refresh current template with new logo
+ */
+function refreshCurrentTemplate() {
+  const canvas = document.getElementById('canvas')
+  if (!canvas) return
+  
+  // Get current template type
+  const currentTemplate = getCurrentTemplateType(canvas)
+  if (!currentTemplate) return
+  
+  // Get current content from form
+  const content = getCurrentFormContent()
+  
+  // Re-apply template with new logo
+  applyInstagramContentToCanvas(content, currentTemplate)
+  
+  console.log('🔄 Template refreshed with new logo')
+}
+
+function getCurrentTemplateType(canvas) {
+  if (canvas.querySelector('.instagram-post-template')) return 'post'
+  if (canvas.querySelector('.instagram-portrait-template')) return 'portrait'
+  if (canvas.querySelector('.instagram-story-template')) return 'story'
+  if (canvas.querySelector('.instagram-reel-template')) return 'reel-cover'
+  return null
+}
+
+function getCurrentFormContent() {
+  return {
+    title: document.getElementById('title')?.value || '',
+    excerpt: document.getElementById('excerpt')?.value || '',
+    category: document.getElementById('category')?.value || 'NOTICIAS',
+    date: document.getElementById('date')?.value || 'Ahora',
+    hashtags: document.getElementById('hashtags')?.value?.split(' ') || ['#RDVNoticias'],
+    source: document.getElementById('source')?.value || 'RDV',
+    backgroundImage: document.getElementById('imageUrl')?.value || ''
   }
 }
 
