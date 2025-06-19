@@ -2499,7 +2499,7 @@ function applyFlyerGradientOverlay(canvas) {
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.4s ease;
-   
+    mix-blend-mode: multiply;
   `
   
   // Ensure canvas positioning
