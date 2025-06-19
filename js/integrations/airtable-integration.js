@@ -980,76 +980,77 @@ function optimizeImageForInstagram(canvas) {
 /**
  * NEW: Detect image orientation and apply appropriate scaling
  */
-
-/**
- * ENHANCED: Detect image orientation and apply scaling to overlay with custom texture
- */
-function detectImageOrientationForOverlay(overlay, imageUrl) {
+function detectImageOrientationAndScale(canvas) {
+  const currentImage = canvas.style.backgroundImage
+  if (!currentImage || currentImage === 'none') return
+  
+  // Extract URL from background-image
+  const urlMatch = currentImage.match(/url\(["']?([^"')]+)["']?\)/)
+  if (!urlMatch) return
+  
+  const imageUrl = urlMatch[1]
+  
+  // Create a temporary image to get dimensions
   const tempImg = new Image()
   tempImg.crossOrigin = 'anonymous'
   
   tempImg.onload = function() {
     const aspectRatio = this.width / this.height
-    console.log(`📐 Overlay image dimensions: ${this.width}x${this.height}, aspect ratio: ${aspectRatio.toFixed(2)}`)
+    console.log(`📐 Image dimensions: ${this.width}x${this.height}, aspect ratio: ${aspectRatio.toFixed(2)}`)
     
+    // Apply scaling based on aspect ratio
     if (aspectRatio > 1.5) {
-      // Wide horizontal image - use contain with your custom texture
-      overlay.style.setProperty('background-image', `
-        url("${imageUrl}"),
-        url("./assets/images/patterns/06.jpg")
-      `, 'important')
-      overlay.style.setProperty('background-size', 'contain, cover', 'important')
-      overlay.style.setProperty('background-position', 'center center, center center', 'important')
-      overlay.style.setProperty('background-repeat', 'no-repeat, no-repeat', 'important')
-      console.log('📱 Overlay: Wide horizontal - using contain with 06.jpg texture from assets/images/patterns/')
+      // Wide horizontal image - use contain to show full image
+      console.log('📱 Wide horizontal image detected - using contain + smart positioning')
+      applyHorizontalImageScaling(canvas)
     } else if (aspectRatio < 0.8) {
       // Tall vertical image - use cover with top focus
-      overlay.style.setProperty('background-image', `url("${imageUrl}")`, 'important')
-      overlay.style.setProperty('background-size', 'cover', 'important')
-      overlay.style.setProperty('background-position', 'center top', 'important')
-      overlay.style.setProperty('background-repeat', 'no-repeat', 'important')
-      console.log('📱 Overlay: Vertical - using cover with top focus')
+      console.log('📱 Vertical image detected - using cover with top focus')
+      applyVerticalImageScaling(canvas)
     } else {
       // Square-ish image - use cover with center
-      overlay.style.setProperty('background-image', `url("${imageUrl}")`, 'important')
-      overlay.style.setProperty('background-size', 'cover', 'important')
-      overlay.style.setProperty('background-position', 'center center', 'important')
-      overlay.style.setProperty('background-repeat', 'no-repeat', 'important')
-      console.log('📱 Overlay: Square-ish - using standard cover')
+      console.log('📱 Square-ish image detected - using standard cover')
+      applySquareImageScaling(canvas)
     }
   }
   
   tempImg.onerror = function() {
-    console.log('⚠️ Could not detect overlay image orientation')
+    console.log('⚠️ Could not detect image orientation, using default scaling')
+    applySquareImageScaling(canvas)
   }
   
   tempImg.src = imageUrl
 }
 
-
 /**
- * ENHANCED: Apply scaling for horizontal images with custom texture background
+ * ENHANCED: Apply scaling for horizontal images with gray texture background
  */
 function applyHorizontalImageScaling(canvas) {
   canvas.style.setProperty('background-size', 'contain', 'important')
   canvas.style.setProperty('background-position', 'center center', 'important')
   canvas.style.setProperty('background-repeat', 'no-repeat', 'important')
   
-  // Get the current image URL
-  const currentImage = canvas.style.backgroundImage
-  const imageUrl = currentImage.match(/url\(["']?([^"')]+)["']?\)/)?.[1] || ''
-  
-  // Add your custom texture background for letterboxing
+  // Add subtle gray texture background for letterboxing
+  canvas.style.setProperty('background-color', '#f0f0f0', 'important')
   canvas.style.setProperty('background-image', `
-    url("${imageUrl}"),
-    url("./assets/images/patterns/06.jpg")
+    url("${canvas.style.backgroundImage.match(/url\(["']?([^"')]+)["']?\)/)[1]}"),
+    repeating-linear-gradient(
+      45deg,
+      rgba(200, 200, 200, 0.1) 0px,
+      rgba(200, 200, 200, 0.1) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(180, 180, 180, 0.08) 0px,
+      rgba(180, 180, 180, 0.08) 1px,
+      transparent 1px,
+      transparent 8px
+    )
   `, 'important')
   
-  canvas.style.setProperty('background-size', 'contain, cover', 'important')
-  canvas.style.setProperty('background-position', 'center center, center center', 'important')
-  canvas.style.setProperty('background-repeat', 'no-repeat, no-repeat', 'important')
-  
-  console.log('✅ Applied horizontal image scaling with custom 06.jpg texture from assets/images/patterns/')
+  console.log('✅ Applied horizontal image scaling with gray texture background')
 }
 
 /**
