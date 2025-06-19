@@ -1855,24 +1855,21 @@ function generateInstagramPostHTML(content) {
       background-position: center;
       background-repeat: no-repeat;
     ">
-      <!-- MUCH LIGHTER gradient overlay - only at top and bottom edges -->
+      <!-- gradient overlay - only at top and bottom edges -->
+      <!-- Header with your color palette -->
       <div style="
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          180deg, 
-          rgba(250, 246, 239, 0.4) 0%, 
-          rgba(250, 246, 239, 0.1) 8%, 
-          transparent 15%, 
-          transparent 85%, 
-          rgba(250, 246, 239, 0.1) 92%, 
-          rgba(250, 246, 239, 0.5) 100%
-        );
-        z-index: 1;
-        pointer-events: none;
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        z-index: 10; 
+        position: relative;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        padding: 12px 16px;
+        border-radius: 16px;
+        align-self: flex-start;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.9);
       "></div>
 
       ${generateLogoHTML('post')}
