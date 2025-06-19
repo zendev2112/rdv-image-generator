@@ -2473,9 +2473,6 @@ function toggleFlyerMode() {
   console.log('🎨 Flyer mode toggled:', flyerModeEnabled)
 }
 
-/**
- * UPDATED: Apply professional gradient overlay with selectable variants
- */
 function applyFlyerGradientOverlay(canvas) {
   // Remove existing flyer overlay
   const existingOverlay = canvas.querySelector('.flyer-gradient-overlay')
@@ -2485,7 +2482,7 @@ function applyFlyerGradientOverlay(canvas) {
   const currentGradient = getCurrentGradient()
   const variant = GRADIENT_VARIANTS[selectedGradientVariant]
   
-  // Create stylized darkening overlay with selected gradient
+  // Create stylized darkening overlay with LOWER z-index than logo
   const flyerOverlay = document.createElement('div')
   flyerOverlay.className = 'flyer-gradient-overlay'
   flyerOverlay.style.cssText = `
@@ -2495,28 +2492,22 @@ function applyFlyerGradientOverlay(canvas) {
     width: 100%;
     height: 100%;
     background: ${currentGradient};
-    z-index: 2;
+    z-index: 1;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.4s ease;
-    mix-blend-mode: multiply;
   `
   
   // Ensure canvas positioning
   canvas.style.position = 'relative'
   
-  // Insert the overlay properly in the template structure
+  // Insert the overlay as the FIRST child (bottom layer)
   const template = canvas.querySelector('.instagram-post-template, .instagram-portrait-template, .facebook-post-template, .twitter-post-template')
   if (template) {
-    // Insert after the existing gradient overlay but before content
-    const existingGradient = template.children[0] // Usually the template's own gradient
-    if (existingGradient && existingGradient.style.background.includes('gradient')) {
-      template.insertBefore(flyerOverlay, existingGradient.nextSibling)
-    } else {
-      template.insertBefore(flyerOverlay, template.firstChild)
-    }
+    // Insert as the very first child (bottom layer)
+    template.insertBefore(flyerOverlay, template.firstChild)
   } else {
-    canvas.appendChild(flyerOverlay)
+    canvas.insertBefore(flyerOverlay, canvas.firstChild)
   }
   
   // Fade in the overlay smoothly
@@ -2524,9 +2515,8 @@ function applyFlyerGradientOverlay(canvas) {
     flyerOverlay.style.opacity = '1'
   }, 50)
   
-  console.log(`✨ Applied ${variant.name} gradient overlay`)
+  console.log(`✨ Applied ${variant.name} gradient overlay as bottom layer`)
 }
-
 /**
  * SMOOTH: Remove flyer gradient overlay
  */
@@ -2700,11 +2690,11 @@ const GRADIENT_VARIANTS = {
     icon: '🔥',
     gradient: `linear-gradient(
       180deg,
-      rgba(255, 8, 8, 0.7) 0%,
-      rgba(139, 0, 0, 0.8) 25%,
-      rgba(41, 41, 41, 0.9) 50%,
-      rgba(139, 0, 0, 0.8) 75%,
-      rgba(255, 8, 8, 0.7) 100%
+      rgba(255, 8, 8, 0.35) 0%,
+      rgba(139, 0, 0, 0.45) 25%,
+      rgba(41, 41, 41, 0.55) 50%,
+      rgba(139, 0, 0, 0.45) 75%,
+      rgba(255, 8, 8, 0.35) 100%
     )`
   },
   'blue-dark': {
@@ -2712,11 +2702,11 @@ const GRADIENT_VARIANTS = {
     icon: '🌊',
     gradient: `linear-gradient(
       180deg,
-      rgba(30, 144, 255, 0.7) 0%,
-      rgba(0, 100, 200, 0.8) 25%,
-      rgba(25, 25, 70, 0.9) 50%,
-      rgba(0, 100, 200, 0.8) 75%,
-      rgba(30, 144, 255, 0.7) 100%
+      rgba(30, 144, 255, 0.35) 0%,
+      rgba(0, 100, 200, 0.45) 25%,
+      rgba(25, 25, 70, 0.55) 50%,
+      rgba(0, 100, 200, 0.45) 75%,
+      rgba(30, 144, 255, 0.35) 100%
     )`
   },
   'purple-dark': {
@@ -2724,11 +2714,11 @@ const GRADIENT_VARIANTS = {
     icon: '🟣',
     gradient: `linear-gradient(
       180deg,
-      rgba(138, 43, 226, 0.7) 0%,
-      rgba(75, 0, 130, 0.8) 25%,
-      rgba(25, 25, 25, 0.9) 50%,
-      rgba(75, 0, 130, 0.8) 75%,
-      rgba(138, 43, 226, 0.7) 100%
+      rgba(138, 43, 226, 0.35) 0%,
+      rgba(75, 0, 130, 0.45) 25%,
+      rgba(25, 25, 25, 0.55) 50%,
+      rgba(75, 0, 130, 0.45) 75%,
+      rgba(138, 43, 226, 0.35) 100%
     )`
   },
   'green-dark': {
@@ -2736,11 +2726,11 @@ const GRADIENT_VARIANTS = {
     icon: '🌿',
     gradient: `linear-gradient(
       180deg,
-      rgba(34, 139, 34, 0.7) 0%,
-      rgba(0, 100, 0, 0.8) 25%,
-      rgba(25, 50, 25, 0.9) 50%,
-      rgba(0, 100, 0, 0.8) 75%,
-      rgba(34, 139, 34, 0.7) 100%
+      rgba(34, 139, 34, 0.35) 0%,
+      rgba(0, 100, 0, 0.45) 25%,
+      rgba(25, 50, 25, 0.55) 50%,
+      rgba(0, 100, 0, 0.45) 75%,
+      rgba(34, 139, 34, 0.35) 100%
     )`
   },
   'orange-dark': {
@@ -2748,11 +2738,11 @@ const GRADIENT_VARIANTS = {
     icon: '🍊',
     gradient: `linear-gradient(
       180deg,
-      rgba(255, 140, 0, 0.7) 0%,
-      rgba(255, 69, 0, 0.8) 25%,
-      rgba(139, 69, 19, 0.9) 50%,
-      rgba(255, 69, 0, 0.8) 75%,
-      rgba(255, 140, 0, 0.7) 100%
+      rgba(255, 140, 0, 0.35) 0%,
+      rgba(255, 69, 0, 0.45) 25%,
+      rgba(139, 69, 19, 0.55) 50%,
+      rgba(255, 69, 0, 0.45) 75%,
+      rgba(255, 140, 0, 0.35) 100%
     )`
   },
   'black-gray': {
@@ -2760,11 +2750,11 @@ const GRADIENT_VARIANTS = {
     icon: '⚫',
     gradient: `linear-gradient(
       180deg,
-      rgba(64, 64, 64, 0.8) 0%,
-      rgba(32, 32, 32, 0.9) 25%,
-      rgba(0, 0, 0, 0.95) 50%,
-      rgba(32, 32, 32, 0.9) 75%,
-      rgba(64, 64, 64, 0.8) 100%
+      rgba(64, 64, 64, 0.4) 0%,
+      rgba(32, 32, 32, 0.5) 25%,
+      rgba(0, 0, 0, 0.6) 50%,
+      rgba(32, 32, 32, 0.5) 75%,
+      rgba(64, 64, 64, 0.4) 100%
     )`
   },
   'brand-classic': {
@@ -2772,11 +2762,11 @@ const GRADIENT_VARIANTS = {
     icon: '🎨',
     gradient: `linear-gradient(
       180deg,
-      rgba(255, 8, 8, 0.6) 0%,
-      rgba(250, 246, 239, 0.4) 20%,
-      rgba(41, 41, 41, 0.8) 50%,
-      rgba(250, 246, 239, 0.4) 80%,
-      rgba(255, 8, 8, 0.6) 100%
+      rgba(255, 8, 8, 0.3) 0%,
+      rgba(250, 246, 239, 0.2) 20%,
+      rgba(41, 41, 41, 0.4) 50%,
+      rgba(250, 246, 239, 0.2) 80%,
+      rgba(255, 8, 8, 0.3) 100%
     )`
   },
   'sepia-warm': {
@@ -2784,15 +2774,14 @@ const GRADIENT_VARIANTS = {
     icon: '☕',
     gradient: `linear-gradient(
       180deg,
-      rgba(160, 82, 45, 0.7) 0%,
-      rgba(139, 69, 19, 0.8) 25%,
-      rgba(101, 67, 33, 0.9) 50%,
-      rgba(139, 69, 19, 0.8) 75%,
-      rgba(160, 82, 45, 0.7) 100%
+      rgba(160, 82, 45, 0.35) 0%,
+      rgba(139, 69, 19, 0.45) 25%,
+      rgba(101, 67, 33, 0.55) 50%,
+      rgba(139, 69, 19, 0.45) 75%,
+      rgba(160, 82, 45, 0.35) 100%
     )`
   }
 }
-
 /**
  * NEW: Update gradient variant
  */
