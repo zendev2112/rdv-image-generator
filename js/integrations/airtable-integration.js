@@ -2348,10 +2348,9 @@ function applyFlyerGradientOverlay(canvas) {
   const existingOverlay = canvas.querySelector('.flyer-gradient-overlay')
   if (existingOverlay) existingOverlay.remove()
   
-  // Create smooth flyer gradient overlay using your color palette
-  const flyerOverlay = document.createElement('div')
-  flyerOverlay.className = 'flyer-gradient-overlay'
-  flyerOverlay.style.cssText = `
+    const flyerOverlay = document.createElement('div')
+    flyerOverlay.className = 'flyer-gradient-overlay'
+    flyerOverlay.style.cssText = `
     position: absolute;
     top: 0;
     left: 0;
@@ -2359,17 +2358,17 @@ function applyFlyerGradientOverlay(canvas) {
     height: 100%;
     background: linear-gradient(
       135deg,
-      rgba(250, 246, 239, 0.75) 0%,
-      rgba(255, 255, 255, 0.6) 25%,
-      rgba(250, 246, 239, 0.4) 50%,
-      rgba(255, 255, 255, 0.6) 75%,
-      rgba(250, 246, 239, 0.8) 100%
+      rgba(41, 41, 41, 0.8) 0%,
+      rgba(0, 0, 0, 0.7) 25%,
+      rgba(41, 41, 41, 0.6) 50%,
+      rgba(0, 0, 0, 0.7) 75%,
+      rgba(41, 41, 41, 0.85) 100%
     );
     z-index: 2;
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.4s ease;
-    mix-blend-mode: overlay;
+    mix-blend-mode: multiply;
   `
   
   // Ensure canvas positioning
