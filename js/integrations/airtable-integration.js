@@ -1642,6 +1642,7 @@ function updateTemplateInfoDisplay(templateType) {
   const configs = {
     'story': { name: 'Instagram Story', dims: '1080 × 1920' },
     'post': { name: 'Instagram Post', dims: '1080 × 1080' },
+    'portrait': { name: 'Instagram Portrait Post', dims: '1080 × 1350' }, 
     'reel-cover': { name: 'Instagram Reel Cover', dims: '1080 × 1920' }
   }
   
@@ -2087,8 +2088,9 @@ function generateInstagramReelCoverHTML(content) {
   `
 }
 
+
 /**
- * NEW: Generate Instagram Portrait Post HTML (4:5 aspect ratio)
+ * UPDATED: Generate Instagram Portrait Post HTML with your color palette
  */
 function generateInstagramPortraitPostHTML(content) {
   return `
@@ -2096,18 +2098,21 @@ function generateInstagramPortraitPostHTML(content) {
       position: relative;
       width: 100%;
       height: 100%;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
+      background: transparent;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 30px 25px;
-      color: #262626;
+      color: #000000;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       aspect-ratio: 4/5;
       border-radius: 8px;
       overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     ">
-      <!-- Strategic gradient overlay for portrait -->
+      <!-- LIGHTER gradient overlay for portrait -->
       <div style="
         position: absolute;
         top: 0;
@@ -2116,71 +2121,70 @@ function generateInstagramPortraitPostHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(255,255,255,0.8) 0%, 
-          rgba(255,255,255,0.4) 12%, 
+          rgba(250, 246, 239, 0.4) 0%, 
+          rgba(250, 246, 239, 0.1) 10%, 
           transparent 20%, 
           transparent 80%, 
-          rgba(255,255,255,0.4) 88%, 
-          rgba(255,255,255,0.9) 100%
+          rgba(250, 246, 239, 0.1) 90%, 
+          rgba(250, 246, 239, 0.5) 100%
         );
         z-index: 1;
         pointer-events: none;
       "></div>
 
-      <!-- Header - compact -->
+      <!-- Header with your color palette -->
       <div style="
         display: flex; 
         align-items: center; 
         gap: 10px; 
         z-index: 3; 
         position: relative;
-        background: rgba(255,255,255,0.85);
-        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
         padding: 12px 16px;
         border-radius: 16px;
         align-self: flex-start;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.9);
       ">
         <div style="
           width: 32px;
           height: 32px;
-          background: linear-gradient(45deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+          background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
-          color: white;
+          color: #ffffff;
           font-size: 14px;
         ">RDV</div>
         <div>
-          <div style="font-weight: 600; font-size: 13px; color: #262626;">radiodelvolga</div>
-          <div style="font-size: 11px; color: #8e8e8e;">${content.date || 'Hoy'}</div>
+          <div style="font-weight: 600; font-size: 13px; color: #000000;">radiodelvolga</div>
+          <div style="font-size: 11px; color: #292929;">${content.date || 'Hoy'}</div>
         </div>
-        <div style="margin-left: auto; color: #833ab4; font-size: 18px;">📷</div>
+        <div style="margin-left: auto; color: #ff0808; font-size: 18px;">📷</div>
       </div>
 
-      <!-- Empty space for image to show (larger area for portrait) -->
-      <div style="flex: 1; min-height: 200px;"></div>
-
-      <!-- Main Content - optimized for portrait -->
+      <!-- Main Content for portrait -->
       <div style="
         z-index: 3; 
         position: relative;
+        margin-top: auto;
       ">
         <!-- Content Background -->
         <div style="
-          background: rgba(255,255,255,0.9);
-          backdrop-filter: blur(15px);
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(25px);
           border-radius: 20px;
           padding: 25px 20px;
-          box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-          border: 1px solid rgba(255,255,255,0.3);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          border: 2px solid rgba(255, 255, 255, 0.95);
         ">
-          <!-- Category Badge -->
+          <!-- Category Badge with your colors -->
           <div style="
-            background: linear-gradient(45deg, #833ab4, #fd1d1d);
-            color: white;
+            background: linear-gradient(45deg, #ff0808, #292929);
+            color: #ffffff;
             padding: 8px 16px;
             border-radius: 20px;
             font-size: 11px;
@@ -2189,6 +2193,7 @@ function generateInstagramPortraitPostHTML(content) {
             display: inline-block;
             margin-bottom: 15px;
             letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
           ">${content.category || 'NOTICIAS'}</div>
 
           <!-- Title - larger for portrait -->
@@ -2197,7 +2202,7 @@ function generateInstagramPortraitPostHTML(content) {
             font-weight: 700;
             line-height: 1.2;
             margin: 0 0 12px 0;
-            color: #262626;
+            color: #000000;
           ">${content.title || 'Título de la noticia'}</h1>
 
           <!-- Excerpt - more space in portrait -->
@@ -2206,7 +2211,7 @@ function generateInstagramPortraitPostHTML(content) {
             font-weight: 400;
             line-height: 1.4;
             margin: 0 0 15px 0;
-            color: #555;
+            color: #292929;
           ">${(content.excerpt || 'Descripción de la noticia').length > 140 ? content.excerpt.substring(0, 140) + '...' : content.excerpt}</p>
 
           <!-- Footer with hashtags and source -->
@@ -2221,19 +2226,20 @@ function generateInstagramPortraitPostHTML(content) {
           ">
             <div style="
               font-size: 12px;
-              color: #385185;
+              color: #ff0808;
               font-weight: 600;
               line-height: 1.3;
             ">${(content.hashtags || ['#RDVNoticias']).slice(0, 4).join(' ')}</div>
             
             <div style="
-              background: rgba(131, 58, 180, 0.1);
-              border: 1px solid rgba(131, 58, 180, 0.3);
+              background: rgba(255, 8, 8, 0.15);
+              border: 1px solid rgba(255, 8, 8, 0.4);
               padding: 6px 12px;
               border-radius: 12px;
               font-size: 11px;
               font-weight: 600;
-              color: #833ab4;
+              color: #ff0808;
+              backdrop-filter: blur(4px);
             ">${content.source || 'RDV'}</div>
           </div>
         </div>
