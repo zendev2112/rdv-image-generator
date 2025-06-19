@@ -1957,6 +1957,9 @@ function generateInstagramPostHTML(content) {
 /**
  * REBUILT: Generate Instagram Story HTML (9:16 aspect ratio)
  */
+/**
+ * UPDATED: Generate Instagram Story HTML with same letterboxing as Post
+ */
 function generateInstagramStoryHTML(content) {
   return `
     <div class="instagram-story-template" style="
@@ -1977,7 +1980,7 @@ function generateInstagramStoryHTML(content) {
       background-position: center;
       background-repeat: no-repeat;
     ">
-      <!-- Dark gradient overlay for readability -->
+      <!-- UPDATED: Same letterboxing strategy as Post - only top and bottom edges -->
       <div style="
         position: absolute;
         top: 0;
@@ -1986,11 +1989,11 @@ function generateInstagramStoryHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(0, 0, 0, 0.6) 0%, 
-          rgba(0, 0, 0, 0.2) 20%, 
-          transparent 40%, 
-          transparent 60%, 
-          rgba(0, 0, 0, 0.2) 80%, 
+          rgba(0, 0, 0, 0.7) 0%, 
+          rgba(0, 0, 0, 0.3) 12%, 
+          transparent 20%, 
+          transparent 80%, 
+          rgba(0, 0, 0, 0.3) 88%, 
           rgba(0, 0, 0, 0.8) 100%
         );
         z-index: 1;
@@ -2005,8 +2008,12 @@ function generateInstagramStoryHTML(content) {
         z-index: 50; 
         position: relative;
       ">
-        ${generateLogoHTML('story')}
-      
+        ${generateLogoHTML('story', 'background: #ffffff; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);')}
+        <div>
+          <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
+        </div>
+        <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
       </div>
 
       <!-- Story Content -->
@@ -2061,7 +2068,6 @@ function generateInstagramStoryHTML(content) {
     </div>
   `
 }
-
 /**
  * MISSING FUNCTION: Generate Instagram Reel Cover HTML
  */
