@@ -2358,11 +2358,11 @@ function applyFlyerGradientOverlay(canvas) {
     height: 100%;
     background: linear-gradient(
       135deg,
-      rgba(41, 41, 41, 0.8) 0%,
-      rgba(0, 0, 0, 0.7) 25%,
-      rgba(41, 41, 41, 0.6) 50%,
-      rgba(0, 0, 0, 0.7) 75%,
-      rgba(41, 41, 41, 0.85) 100%
+      rgba(255, 8, 8, 0.45) 0%,
+      rgba(41, 41, 41, 0.6) 25%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(41, 41, 41, 0.6) 75%,
+      rgba(255, 8, 8, 0.5) 100%
     );
     z-index: 2;
     pointer-events: none;
