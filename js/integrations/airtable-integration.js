@@ -2005,12 +2005,8 @@ function generateInstagramStoryHTML(content) {
         z-index: 50; 
         position: relative;
       ">
-        ${generateLogoHTML('story', 'background: #ffffff; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);')}
-        <div>
-          <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
-          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
-        </div>
-        <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
+        ${generateLogoHTML('story')}
+        
       </div>
 
       <!-- Story Content -->
