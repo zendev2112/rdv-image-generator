@@ -1954,11 +1954,9 @@ function generateInstagramPostHTML(content) {
   `
 }
 
+
 /**
- * REBUILT: Generate Instagram Story HTML (9:16 aspect ratio)
- */
-/**
- * UPDATED: Generate Instagram Story HTML with same letterboxing as Post
+ * REBUILT: Generate Instagram Story HTML with same letterboxing strategy as Post
  */
 function generateInstagramStoryHTML(content) {
   return `
@@ -1970,7 +1968,7 @@ function generateInstagramStoryHTML(content) {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 40px 30px;
+      padding: 25px;
       color: #ffffff;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       aspect-ratio: 9/16;
@@ -1980,7 +1978,7 @@ function generateInstagramStoryHTML(content) {
       background-position: center;
       background-repeat: no-repeat;
     ">
-      <!-- UPDATED: Same letterboxing strategy as Post - only top and bottom edges -->
+      <!-- SAME letterboxing gradient as Post - only at top and bottom edges -->
       <div style="
         position: absolute;
         top: 0;
@@ -1989,81 +1987,112 @@ function generateInstagramStoryHTML(content) {
         height: 100%;
         background: linear-gradient(
           180deg, 
-          rgba(0, 0, 0, 0.7) 0%, 
-          rgba(0, 0, 0, 0.3) 12%, 
-          transparent 20%, 
-          transparent 80%, 
-          rgba(0, 0, 0, 0.3) 88%, 
-          rgba(0, 0, 0, 0.8) 100%
+          rgba(0, 0, 0, 0.6) 0%, 
+          rgba(0, 0, 0, 0.2) 8%, 
+          transparent 15%, 
+          transparent 85%, 
+          rgba(0, 0, 0, 0.2) 92%, 
+          rgba(0, 0, 0, 0.7) 100%
         );
         z-index: 1;
         pointer-events: none;
       "></div>
 
-      <!-- Story Header with LOGO SYSTEM -->
+      <!-- Header with SAME structure as Post -->
       <div style="
         display: flex; 
         align-items: center; 
-        gap: 12px; 
+        gap: 10px; 
         z-index: 50; 
         position: relative;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(15px);
+        padding: 12px 16px;
+        border-radius: 16px;
+        align-self: flex-start;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
       ">
         ${generateLogoHTML('story', 'background: #ffffff; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);')}
         <div>
-          <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
-          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
+          <div style="font-weight: 600; font-size: 13px; color: #ffffff;">radiodelvolga</div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
         </div>
-        <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
+        <div style="margin-left: auto; color: #ffffff; font-size: 18px;">📱</div>
       </div>
 
-      <!-- Story Content -->
+      <!-- Main Content with SAME backdrop structure as Post -->
       <div style="
         z-index: 3; 
         position: relative;
-        text-align: center;
+        margin-top: auto;
       ">
-        <!-- Category Badge -->
+        <!-- Content Background with SAME readability approach -->
         <div style="
-          background: linear-gradient(45deg, #ff0808, #292929);
-          color: #ffffff;
-          padding: 8px 16px;
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(25px);
           border-radius: 20px;
-          font-size: 12px;
-          font-weight: 700;
-          text-transform: uppercase;
-          display: inline-block;
-          margin-bottom: 20px;
-          letter-spacing: 0.5px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        ">${content.category || 'NOTICIAS'}</div>
+          padding: 20px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+          border: 2px solid rgba(255, 255, 255, 0.1);
+        ">
+          <!-- Category Badge -->
+          <div style="
+            background: linear-gradient(45deg, #ff0808, #292929);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
+          ">${content.category || 'NOTICIAS'}</div>
 
-        <!-- Title for story -->
-        <h1 style="
-          font-size: 28px;
-          font-weight: 800;
-          line-height: 1.2;
-          margin: 0 0 16px 0;
-          color: #ffffff;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        ">${content.title || 'Título de la noticia'}</h1>
+          <!-- Title -->
+          <h1 style="
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0 0 10px 0;
+            color: #ffffff;
+          ">${content.title || 'Título de la noticia'}</h1>
 
-        <!-- Excerpt for story -->
-        <p style="
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0 0 20px 0;
-          color: rgba(255, 255, 255, 0.9);
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
+          <!-- Excerpt -->
+          <p style="
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.3;
+            margin: 0 0 12px 0;
+            color: rgba(255, 255, 255, 0.9);
+          ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
 
-        <!-- Hashtags -->
-        <div style="
-          font-size: 14px;
-          color: #ffffff;
-          font-weight: 600;
-          text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
+          <!-- Footer with hashtags and source -->
+          <div style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+          ">
+            <div style="
+              font-size: 11px;
+              color: #ff0808;
+              font-weight: 600;
+            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
+            
+            <div style="
+              background: rgba(255, 8, 8, 0.2);
+              border: 1px solid rgba(255, 8, 8, 0.4);
+              padding: 4px 8px;
+              border-radius: 8px;
+              font-size: 10px;
+              font-weight: 600;
+              color: #ff0808;
+              backdrop-filter: blur(4px);
+            ">${content.source || 'RDV'}</div>
+          </div>
+        </div>
       </div>
     </div>
   `
