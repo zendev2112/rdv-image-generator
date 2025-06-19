@@ -1998,25 +1998,26 @@ function generateInstagramStoryHTML(content) {
       "></div>
 
       <!-- Story Header with WHITE LOGO -->
+      <!-- Story Header with LOGO SYSTEM -->
       <div style="
         display: flex; 
         align-items: center; 
         gap: 12px; 
-        z-index: 3; 
+        z-index: 50; 
         position: relative;
       ">
-        <div style="
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #ffffff;
-          border: 2px solid #ffffff;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        ">
+        ${generateLogoHTML(
+          'story',
+          'background: #ffffff; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);'
+        )}
+        <div>
+          <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${
+            content.date || 'Ahora'
+          }</div>
+        </div>
+        <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
+      </div>
           <img src="./assets/images/logos/rdv-white.svg" 
                alt="RDV Logo" 
                style="
@@ -2043,7 +2044,9 @@ function generateInstagramStoryHTML(content) {
         </div>
         <div>
           <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
-          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${
+            content.date || 'Ahora'
+          }</div>
         </div>
         <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
       </div>
@@ -2087,7 +2090,11 @@ function generateInstagramStoryHTML(content) {
           margin: 0 0 20px 0;
           color: rgba(255, 255, 255, 0.9);
           text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
+        ">${
+          (content.excerpt || 'Descripción de la noticia').length > 100
+            ? content.excerpt.substring(0, 100) + '...'
+            : content.excerpt
+        }</p>
 
         <!-- Hashtags -->
         <div style="
