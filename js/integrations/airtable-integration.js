@@ -2477,11 +2477,11 @@ function applyFlyerGradientOverlay(canvas) {
   // Remove existing flyer overlay
   const existingOverlay = canvas.querySelector('.flyer-gradient-overlay')
   if (existingOverlay) existingOverlay.remove()
-  
+
   // Get current gradient variant
   const currentGradient = getCurrentGradient()
   const variant = GRADIENT_VARIANTS[selectedGradientVariant]
-  
+
   // Create stylized darkening overlay with LOWER z-index than logo
   const flyerOverlay = document.createElement('div')
   flyerOverlay.className = 'flyer-gradient-overlay'
@@ -2497,27 +2497,29 @@ function applyFlyerGradientOverlay(canvas) {
     opacity: 0;
     transition: opacity 0.4s ease;
   `
-  
+
   // Ensure canvas positioning
   canvas.style.position = 'relative'
-  
+
   // Insert AFTER the header (Child 0), before background gradient (Child 1)
-  const template = canvas.querySelector('.instagram-post-template, .instagram-portrait-template, .facebook-post-template, .twitter-post-template')
+  const template = canvas.querySelector(
+    '.instagram-post-template, .instagram-portrait-template, .facebook-post-template, .twitter-post-template'
+  )
   if (template && template.children.length > 0) {
     // Insert after the header (Child 0 with z-index: 10)
     const headerElement = template.children[0]
     template.insertBefore(flyerOverlay, headerElement.nextSibling)
-    
+
     console.log('Flyer gradient inserted after header (position 1)')
   } else {
     canvas.appendChild(flyerOverlay)
   }
-  
+
   // Fade in the overlay smoothly
   setTimeout(() => {
     flyerOverlay.style.opacity = '1'
   }, 50)
-  
+
   console.log(`✨ Applied ${variant.name} gradient overlay below header`)
 }
 
