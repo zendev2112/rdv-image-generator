@@ -1955,7 +1955,7 @@ function generateInstagramPostHTML(content) {
 }
 
 /**
- * MISSING: Generate Instagram Story HTML (9:16 aspect ratio)
+ * REBUILT: Generate Instagram Story HTML (9:16 aspect ratio)
  */
 function generateInstagramStoryHTML(content) {
   return `
@@ -1997,7 +1997,6 @@ function generateInstagramStoryHTML(content) {
         pointer-events: none;
       "></div>
 
-      <!-- Story Header with WHITE LOGO -->
       <!-- Story Header with LOGO SYSTEM -->
       <div style="
         display: flex; 
@@ -2006,41 +2005,10 @@ function generateInstagramStoryHTML(content) {
         z-index: 50; 
         position: relative;
       ">
-        ${generateLogoHTML(
-          'story',
-          
-        )}
-        
-      </div>
-          <img src="./assets/images/logos/rdv-white.svg" 
-               alt="RDV Logo" 
-               style="
-                 width: 46px;
-                 height: 46px;
-                 object-fit: contain;
-                 border-radius: 50%;
-               "
-               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-          />
-          <!-- Fallback text if image fails to load -->
-          <div style="
-            display: none;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
-            border-radius: 50%;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #ffffff;
-            font-size: 14px;
-          ">RDV</div>
-        </div>
+        ${generateLogoHTML('story', 'background: #ffffff; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);')}
         <div>
           <div style="font-weight: 600; font-size: 14px; color: #ffffff;">radiodelvolga</div>
-          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${
-            content.date || 'Ahora'
-          }</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.8);">${content.date || 'Ahora'}</div>
         </div>
         <div style="margin-left: auto; color: #ffffff; font-size: 20px;">📱</div>
       </div>
@@ -2084,11 +2052,7 @@ function generateInstagramStoryHTML(content) {
           margin: 0 0 20px 0;
           color: rgba(255, 255, 255, 0.9);
           text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        ">${
-          (content.excerpt || 'Descripción de la noticia').length > 100
-            ? content.excerpt.substring(0, 100) + '...'
-            : content.excerpt
-        }</p>
+        ">${(content.excerpt || 'Descripción de la noticia').length > 100 ? content.excerpt.substring(0, 100) + '...' : content.excerpt}</p>
 
         <!-- Hashtags -->
         <div style="
@@ -2101,7 +2065,6 @@ function generateInstagramStoryHTML(content) {
     </div>
   `
 }
-
 
 /**
  * MISSING FUNCTION: Generate Instagram Reel Cover HTML
