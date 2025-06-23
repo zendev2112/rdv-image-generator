@@ -370,6 +370,8 @@ async function uploadToAirtable() {
  */
 // Find this function and update it:
 
+let lastAirtableSection = null
+
 function fillFormFromAirtable(fields) {
   try {
     console.log('🔍 fillFormFromAirtable called with:', fields)
@@ -459,12 +461,8 @@ function fillFormFromAirtable(fields) {
       console.log('✅ Overline set:', overline)
     }
 
-    // Fill section (try different possible field names)
-    const section = fields.section || 'NOTICIAS' // Default to 'NOTICIAS' if not provided
-    if (sectionElement) {
-      sectionElement.value = section
-      console.log('✅ Section set:', section)
-    }
+    const section = fields.section || 'NOTICIAS'
+    lastAirtableSection = section //
 
     // Handle image URL with CORS proxy
     const imgUrl = extractImageUrl(fields)
@@ -1620,13 +1618,19 @@ function selectInstagramTemplate(templateType) {
 
   console.log('🔍 Form data before section check:', formData)
 
-  // ✅ FIXED: Always preserve section from category element
-  const categoryElement = document.getElementById('category')
-  if (categoryElement && categoryElement.value) {
-    formData.section = categoryElement.value
-    console.log('✅ Section preserved from category element:', formData.section)
+  // ✅ FIXED: Use the preserved Airtable section if available
+  if (lastAirtableSection && lastAirtableSection !== 'general') {
+    formData.section = lastAirtableSection
+    console.log('✅ Section preserved from Airtable:', formData.section)
   } else {
-    console.warn('⚠️ No category element or value found')
+    // Only check DOM element if no Airtable section
+    const categoryElement = document.getElementById('category')
+    if (categoryElement && categoryElement.value) {
+      formData.section = categoryElement.value
+      console.log('✅ Section preserved from category element:', formData.section)
+    } else {
+      console.warn('⚠️ No category element or value found')
+    }
   }
 
   // 🔍 ADD MORE DEBUGGING
@@ -1648,7 +1652,7 @@ function getCurrentFormData() {
     excerpt: document.getElementById('excerpt')?.value || '',
     tags: document.getElementById('tags')?.value || '',
     category: categoryValue,
-    section: categoryValue,
+    section: lastAirtableSection|| categoryValue,
     backgroundImage: document.getElementById('backgroundImage')?.value || '',
     source: document.getElementById('source')?.value || 'RDV Noticias',
     author: document.getElementById('author')?.value || 'Redacción RDV'
