@@ -1624,11 +1624,14 @@ function selectInstagramTemplate(templateType) {
  * NEW: Get current form data
  */
 function getCurrentFormData() {
+  const categoryValue = document.getElementById('category')?.value || 'general'
+  
   return {
     title: document.getElementById('title')?.value || '',
     excerpt: document.getElementById('excerpt')?.value || '',
     tags: document.getElementById('tags')?.value || '',
-    category: document.getElementById('category')?.value || 'general',
+    category: categoryValue,
+    section: categoryValue,
     backgroundImage: document.getElementById('backgroundImage')?.value || '',
     source: document.getElementById('source')?.value || 'RDV Noticias',
     author: document.getElementById('author')?.value || 'Redacción RDV'
