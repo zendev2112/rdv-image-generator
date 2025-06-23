@@ -2312,7 +2312,7 @@ function generateInstagramPortraitPostHTML(content) {
             margin-bottom: 15px;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${content.category || 'NOTICIAS'}</div>
+          ">${content.section || 'NOTICIAS'}</div>
 
           <!-- Title - larger for portrait -->
           <h1 style="
