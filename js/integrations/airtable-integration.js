@@ -2432,7 +2432,7 @@ function generateInstagramOptimizedContent(data, templateType) {
     source: data.source || '@rdvnoticias',
     date: new Date().toLocaleDateString('es-AR'),
     backgroundImage: data.backgroundImage || '',
-    section: data.section || 'GENERAL',
+    section: data.section || 'NOTICIAS',
     template: templateType
   }
 }
