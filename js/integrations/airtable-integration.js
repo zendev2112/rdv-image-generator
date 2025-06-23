@@ -423,7 +423,7 @@ function fillFormFromAirtable(fields) {
     const excerptElement = document.getElementById('excerpt')
     const overlineElement = document.getElementById('overline')
     const imgUrlElement = document.getElementById('imgUrl')
-    const sectionElement = document.getElementById('category') // Added for section field
+    const sectionElement = document.getElementById('category') || document.getElementById('section')// Added for section field
 
     // Fill title (try different possible field names)
     const title =
