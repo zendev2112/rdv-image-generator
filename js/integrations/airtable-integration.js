@@ -1618,16 +1618,19 @@ function selectInstagramTemplate(templateType) {
   // Get current form data and render template
   const formData = getCurrentFormData()
 
-  // ✅ Check if we have a preserved Airtable section in the category element
+  console.log('🔍 Form data before section check:', formData)
+
+  // ✅ FIXED: Always preserve section from category element
   const categoryElement = document.getElementById('category')
-  if (
-    categoryElement &&
-    categoryElement.value &&
-    categoryElement.value !== 'general'
-  ) {
+  if (categoryElement && categoryElement.value) {
     formData.section = categoryElement.value
-    console.log('✅ Using section from category element:', formData.section)
+    console.log('✅ Section preserved from category element:', formData.section)
+  } else {
+    console.warn('⚠️ No category element or value found')
   }
+
+  // 🔍 ADD MORE DEBUGGING
+  console.log('🔍 Form data after section check:', formData)
 
   renderInstagramTemplateWithData(formData, templateType)
 
