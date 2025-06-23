@@ -1938,7 +1938,7 @@ function generateInstagramPostHTML(content) {
             display: inline-block;
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${content.section || 'NOTICIAS'}</div>
+          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
           <!-- Title -->
           <h1 style="
