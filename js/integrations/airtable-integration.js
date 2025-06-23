@@ -1906,7 +1906,7 @@ function generateInstagramPostHTML(content) {
             display: inline-block;
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${content.category || 'NOTICIAS'}</div>
+          ">${content.section || 'NOTICIAS'}</div>
 
           <!-- Title -->
           <h1 style="
@@ -2046,7 +2046,7 @@ function generateInstagramStoryHTML(content) {
             display: inline-block;
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${content.category || 'NOTICIAS'}</div>
+          ">${content.section || 'NOTICIAS'}</div>
 
           <!-- Title -->
           <h1 style="
@@ -2393,7 +2393,7 @@ function generateInstagramOptimizedContent(data, templateType) {
     source: data.source || '@rdvnoticias',
     date: new Date().toLocaleDateString('es-AR'),
     backgroundImage: data.backgroundImage || '',
-    category: data.category || 'GENERAL',
+    section: data.section || 'GENERAL',
     template: templateType
   }
 }
