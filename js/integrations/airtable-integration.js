@@ -2391,6 +2391,13 @@ function generateInstagramOptimizedContent(data, templateType) {
   if (typeof window.InstagramTemplates?.generateContent === 'function') {
     return window.InstagramTemplates.generateContent(data, templateType)
   }
+
+    // Debugging: Check if the section field exists
+    if (data.section) {
+      console.log('✅ Section field found in data:', data.section);
+    } else {
+      console.warn('⚠️ Section field not found in data.');
+    }
   
   // Fallback content generation
   return {
