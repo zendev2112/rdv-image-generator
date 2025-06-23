@@ -1595,28 +1595,42 @@ async function listAvailableTables() {
  */
 function selectInstagramTemplate(templateType) {
   console.log('🎨 Selecting Instagram template:', templateType)
-  
+
   // Update active template button
   const templateButtons = document.querySelectorAll('.template-btn')
-  templateButtons.forEach(btn => btn.classList.remove('active'))
-  
-  const selectedButton = document.querySelector(`[data-template="${templateType}"]`)
+  templateButtons.forEach((btn) => btn.classList.remove('active'))
+
+  const selectedButton = document.querySelector(
+    `[data-template="${templateType}"]`
+  )
   if (selectedButton) {
     selectedButton.classList.add('active')
   }
-  
+
   // Update global state
   if (window.RDVImageGenerator) {
     window.RDVImageGenerator.currentTemplate = templateType
   }
-  
+
   // Update UI info
   updateTemplateInfoDisplay(templateType)
-  
+
   // Get current form data and render template
   const formData = getCurrentFormData()
+
+  // ✅ Check if we have a preserved Airtable section in the category element
+  const categoryElement = document.getElementById('category')
+  if (
+    categoryElement &&
+    categoryElement.value &&
+    categoryElement.value !== 'general'
+  ) {
+    formData.section = categoryElement.value
+    console.log('✅ Using section from category element:', formData.section)
+  }
+
   renderInstagramTemplateWithData(formData, templateType)
-  
+
   showToast(`Template cambiado a Instagram ${templateType}`, 'success')
 }
 
@@ -1625,7 +1639,7 @@ function selectInstagramTemplate(templateType) {
  */
 function getCurrentFormData() {
   const categoryValue = document.getElementById('category')?.value || 'general'
-  
+
   return {
     title: document.getElementById('title')?.value || '',
     excerpt: document.getElementById('excerpt')?.value || '',
