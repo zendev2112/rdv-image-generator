@@ -369,6 +369,7 @@ async function uploadToAirtable() {
  * Fill form from Airtable data (Enhanced to load image)
  */
 // Find this function and update it:
+
 function fillFormFromAirtable(fields) {
   try {
     console.log('🔍 fillFormFromAirtable called with:', fields)
@@ -422,6 +423,7 @@ function fillFormFromAirtable(fields) {
     const excerptElement = document.getElementById('excerpt')
     const overlineElement = document.getElementById('overline')
     const imgUrlElement = document.getElementById('imgUrl')
+    const sectionElement = document.getElementById('category') // Added for section field
 
     // Fill title (try different possible field names)
     const title =
@@ -457,39 +459,46 @@ function fillFormFromAirtable(fields) {
       console.log('✅ Overline set:', overline)
     }
 
-// Handle image URL with CORS proxy
-const imgUrl = extractImageUrl(fields)
-console.log('🖼️ Extracted image URL:', imgUrl)
+    // Fill section (try different possible field names)
+    const section = fields.section || 'NOTICIAS' // Default to 'NOTICIAS' if not provided
+    if (sectionElement) {
+      sectionElement.value = section
+      console.log('✅ Section set:', section)
+    }
 
-// Re-check for image element (in case it wasn't found earlier)
-const imageInput = document.getElementById('imgUrl') || 
-                  document.querySelector('input[name="imgUrl"]') ||
-                  document.querySelector('input[placeholder*="imagen"]') ||
-                  document.querySelector('input[type="url"]')
+    // Handle image URL with CORS proxy
+    const imgUrl = extractImageUrl(fields)
+    console.log('🖼️ Extracted image URL:', imgUrl)
 
-console.log('🔍 Image input element:', imageInput)
+    // Re-check for image element (in case it wasn't found earlier)
+    const imageInput = document.getElementById('imgUrl') || 
+                      document.querySelector('input[name="imgUrl"]') ||
+                      document.querySelector('input[placeholder*="imagen"]') ||
+                      document.querySelector('input[type="url"]')
 
-if (imgUrl) {
-  if (imageInput) {
-    // Set the URL in the form
-    imageInput.value = imgUrl
-    console.log('✅ Image URL set in form:', imgUrl)
-  }
-  
-  // Always try to load the image regardless of form element
-  console.log('🖼️ Starting image load process...')
-  loadImageWithCorsProxy(imgUrl)
-    .then(() => {
-      console.log('✅ Image loaded successfully')
-      showToast('✅ Imagen cargada correctamente', 'success')
-    })
-    .catch(error => {
-      console.log('❌ Image loading failed:', error)
-      showToast('⚠️ No se pudo cargar la imagen', 'warning')
-    })
-} else {
-  console.warn('⚠️ No image URL extracted from fields')
-}
+    console.log('🔍 Image input element:', imageInput)
+
+    if (imgUrl) {
+      if (imageInput) {
+        // Set the URL in the form
+        imageInput.value = imgUrl
+        console.log('✅ Image URL set in form:', imgUrl)
+      }
+      
+      // Always try to load the image regardless of form element
+      console.log('🖼️ Starting image load process...')
+      loadImageWithCorsProxy(imgUrl)
+        .then(() => {
+          console.log('✅ Image loaded successfully')
+          showToast('✅ Imagen cargada correctamente', 'success')
+        })
+        .catch(error => {
+          console.log('❌ Image loading failed:', error)
+          showToast('⚠️ No se pudo cargar la imagen', 'warning')
+        })
+    } else {
+      console.warn('⚠️ No image URL extracted from fields')
+    }
 
     // Show success message
     showToast('✅ Formulario llenado con datos de Airtable', 'success')
@@ -498,7 +507,6 @@ if (imgUrl) {
     showToast('❌ Error llenando formulario', 'error')
   }
 }
-
 
 function extractUrlFromValue(value) {
   if (typeof value === 'string') {
