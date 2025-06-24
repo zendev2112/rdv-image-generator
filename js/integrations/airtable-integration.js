@@ -2044,45 +2044,61 @@ function generateInstagramStoryHTML(content) {
         ${generateLogoHTML('story')}
       </div>
 
-      <!-- Main Content: ONLY section badge and title with STORIES-SPECIFIC STYLING -->
+      <!-- Main Content: ONLY section badge and title with requested styling -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
       ">
         <div style="
-          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(41, 41, 41, 0.95));
-          backdrop-filter: blur(25px);
+          background: transparent;
           border-radius: 24px;
-          padding: 25px;
-          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-          border: 2px solid rgba(255, 8, 8, 0.15);
+          padding: 0;
+          box-shadow: none;
+          border: none;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
         ">
-          <!-- Category Badge - STORIES-SPECIFIC STYLING -->
+          <!-- Category Badge - FLAT MODERN STYLE -->
           <div style="
-            background: linear-gradient(90deg, #ff0808, #770404);
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 800;
+            background: #ff0808;
+            color: #fff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-radius: 6px;
+            padding: 5px 14px 4px 14px;
             display: inline-block;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(255, 8, 8, 0.4);
-            letter-spacing: 1px;
+            margin-bottom: 18px;
+            box-shadow: none;
+            line-height: 1.2;
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Title - STORIES-SPECIFIC STYLING -->
-          <h1 style="
+          <!-- Title - MODERN FORMAL SERIF, CLAMPED, ON DARK BG -->
+          <div style="
+            background: #292929;
+            color: #faf6ef;
+            font-family: 'Newsreader', serif;
             font-size: 22px;
-            font-weight: 800;
-            line-height: 1.3;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 18px 18px 14px 18px;
             margin: 0;
-            color: #ffffff;
-            letter-spacing: 0.3px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-          ">${content.title || 'Título de la noticia'}</h1>
+            width: 100%;
+            max-width: 95%;
+            line-height: 1.25;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            word-break: break-word;
+            letter-spacing: 0.01em;
+          ">${content.title || 'Título de la noticia'}</div>
         </div>
       </div>
     </div>
