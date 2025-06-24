@@ -2386,7 +2386,7 @@ function getLogoForTemplate(templateType) {
  */
 function generateLogoHTML(templateType, containerStyle = '') {
   const logoUrl = getLogoForTemplate(templateType)
-  
+
   return `
     <div style="
       width: 36px;
