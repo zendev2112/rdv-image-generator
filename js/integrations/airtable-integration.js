@@ -1840,7 +1840,7 @@ function setCanvasForInstagram(canvas, templateType) {
   canvas.style.aspectRatio = dim.ratio
   canvas.style.maxWidth = dim.maxWidth
   canvas.style.width = '100%'
-  canvas.style.borderRadius = '8px'
+  canvas.style.borderRadius = '0'
   canvas.style.overflow = 'hidden'
   canvas.style.boxShadow = '0 4px 16px rgba(0,0,0,0.1)'
   canvas.style.transition = 'all 0.3s ease'
