@@ -1968,7 +1968,7 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Main Content: Bigger dark news card in lower third -->
+      <!-- Main Content: Larger dark news card with transparency -->
       <div style="
         z-index: 3; 
         position: relative;
@@ -1977,16 +1977,17 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Bigger dark themed news card with darker background and soft border -->
+        <!-- Larger dark themed news card with transparency -->
         <div style="
-          background: #1f1f1f;
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(31, 31, 31, 0.85);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 20px;
-          padding: 30px 24px;
+          padding: 35px 30px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
           text-align: center;
-          max-width: 95%;
-          min-height: 140px;
+          max-width: 98%;
+          min-height: 160px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -2007,20 +2008,20 @@ function generateInstagramPostHTML(content) {
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Smaller centered title for long titles -->
+          <!-- Smaller centered title for long titles with better wrapping -->
           <h1 class="responsive-title" style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 700;
-            line-height: 1.25;
+            line-height: 1.3;
             margin: 0;
             color: #faf6ef;
             text-align: center;
-            max-width: 95%;
+            max-width: 100%;
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
             letter-spacing: 0.01em;
             display: -webkit-box;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 5;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
