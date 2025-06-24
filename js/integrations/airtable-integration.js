@@ -1970,25 +1970,7 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Section Badge - Top Right Corner -->
-      <div style="
-        position: absolute;
-        top: 25px;
-        right: 25px;
-        background: #ff0808;
-        color: #ffffff;
-        padding: 8px 16px;
-        border-radius: 999px;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        z-index: 60;
-        box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
-      ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
-
-      <!-- Main Content: Dark card with centered title only -->
+      <!-- Main Content: Centered news card in lower half -->
       <div style="
         z-index: 3; 
         position: relative;
@@ -1997,26 +1979,50 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Dark Card with Centered Title -->
+        <!-- Dark news card with badge and title -->
         <div style="
           background: #292929;
           border-radius: 20px;
-          padding: 40px 30px;
+          padding: 30px 25px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
           text-align: center;
           max-width: 90%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         ">
-          <!-- Large Centered Title -->
+          <!-- Red section badge - smaller, centered -->
+          <div style="
+            background: #ff0808;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
+          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
+
+          <!-- Medium centered title -->
           <h1 style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 30px;
+            font-size: 25px;
             font-weight: 700;
-            line-height: 1.2;
+            line-height: 1.3;
             margin: 0;
             color: #faf6ef;
             text-align: center;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            letter-spacing: 0.02em;
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.01em;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-break: break-word;
           ">${content.title || 'Título de la noticia'}</h1>
         </div>
       </div>
