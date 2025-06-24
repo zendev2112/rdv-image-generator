@@ -1979,11 +1979,12 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Dark themed news card -->
+        <!-- Dark themed news card with darker background and soft border -->
         <div style="
-          background: #292929;
+          background: #1f1f1f;
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 20px;
-          padding: 30px 25px;
+          padding: 24px 20px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
           text-align: center;
           max-width: 90%;
@@ -1991,27 +1992,27 @@ function generateInstagramPostHTML(content) {
           flex-direction: column;
           align-items: center;
         ">
-          <!-- Small red section badge - centered -->
+          <!-- Smaller red section badge - centered -->
           <div style="
             background: #ff0808;
             color: #ffffff;
-            padding: 6px 14px;
+            padding: 4px 10px;
             border-radius: 999px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Responsive centered title -->
+          <!-- Smaller centered title -->
           <h1 class="responsive-title" style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: clamp(16px, 4vw, 20px);
+            font-size: 18px;
             font-weight: 700;
-            line-height: 1.25;
+            line-height: 1.3;
             margin: 0;
             color: #faf6ef;
             text-align: center;
