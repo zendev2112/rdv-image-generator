@@ -1970,7 +1970,7 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Main Content: Centered news card in lower half -->
+      <!-- Main Content: Dark news card in lower third -->
       <div style="
         z-index: 3; 
         position: relative;
@@ -1979,7 +1979,7 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Dark news card with badge and title -->
+        <!-- Dark themed news card -->
         <div style="
           background: #292929;
           border-radius: 20px;
@@ -1991,11 +1991,11 @@ function generateInstagramPostHTML(content) {
           flex-direction: column;
           align-items: center;
         ">
-          <!-- Red section badge - smaller, centered -->
+          <!-- Small red section badge - centered -->
           <div style="
             background: #ff0808;
             color: #ffffff;
-            padding: 8px 14px;
+            padding: 6px 14px;
             border-radius: 999px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             font-size: 10px;
@@ -2006,15 +2006,16 @@ function generateInstagramPostHTML(content) {
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Medium centered title -->
-          <h1 style="
+          <!-- Responsive centered title -->
+          <h1 class="responsive-title" style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 25px;
+            font-size: clamp(16px, 4vw, 20px);
             font-weight: 700;
-            line-height: 1.3;
+            line-height: 1.25;
             margin: 0;
             color: #faf6ef;
             text-align: center;
+            max-width: 90%;
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
             letter-spacing: 0.01em;
             display: -webkit-box;
@@ -2023,6 +2024,7 @@ function generateInstagramPostHTML(content) {
             overflow: hidden;
             text-overflow: ellipsis;
             word-break: break-word;
+            hyphens: auto;
           ">${content.title || 'Título de la noticia'}</h1>
         </div>
       </div>
