@@ -1968,7 +1968,7 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Main Content: Dark news card in lower third -->
+      <!-- Main Content: Bigger dark news card in lower third -->
       <div style="
         z-index: 3; 
         position: relative;
@@ -1977,18 +1977,20 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Dark themed news card with darker background and soft border -->
+        <!-- Bigger dark themed news card with darker background and soft border -->
         <div style="
           background: #1f1f1f;
           border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 20px;
-          padding: 24px 20px;
+          padding: 30px 24px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
           text-align: center;
-          max-width: 90%;
+          max-width: 95%;
+          min-height: 140px;
           display: flex;
           flex-direction: column;
           align-items: center;
+          justify-content: center;
         ">
           <!-- Smaller red section badge - centered -->
           <div style="
@@ -2001,24 +2003,24 @@ function generateInstagramPostHTML(content) {
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Smaller centered title -->
+          <!-- Smaller centered title for long titles -->
           <h1 class="responsive-title" style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            line-height: 1.3;
+            line-height: 1.25;
             margin: 0;
             color: #faf6ef;
             text-align: center;
-            max-width: 90%;
+            max-width: 95%;
             text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
             letter-spacing: 0.01em;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
