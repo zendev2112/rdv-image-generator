@@ -1045,7 +1045,10 @@ function applyHorizontalImageScaling(canvas) {
   canvas.style.setProperty('background-position', 'center center, center center', 'important')
   canvas.style.setProperty('background-repeat', 'no-repeat, no-repeat', 'important')
   
-  console.log('✅ Applied horizontal image scaling with 06.jpg texture background')
+  // Add bottom gradient overlay for horizontal images
+  addBottomGradientOverlay(canvas)
+  
+  console.log('✅ Applied horizontal image scaling with 06.jpg texture and bottom gradient')
 }
 
 /**
@@ -1135,9 +1138,8 @@ function detectImageOrientationForOverlay(overlay, imageUrl) {
       }, aspect ratio: ${aspectRatio.toFixed(2)}`
     )
 
-    // FIND this part in detectImageOrientationForOverlay function:
     if (aspectRatio > 1.5) {
-      // Wide horizontal image - use contain with 06.jpg texture
+      // Wide horizontal image - use contain with 06.jpg texture and bottom gradient
       overlay.style.setProperty('background-color', '#f0f0f0', 'important')
       overlay.style.setProperty(
         'background-image',
@@ -1162,8 +1164,12 @@ function detectImageOrientationForOverlay(overlay, imageUrl) {
         'no-repeat, no-repeat',
         'important'
       )
+      
+      // Add bottom gradient overlay for horizontal images
+      addBottomGradientOverlay(overlay.parentNode)
+      
       console.log(
-        '📱 Overlay: Wide horizontal - using contain with 06.jpg texture'
+        '📱 Overlay: Wide horizontal - using contain with 06.jpg texture and bottom gradient'
       )
     } else if (aspectRatio < 0.8) {
       // Tall vertical image - use cover with top focus
@@ -1193,6 +1199,43 @@ function detectImageOrientationForOverlay(overlay, imageUrl) {
   tempImg.src = imageUrl
 }
 
+/**
+ * NEW: Add bottom gradient overlay for horizontal images
+ */
+function addBottomGradientOverlay(canvas) {
+  // Remove existing bottom gradient
+  const existingGradient = canvas.querySelector('.horizontal-bottom-gradient')
+  if (existingGradient) existingGradient.remove()
+  
+  // Create bottom gradient overlay
+  const gradientOverlay = document.createElement('div')
+  gradientOverlay.className = 'horizontal-bottom-gradient'
+  gradientOverlay.style.cssText = `
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.1) 30%,
+      rgba(0, 0, 0, 0.25) 60%,
+      rgba(0, 0, 0, 0.4) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  `
+  
+  // Ensure canvas positioning
+  canvas.style.position = 'relative'
+  
+  // Insert the gradient overlay
+  canvas.appendChild(gradientOverlay)
+  
+  console.log('✅ Added bottom gradient overlay for horizontal image')
+}
 /**
  * ENHANCED: Apply image to canvas with smart scaling for Instagram posts
  */
