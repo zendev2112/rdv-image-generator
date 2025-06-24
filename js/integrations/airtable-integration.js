@@ -1926,7 +1926,7 @@ function generateInstagramPostHTML(content) {
       color: #000000;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       aspect-ratio: 1/1;
-      border-radius: 8px;
+      border-radius: 0;
       overflow: hidden;
       background-size: cover;
       background-position: center;
@@ -1952,7 +1952,7 @@ function generateInstagramPostHTML(content) {
         pointer-events: none;
       "></div>
 
-            <!-- Header -->
+      <!-- Header -->
       <div style="
         display: flex; 
         align-items: center; 
@@ -1968,57 +1968,60 @@ function generateInstagramPostHTML(content) {
         border: 1px solid rgba(255, 255, 255, 0.2);
       ">
         ${generateLogoHTML('post')}
-        
       </div>
 
-      <!-- Main Content with very strong backdrop to stand out over image -->
+      <!-- Main Content: Dark card layout -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
       ">
-        <!-- Content Background with maximum readability -->
+        <!-- Dark Gray Card with Editorial Design -->
         <div style="
-          background: rgba(255, 255, 255, 0.98);
-          backdrop-filter: blur(25px);
-          border-radius: 20px;
-          padding: 20px;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-          border: 2px solid rgba(255, 255, 255, 0.95);
+          background: #292929;
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         ">
-          <!-- Category Badge -->
+          <!-- Red Section Badge -->
           <div style="
-            background: linear-gradient(45deg, #ff0808, #292929);
+            background: #ff0808;
             color: #ffffff;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 10px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: inline-block;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
+            margin-bottom: 16px;
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Title -->
+          <!-- Large Bold Title -->
           <h1 style="
-            font-size: 18px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 20px;
             font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 10px 0;
-            color: #000000;
+            line-height: 1.3;
+            margin: 0 0 16px 0;
+            color: #faf6ef;
           ">${content.title || 'Título de la noticia'}</h1>
 
-          <!-- Excerpt -->
+          <!-- Full Excerpt - No truncation -->
           <p style="
-            font-size: 13px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
             font-weight: 400;
-            line-height: 1.3;
-            margin: 0 0 12px 0;
-            color: #292929;
-          ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
-
-          
+            line-height: 1.4;
+            margin: 0;
+            color: rgba(250, 246, 239, 0.85);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          ">${
+            content.excerpt ||
+            'Descripción completa de la noticia que se muestra sin recortes para una mejor experiencia de lectura.'
+          }</p>
         </div>
       </div>
     </div>
