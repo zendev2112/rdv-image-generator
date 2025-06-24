@@ -1970,64 +1970,59 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Main Content: Dark card layout -->
+      <!-- Section Badge - Top Right Corner -->
+      <div style="
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        background: #ff0808;
+        color: #ffffff;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 60;
+        box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
+      ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
+
+      <!-- Main Content: Dark card with centered title only -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       ">
-        <!-- Dark Gray Card with Editorial Design -->
+        <!-- Dark Card with Centered Title -->
         <div style="
           background: #292929;
-          border-radius: 16px;
-          padding: 24px;
+          border-radius: 20px;
+          padding: 40px 30px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+          text-align: center;
+          max-width: 90%;
         ">
-          <!-- Red Section Badge -->
-          <div style="
-            background: #ff0808;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 999px;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
-            margin-bottom: 16px;
-          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
-
-          <!-- Large Bold Title -->
+          <!-- Large Centered Title -->
           <h1 style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 20px;
+            font-size: 30px;
             font-weight: 700;
-            line-height: 1.3;
-            margin: 0 0 16px 0;
-            color: #faf6ef;
-          ">${content.title || 'Título de la noticia'}</h1>
-
-          <!-- Full Excerpt - No truncation -->
-          <p style="
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.4;
+            line-height: 1.2;
             margin: 0;
-            color: rgba(250, 246, 239, 0.85);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-          ">${
-            content.excerpt ||
-            'Descripción completa de la noticia que se muestra sin recortes para una mejor experiencia de lectura.'
-          }</p>
+            color: #faf6ef;
+            text-align: center;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: 0.02em;
+          ">${content.title || 'Título de la noticia'}</h1>
         </div>
       </div>
     </div>
   `
 }
-
 
 /**
  * REBUILT: Generate Instagram Story HTML with same letterboxing strategy as Post
