@@ -2044,41 +2044,44 @@ function generateInstagramStoryHTML(content) {
         ${generateLogoHTML('story')}
       </div>
 
-      <!-- Main Content: ONLY section badge and title -->
+      <!-- Main Content: ONLY section badge and title with STORIES-SPECIFIC STYLING -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
       ">
         <div style="
-          background: rgba(0, 0, 0, 0.85);
+          background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(41, 41, 41, 0.95));
           backdrop-filter: blur(25px);
-          border-radius: 20px;
-          padding: 20px;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-          border: 2px solid rgba(255, 255, 255, 0.1);
+          border-radius: 24px;
+          padding: 25px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+          border: 2px solid rgba(255, 8, 8, 0.15);
         ">
-          <!-- Category Badge -->
+          <!-- Category Badge - STORIES-SPECIFIC STYLING -->
           <div style="
-            background: linear-gradient(45deg, #ff0808, #292929);
+            background: linear-gradient(90deg, #ff0808, #770404);
             color: #ffffff;
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 10px;
-            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
             text-transform: uppercase;
             display: inline-block;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(255, 8, 8, 0.4);
+            letter-spacing: 1px;
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Title -->
+          <!-- Title - STORIES-SPECIFIC STYLING -->
           <h1 style="
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 10px 0;
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin: 0;
             color: #ffffff;
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
           ">${content.title || 'Título de la noticia'}</h1>
         </div>
       </div>
