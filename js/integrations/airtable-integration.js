@@ -1968,7 +1968,7 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Main Content: Taller, more transparent background -->
+      <!-- Main Content: Taller, less transparent background -->
       <div style="
         z-index: 3; 
         position: relative;
@@ -1977,9 +1977,9 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Taller, more transparent news card -->
+        <!-- Taller, less transparent news card -->
         <div style="
-          background: rgba(31, 31, 31, 0.65);
+          background: rgba(31, 31, 31, 0.85);
           backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 20px;
