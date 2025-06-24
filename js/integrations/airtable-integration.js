@@ -2044,41 +2044,44 @@ function generateInstagramStoryHTML(content) {
         ${generateLogoHTML('story')}
       </div>
 
-      <!-- Centered Content -->
+      <!-- Lower Third Content: Badge + Title centered -->
       <div style="
         z-index: 3; 
         position: relative;
-        margin-top: auto;
-        margin-bottom: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         text-align: center;
+        margin-top: auto;
+        margin-bottom: 15%;
       ">
-        <!-- Section Badge - Centered -->
+        <!-- Section Badge - Smaller, centered -->
         <div style="
           background: #ff0808;
-          color: #fff;
-          font-family: 'Inter', sans-serif;
-          font-size: 11px;
+          color: #ffffff;
+          padding: 6px 16px;
+          border-radius: 999px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 10px;
           font-weight: 700;
           text-transform: uppercase;
-          padding: 8px 20px;
-          border-radius: 6px;
-          letter-spacing: 0.04em;
-          display: inline-block;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 12px rgba(255, 8, 8, 0.4);
+          letter-spacing: 0.5px;
+          margin-bottom: 12px;
+          box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
         ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-        <!-- Title - Full, centered -->
+        <!-- Title - Large, bold, centered with Inter font -->
         <h1 style="
-          font-family: 'Newsreader', serif;
-          font-size: 28px;
-          color: rgba(250,246,239,0.9);
-          text-align: center;
-          margin: 0 auto;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font-size: 24px;
           font-weight: 700;
-          line-height: 1.2;
-          max-width: 90%;
-          text-shadow: 0 2px 12px rgba(0,0,0,0.28), 0 1px 0 rgba(0,0,0,0.12);
+          line-height: 1.3;
+          margin: 0;
+          color: #ffffff;
+          text-align: center;
+          max-width: 85%;
+          text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         ">
           ${content.title || 'Título de la noticia'}
         </h1>
@@ -2086,269 +2089,6 @@ function generateInstagramStoryHTML(content) {
     </div>
   `
 }
-/**
- * MISSING FUNCTION: Generate Instagram Reel Cover HTML
- */
-function generateInstagramReelCoverHTML(content) {
-  return `
-    <div class="instagram-reel-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 40px 30px;
-      color: white;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      aspect-ratio: 9/16;
-      border-radius: 8px;
-      overflow: hidden;
-    ">
-      <!-- Reel Header -->
-      <div style="display: flex; align-items: center; gap: 12px; z-index: 2; position: relative;">
-        <div style="
-          width: 32px;
-          height: 32px;
-          background: linear-gradient(45deg, #833ab4, #fd1d1d);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: white;
-          font-size: 14px;
-        ">RDV</div>
-        <div>
-          <div style="font-weight: 600; font-size: 14px;">radiodelvolga</div>
-          <div style="font-size: 12px; opacity: 0.8;">Reel • Audio original</div>
-        </div>
-        <div style="margin-left: auto; font-size: 20px;">🎥</div>
-      </div>
-
-      <!-- Reel Content -->
-      <div style="text-align: center; z-index: 2; position: relative;">
-        <!-- Play Button -->
-        <div style="
-          width: 60px;
-          height: 60px;
-          background: rgba(255,255,255,0.2);
-          backdrop-filter: blur(10px);
-          border: 2px solid rgba(255,255,255,0.3);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 24px;
-          margin: 0 auto 30px auto;
-        ">▶️</div>
-
-        <!-- Title -->
-        <h1 style="
-          font-size: 24px;
-          font-weight: 800;
-          line-height: 1.2;
-          margin: 0 0 16px 0;
-          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        ">${content.title || 'Título del reel'}</h1>
-
-        <!-- Excerpt -->
-        <p style="
-          font-size: 16px;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0 0 20px 0;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        ">${(content.excerpt || 'Descripción').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
-      </div>
-
-      <!-- Reel Footer -->
-      <div style="z-index: 2; position: relative;">
-        <!-- Hashtags -->
-        <div style="
-          font-size: 14px;
-          line-height: 1.4;
-          margin-bottom: 16px;
-          text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        ">${(content.hashtags || ['#RDV']).slice(0, 3).join(' ')}</div>
-        
-        <!-- Audio Info -->
-        <div style="
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 12px;
-          opacity: 0.8;
-        ">
-          <span>🎵</span>
-          <span>Audio original • ${content.source || 'RDV'}</span>
-        </div>
-      </div>
-    </div>
-  `
-}
-
-
-/**
- * UPDATED: Generate Instagram Portrait Post HTML with your color palette
- */
-function generateInstagramPortraitPostHTML(content) {
-  return `
-    <div class="instagram-portrait-template" style="
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 30px 25px;
-      color: #000000;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      aspect-ratio: 4/5;
-      border-radius: 8px;
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    ">
-      <!-- LIGHTER gradient overlay for portrait -->
-      <div style="
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          180deg, 
-          rgba(250, 246, 239, 0.4) 0%, 
-          rgba(250, 246, 239, 0.1) 10%, 
-          transparent 20%, 
-          transparent 80%, 
-          rgba(250, 246, 239, 0.1) 90%, 
-          rgba(250, 246, 239, 0.5) 100%
-        );
-        z-index: 1;
-        pointer-events: none;
-      "></div>
-
-      <!-- Header with your color palette -->
-      <div style="
-        display: flex; 
-        align-items: center; 
-        gap: 10px; 
-        z-index: 3; 
-        position: relative;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(15px);
-        padding: 12px 16px;
-        border-radius: 16px;
-        align-self: flex-start;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.9);
-      ">
-        <div style="
-          width: 32px;
-          height: 32px;
-          background: linear-gradient(45deg, #ff0808 0%, #292929 100%);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: #ffffff;
-          font-size: 14px;
-        ">RDV</div>
-        <div>
-          <div style="font-weight: 600; font-size: 13px; color: #000000;">radiodelvolga</div>
-          <div style="font-size: 11px; color: #292929;">${content.date || 'Hoy'}</div>
-        </div>
-        <div style="margin-left: auto; color: #ff0808; font-size: 18px;">📷</div>
-      </div>
-
-      <!-- Main Content for portrait -->
-      <div style="
-        z-index: 3; 
-        position: relative;
-        margin-top: auto;
-      ">
-        <!-- Content Background -->
-        <div style="
-          background: rgba(255, 255, 255, 0.98);
-          backdrop-filter: blur(25px);
-          border-radius: 20px;
-          padding: 25px 20px;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-          border: 2px solid rgba(255, 255, 255, 0.95);
-        ">
-          <!-- Category Badge with your colors -->
-          <div style="
-            background: linear-gradient(45deg, #ff0808, #292929);
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 15px;
-            letter-spacing: 0.5px;
-            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
-
-          <!-- Title - larger for portrait -->
-          <h1 style="
-            font-size: 20px;
-            font-weight: 700;
-            line-height: 1.2;
-            margin: 0 0 12px 0;
-            color: #000000;
-          ">${content.title || 'Título de la noticia'}</h1>
-
-          <!-- Excerpt - more space in portrait -->
-          <p style="
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 1.4;
-            margin: 0 0 15px 0;
-            color: #292929;
-          ">${(content.excerpt || 'Descripción de la noticia').length > 140 ? content.excerpt.substring(0, 140) + '...' : content.excerpt}</p>
-
-          <!-- Footer with hashtags and source -->
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-top: 18px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(0,0,0,0.1);
-          ">
-            <div style="
-              font-size: 12px;
-              color: #ff0808;
-              font-weight: 600;
-              line-height: 1.3;
-            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 4).join(' ')}</div>
-            
-            <div style="
-              background: rgba(255, 8, 8, 0.15);
-              border: 1px solid rgba(255, 8, 8, 0.4);
-              padding: 6px 12px;
-              border-radius: 12px;
-              font-size: 11px;
-              font-weight: 600;
-              color: #ff0808;
-              backdrop-filter: blur(4px);
-            ">${content.source || 'RDV'}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `
-}
-
 /**
  * ENHANCED: Render Instagram template with specific template type
  */
