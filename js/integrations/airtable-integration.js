@@ -1932,7 +1932,7 @@ function generateInstagramPostHTML(content) {
       background-position: center;
       background-repeat: no-repeat;
     ">
-      <!--gradient overlay - only at top and bottom edges -->
+      <!--gradient overlay - only at top, bottom removed -->
       <div style="
         position: absolute;
         top: 0;
@@ -1944,9 +1944,7 @@ function generateInstagramPostHTML(content) {
           rgba(250, 246, 239, 0.4) 0%, 
           rgba(250, 246, 239, 0.1) 8%, 
           transparent 15%, 
-          transparent 85%, 
-          rgba(250, 246, 239, 0.1) 92%, 
-          rgba(250, 246, 239, 0.5) 100%
+          transparent 100%
         );
         z-index: 50;
         pointer-events: none;
