@@ -2389,25 +2389,26 @@ function generateLogoHTML(templateType, containerStyle = '') {
   
   return `
     <div style="
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      overflow: hidden;
+      overflow: visible;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-      z-index: 100;
+      z-index: 150;
+      flex-shrink: 0;
       ${containerStyle}
     ">
       <img src="${logoUrl}" 
            alt="RDV Logo" 
            style="
-             width: 32px;
-             height: 32px;
+             width: 28px;
+             height: 28px;
              object-fit: contain;
              position: relative;
-             z-index: 101;
+             z-index: 151;
            "
            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
       />
@@ -2422,9 +2423,9 @@ function generateLogoHTML(templateType, containerStyle = '') {
         justify-content: center;
         font-weight: bold;
         color: #ffffff;
-        font-size: 16px;
+        font-size: 14px;
         position: relative;
-        z-index: 101;
+        z-index: 151;
       ">RDV</div>
     </div>
   `
