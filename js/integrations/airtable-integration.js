@@ -2000,7 +2000,7 @@ function generateInstagramStoryHTML(content) {
       color: #ffffff;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       aspect-ratio: 9/16;
-      border-radius: 8px;
+      
       overflow: hidden;
       background-size: cover;
       background-position: center;
