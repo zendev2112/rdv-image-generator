@@ -1968,7 +1968,7 @@ function generateInstagramPostHTML(content) {
         ${generateLogoHTML('post')}
       </div>
 
-      <!-- Main Content: Larger dark news card with transparency -->
+      <!-- Main Content: Taller, more transparent background -->
       <div style="
         z-index: 3; 
         position: relative;
@@ -1977,41 +1977,41 @@ function generateInstagramPostHTML(content) {
         align-items: center;
         justify-content: center;
       ">
-        <!-- Larger dark themed news card with transparency -->
+        <!-- Taller, more transparent news card -->
         <div style="
-          background: rgba(31, 31, 31, 0.85);
+          background: rgba(31, 31, 31, 0.65);
           backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.15);
           border-radius: 20px;
-          padding: 35px 30px;
+          padding: 40px 35px;
           box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
           text-align: center;
           max-width: 98%;
-          min-height: 160px;
+          min-height: 200px;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
         ">
-          <!-- Smaller red section badge - centered -->
+          <!-- Bigger red section badge -->
           <div style="
             background: #ff0808;
             color: #ffffff;
-            padding: 4px 10px;
+            padding: 8px 16px;
             border-radius: 999px;
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 9px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.4);
           ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
-          <!-- Smaller centered title for long titles with better wrapping -->
+          <!-- Bigger centered title -->
           <h1 class="responsive-title" style="
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 700;
             line-height: 1.3;
             margin: 0;
