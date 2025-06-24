@@ -1909,7 +1909,24 @@ function generateInstagramPostHTML(content) {
         pointer-events: none;
       "></div>
 
-      ${generateLogoHTML('post')}
+            <!-- Header -->
+      <div style="
+        display: flex; 
+        align-items: center; 
+        gap: 10px; 
+        z-index: 50; 
+        position: relative;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(15px);
+        padding: 12px 16px;
+        border-radius: 16px;
+        align-self: flex-start;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      ">
+        ${generateLogoHTML('post')}
+        
+      </div>
 
       <!-- Main Content with very strong backdrop to stand out over image -->
       <div style="
@@ -1958,30 +1975,7 @@ function generateInstagramPostHTML(content) {
             color: #292929;
           ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
 
-          <!-- Footer with hashtags and source -->
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-          ">
-            <div style="
-              font-size: 11px;
-              color: #ff0808;
-              font-weight: 600;
-            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
-            
-            <div style="
-              background: rgba(255, 8, 8, 0.15);
-              border: 1px solid rgba(255, 8, 8, 0.4);
-              padding: 4px 8px;
-              border-radius: 8px;
-              font-size: 10px;
-              font-weight: 600;
-              color: #ff0808;
-              backdrop-filter: blur(4px);
-            ">${content.source || 'RDV'}</div>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -2097,31 +2091,7 @@ function generateInstagramStoryHTML(content) {
             margin: 0 0 12px 0;
             color: rgba(255, 255, 255, 0.9);
           ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
-
-          <!-- Footer with hashtags and source -->
-          <div style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-          ">
-            <div style="
-              font-size: 11px;
-              color: #ff0808;
-              font-weight: 600;
-            ">${(content.hashtags || ['#RDVNoticias']).slice(0, 3).join(' ')}</div>
-            
-            <div style="
-              background: rgba(255, 8, 8, 0.2);
-              border: 1px solid rgba(255, 8, 8, 0.4);
-              padding: 4px 8px;
-              border-radius: 8px;
-              font-size: 10px;
-              font-weight: 600;
-              color: #ff0808;
-              backdrop-filter: blur(4px);
-            ">${content.source || 'RDV'}</div>
-          </div>
+          
         </div>
       </div>
     </div>
