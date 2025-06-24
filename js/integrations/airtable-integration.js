@@ -2078,7 +2078,7 @@ function generateInstagramStoryHTML(content) {
             display: inline-block;
             margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${content.section || 'NOTICIAS'}</div>
+          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
           <!-- Title -->
           <h1 style="
@@ -2336,7 +2336,7 @@ function generateInstagramPortraitPostHTML(content) {
             margin-bottom: 15px;
             letter-spacing: 0.5px;
             box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
-          ">${content.section || 'NOTICIAS'}</div>
+          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
 
           <!-- Title - larger for portrait -->
           <h1 style="
