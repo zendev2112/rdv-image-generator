@@ -2006,7 +2006,7 @@ function generateInstagramStoryHTML(content) {
       background-position: center;
       background-repeat: no-repeat;
     ">
-      <!-- SAME letterboxing gradient as Post - only at top and bottom edges -->
+      <!-- Gradient overlay -->
       <div style="
         position: absolute;
         top: 0;
@@ -2026,7 +2026,7 @@ function generateInstagramStoryHTML(content) {
         pointer-events: none;
       "></div>
 
-      <!-- Header with SAME structure as Post -->
+      <!-- Header -->
       <div style="
         display: flex; 
         align-items: center; 
@@ -2044,54 +2044,41 @@ function generateInstagramStoryHTML(content) {
         ${generateLogoHTML('story')}
       </div>
 
-      <!-- Section Badge (top-right) -->
-      <div style="
-        position: absolute;
-        top: 24px;
-        right: 24px;
-        background: rgba(255,8,8,0.85);
-        color: #fff;
-        font-family: 'Inter', sans-serif;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        padding: 5px 18px 4px 18px;
-        border-radius: 999px;
-        box-shadow: 0 2px 12px 2px rgba(255,8,8,0.18);
-        filter: blur(0.1px);
-        letter-spacing: 0.08em;
-        z-index: 20;
-        backdrop-filter: blur(2px);
-        pointer-events: none;
-      ">
-        ${lastAirtableSection || content.section || 'NOTICIAS'}
-      </div>
-
-      <!-- Centered Headline -->
+      <!-- Centered Content -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
         margin-bottom: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        text-align: center;
       ">
+        <!-- Section Badge - Centered -->
+        <div style="
+          background: #ff0808;
+          color: #fff;
+          font-family: 'Inter', sans-serif;
+          font-size: 11px;
+          font-weight: 700;
+          text-transform: uppercase;
+          padding: 8px 20px;
+          border-radius: 6px;
+          letter-spacing: 0.04em;
+          display: inline-block;
+          margin-bottom: 20px;
+          box-shadow: 0 4px 12px rgba(255, 8, 8, 0.4);
+        ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
+
+        <!-- Title - Full, centered -->
         <h1 style="
           font-family: 'Newsreader', serif;
-          font-size: 32px;
+          font-size: 28px;
           color: rgba(250,246,239,0.9);
           text-align: center;
           margin: 0 auto;
           font-weight: 700;
-          line-height: 1.18;
+          line-height: 1.2;
           max-width: 90%;
           text-shadow: 0 2px 12px rgba(0,0,0,0.28), 0 1px 0 rgba(0,0,0,0.12);
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-          text-overflow: ellipsis;
         ">
           ${content.title || 'Título de la noticia'}
         </h1>
