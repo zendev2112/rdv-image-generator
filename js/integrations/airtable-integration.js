@@ -2042,16 +2042,14 @@ function generateInstagramStoryHTML(content) {
         border: 1px solid rgba(255, 255, 255, 0.2);
       ">
         ${generateLogoHTML('story')}
-        
       </div>
 
-      <!-- Main Content with SAME backdrop structure as Post -->
+      <!-- Main Content: ONLY section badge and title -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
       ">
-        <!-- Content Background with SAME readability approach -->
         <div style="
           background: rgba(0, 0, 0, 0.85);
           backdrop-filter: blur(25px);
@@ -2082,16 +2080,6 @@ function generateInstagramStoryHTML(content) {
             margin: 0 0 10px 0;
             color: #ffffff;
           ">${content.title || 'Título de la noticia'}</h1>
-
-          <!-- Excerpt -->
-          <p style="
-            font-size: 13px;
-            font-weight: 400;
-            line-height: 1.3;
-            margin: 0 0 12px 0;
-            color: rgba(255, 255, 255, 0.9);
-          ">${(content.excerpt || 'Descripción de la noticia').length > 90 ? content.excerpt.substring(0, 90) + '...' : content.excerpt}</p>
-          
         </div>
       </div>
     </div>
