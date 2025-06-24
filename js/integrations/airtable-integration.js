@@ -2044,44 +2044,45 @@ function generateInstagramStoryHTML(content) {
         ${generateLogoHTML('story')}
       </div>
 
-      <!-- Centered Content -->
+      <!-- Main Content: Badge + Title moved down -->
       <div style="
         z-index: 3; 
         position: relative;
         margin-top: auto;
-        margin-bottom: auto;
-        text-align: center;
       ">
-        <!-- Section Badge - Centered -->
         <div style="
-          background: #ff0808;
-          color: #fff;
-          font-family: 'Inter', sans-serif;
-          font-size: 11px;
-          font-weight: 700;
-          text-transform: uppercase;
-          padding: 8px 20px;
-          border-radius: 6px;
-          letter-spacing: 0.04em;
-          display: inline-block;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 12px rgba(255, 8, 8, 0.4);
-        ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
-
-        <!-- Title - Full, centered -->
-        <h1 style="
-          font-family: 'Newsreader', serif;
-          font-size: 28px;
-          color: rgba(250,246,239,0.9);
-          text-align: center;
-          margin: 0 auto;
-          font-weight: 700;
-          line-height: 1.2;
-          max-width: 90%;
-          text-shadow: 0 2px 12px rgba(0,0,0,0.28), 0 1px 0 rgba(0,0,0,0.12);
+          background: rgba(0, 0, 0, 0.85);
+          backdrop-filter: blur(25px);
+          border-radius: 20px;
+          padding: 20px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+          border: 2px solid rgba(255, 255, 255, 0.1);
         ">
-          ${content.title || 'Título de la noticia'}
-        </h1>
+          <!-- Category Badge - Same style as post but smaller -->
+          <div style="
+            background: linear-gradient(45deg, #ff0808, #292929);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(255, 8, 8, 0.3);
+          ">${lastAirtableSection || content.section || 'NOTICIAS'}</div>
+
+          <!-- Title - Same style as post -->
+          <h1 style="
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin: 0;
+            color: #ffffff;
+          ">
+            ${content.title || 'Título de la noticia'}
+          </h1>
+        </div>
       </div>
     </div>
   `
